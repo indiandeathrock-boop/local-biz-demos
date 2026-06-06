@@ -519,7 +519,7 @@
       position: relative;
     }
     .review-card::before {
-      content: '\201C';
+      content: '';
       position: absolute;
       top: 16px; left: 22px;
       font-family: 'Georgia', serif;
@@ -1129,6 +1129,14 @@
         }
       });
     })();
+
+    // FAQ accordion
+    function toggleFaq(btn) {
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(el) { el.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+    }
 
     // Nav scroll effect
     const nav = document.getElementById('nav');
