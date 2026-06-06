@@ -185,8 +185,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(160deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 60%, rgba(0,0,0,.5) 100%),
-        linear-gradient(135deg, #1a1510 0%, #2d2318 40%, #1a1510 100%);
+        linear-gradient(160deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.3) 55%, rgba(0,0,0,.58) 100%),
+        url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&q=80') center/cover no-repeat;
     }
     /* Decorative lines */
     .hero-bg::before {
@@ -517,10 +517,94 @@
     .reveal-d3 { transition-delay: .3s; }
     .reveal-d4 { transition-delay: .4s; }
 
+    /* ===== Hamburger ===== */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      z-index: 310;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 100%;
+      height: 1.5px;
+      background: var(--c-white);
+      transition: transform .35s var(--ease-out), opacity .25s, background .4s;
+      transform-origin: center;
+    }
+    .nav.scrolled .nav-hamburger span { background: var(--c-text); }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-hamburger.open span { background: var(--c-white) !important; }
+
+    /* ===== Mobile overlay menu ===== */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(15,12,10,.96);
+      backdrop-filter: blur(8px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s var(--ease-out);
+    }
+    .nav-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .nav-overlay-links {
+      list-style: none;
+      text-align: center;
+    }
+    .nav-overlay-links li {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
+    }
+    .nav-overlay.open .nav-overlay-links li:nth-child(1) { transition-delay: .1s; opacity: 1; transform: none; }
+    .nav-overlay.open .nav-overlay-links li:nth-child(2) { transition-delay: .18s; opacity: 1; transform: none; }
+    .nav-overlay.open .nav-overlay-links li:nth-child(3) { transition-delay: .26s; opacity: 1; transform: none; }
+    .nav-overlay-links a {
+      display: block;
+      padding: 20px 40px;
+      font-family: var(--f-serif);
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 300;
+      letter-spacing: .2em;
+      color: rgba(255,255,255,.85);
+      transition: color .25s;
+    }
+    .nav-overlay-links a:hover { color: var(--c-primary); }
+    .nav-overlay-tel {
+      margin-top: 40px;
+      font-size: .85rem;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.45);
+      opacity: 0;
+      transition: opacity .4s .32s;
+    }
+    .nav-overlay.open .nav-overlay-tel { opacity: 1; }
+    .nav-overlay-tel a { color: var(--c-primary); }
+
     /* ===== Responsive ===== */
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .nav-tel { font-size: .72rem; }
+      .nav-tel { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-overlay { display: flex; }
       .services-grid { grid-template-columns: 1fr; }
       .access-grid { grid-template-columns: 1fr; }
       .access-divider { display: none; }
@@ -544,7 +628,20 @@
       <li><a href="#access">アクセス</a></li>
     </ul>
     <a href="tel:{{電話番号}}" class="nav-tel">{{電話番号}}</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- ===== MOBILE OVERLAY ===== -->
+  <div class="nav-overlay" id="navOverlay">
+    <ul class="nav-overlay-links">
+      <li><a href="#services" class="nav-overlay-link">サービス</a></li>
+      <li><a href="#price" class="nav-overlay-link">料金</a></li>
+      <li><a href="#access" class="nav-overlay-link">アクセス</a></li>
+    </ul>
+    <p class="nav-overlay-tel">TEL &nbsp;<a href="tel:{{電話番号}}">{{電話番号}}</a></p>
+  </div>
 
   <!-- ===== HERO ===== -->
   <section class="hero" id="top">
@@ -725,6 +822,24 @@
     const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const overlay = document.getElementById('navOverlay');
+    const overlayLinks = document.querySelectorAll('.nav-overlay-link');
+    let menuOpen = false;
+
+    function toggleMenu(force) {
+      menuOpen = force !== undefined ? force : !menuOpen;
+      hamburger.classList.toggle('open', menuOpen);
+      overlay.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+    }
+
+    hamburger.addEventListener('click', () => toggleMenu());
+    overlayLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+    overlay.addEventListener('click', e => { if (e.target === overlay) toggleMenu(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });
 
     // Scroll reveal
     const revealEls = document.querySelectorAll('.reveal');
