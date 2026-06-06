@@ -1099,6 +1099,18 @@
   </footer>
 
   <script>
+    // Hide sections when all placeholders are empty
+    (function() {
+      var reviews = document.getElementById('reviews');
+      if (reviews && reviews.dataset.reviews.trim() === '') {
+        reviews.style.display = 'none';
+      }
+      var faq = document.getElementById('faq');
+      if (faq && faq.dataset.faq.trim() === '') {
+        faq.style.display = 'none';
+      }
+    })();
+
     // Nav scroll effect
     const nav = document.getElementById('nav');
     const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 60);
