@@ -961,19 +961,19 @@
       </div>
       <div class="reviews-grid">
         <div class="review-card reveal reveal-d1" data-review-item="">
-          <div class="review-stars" data-rating="5"></div>
-          <p class="review-text"></p>
-          <p class="review-name"></p>
+          <div class="review-stars" data-rating="5" data-fallback-rating="5"></div>
+          <p class="review-text" data-fallback="初めて来店しましたが、丁寧なカウンセリングで理想通りのスタイルになりました。スタッフの方がとても親切で、また必ず来たいと思います。"></p>
+          <p class="review-name" data-fallback="田中 様"></p>
         </div>
         <div class="review-card reveal reveal-d2" data-review-item="">
-          <div class="review-stars" data-rating="5"></div>
-          <p class="review-text"></p>
-          <p class="review-name"></p>
+          <div class="review-stars" data-rating="5" data-fallback-rating="5"></div>
+          <p class="review-text" data-fallback="カラーをお願いしましたが、色持ちが良くダメージも少なくて大満足です。仕上がりを褒められることが増えました。"></p>
+          <p class="review-name" data-fallback="鈴木 様"></p>
         </div>
         <div class="review-card reveal reveal-d3" data-review-item="">
-          <div class="review-stars" data-rating="5"></div>
-          <p class="review-text"></p>
-          <p class="review-name"></p>
+          <div class="review-stars" data-rating="5" data-fallback-rating="4"></div>
+          <p class="review-text" data-fallback="ヘッドスパが気持ちよすぎて寝てしまいました。疲れが取れてリフレッシュできる空間です。定期的に通っています。"></p>
+          <p class="review-name" data-fallback="佐藤 様"></p>
         </div>
       </div>
     </div>
@@ -989,24 +989,24 @@
       <div class="faq-list">
         <div class="faq-item reveal" data-faq-item="">
           <button class="faq-q" onclick="toggleFaq(this)">
-            
+            <span class="faq-q-text" data-fallback="予約なしでも来店できますか？"></span>
             <span class="faq-icon">＋</span>
           </button>
-          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a"></p></div></div>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a" data-fallback="当日のご予約も承っております。ただし混雑状況によってお待ちいただく場合がございます。お電話での事前予約がスムーズです。"></p></div></div>
         </div>
         <div class="faq-item reveal reveal-d1" data-faq-item="">
           <button class="faq-q" onclick="toggleFaq(this)">
-            
+            <span class="faq-q-text" data-fallback="駐車場はありますか？"></span>
             <span class="faq-icon">＋</span>
           </button>
-          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a"></p></div></div>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a" data-fallback="店舗近くにコインパーキングがございます。詳しくは電話にてお問い合わせください。"></p></div></div>
         </div>
         <div class="faq-item reveal reveal-d2" data-faq-item="">
           <button class="faq-q" onclick="toggleFaq(this)">
-            
+            <span class="faq-q-text" data-fallback="子ども連れでも来店できますか？"></span>
             <span class="faq-icon">＋</span>
           </button>
-          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a"></p></div></div>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p class="faq-a" data-fallback="お子様連れでのご来店も歓迎しております。お気軽にご来店ください。"></p></div></div>
         </div>
       </div>
     </div>
@@ -1101,31 +1101,33 @@
   </footer>
 
   <script>
-    // セクション非表示チェック
+    // フォールバック充填 → スター描画 → セクション非表示チェック
     (function() {
-      // レビュー
-      const reviewSection = document.querySelector('section.reviews, #reviews, [data-section="reviews"]');
-      if (reviewSection) {
-        const texts = [...reviewSection.querySelectorAll('*')]
-          .filter(el => el.children.length === 0)
-          .map(el => el.textContent.trim())
-          .filter(t => t.length > 0);
-        if (texts.every(t => t === '' || t.match(/^[A-Z_\s]+$/) || t.match(/^【/))) {
-          reviewSection.style.display = 'none';
-        }
-      }
+      // 1. data-fallback を持つ要素：テキストが空なら fallback を表示
+      document.querySelectorAll('[data-fallback]').forEach(function(el) {
+        if (el.textContent.trim() === '') el.textContent = el.dataset.fallback;
+      });
 
-      // FAQ
-      const faqSection = document.querySelector('section.faq, #faq, [data-section="faq"]');
-      if (faqSection) {
-        const texts = [...faqSection.querySelectorAll('*')]
-          .filter(el => el.children.length === 0)
-          .map(el => el.textContent.trim())
-          .filter(t => t.length > 0);
-        if (texts.every(t => t === '' || t.match(/^[A-Z_\s]+$/) || t.match(/^【/))) {
-          faqSection.style.display = 'none';
+      // 2. スター描画（data-rating が空なら data-fallback-rating を使用）
+      document.querySelectorAll('.review-stars').forEach(function(el) {
+        var rating = parseInt(el.dataset.rating) || parseInt(el.dataset.fallbackRating) || 5;
+        el.innerHTML = Array.from({length: 5}, function(_, i) {
+          return '<svg width="14" height="14" viewBox="0 0 24 24" fill="' + (i < rating ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>';
+        }).join('');
+      });
+
+      // 3. セクション非表示チェック（フォールバック充填後に評価）
+      ['reviews', 'faq'].forEach(function(id) {
+        var section = document.getElementById(id);
+        if (!section) return;
+        var texts = Array.from(section.querySelectorAll('*'))
+          .filter(function(el) { return el.children.length === 0; })
+          .map(function(el) { return el.textContent.trim(); })
+          .filter(function(t) { return t.length > 0; });
+        if (texts.every(function(t) { return t.match(/^[A-Z_\s]+$/) || t.match(/^【/); })) {
+          section.style.display = 'none';
         }
-      }
+      });
     })();
 
     // Nav scroll effect
