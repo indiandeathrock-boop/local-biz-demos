@@ -1101,15 +1101,30 @@
   </footer>
 
   <script>
-    // Hide sections when all placeholders are empty
+    // セクション非表示チェック
     (function() {
-      var reviews = document.getElementById('reviews');
-      if (reviews && reviews.dataset.reviews.trim() === '') {
-        reviews.style.display = 'none';
+      // レビュー
+      const reviewSection = document.querySelector('section.reviews, #reviews, [data-section="reviews"]');
+      if (reviewSection) {
+        const texts = [...reviewSection.querySelectorAll('*')]
+          .filter(el => el.children.length === 0)
+          .map(el => el.textContent.trim())
+          .filter(t => t.length > 0);
+        if (texts.every(t => t === '' || t.match(/^[A-Z_\s]+$/) || t.match(/^【/))) {
+          reviewSection.style.display = 'none';
+        }
       }
-      var faq = document.getElementById('faq');
-      if (faq && faq.dataset.faq.trim() === '') {
-        faq.style.display = 'none';
+
+      // FAQ
+      const faqSection = document.querySelector('section.faq, #faq, [data-section="faq"]');
+      if (faqSection) {
+        const texts = [...faqSection.querySelectorAll('*')]
+          .filter(el => el.children.length === 0)
+          .map(el => el.textContent.trim())
+          .filter(t => t.length > 0);
+        if (texts.every(t => t === '' || t.match(/^[A-Z_\s]+$/) || t.match(/^【/))) {
+          faqSection.style.display = 'none';
+        }
       }
     })();
 
