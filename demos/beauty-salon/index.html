@@ -517,7 +517,7 @@
     .reveal-d3 { transition-delay: .3s; }
     .reveal-d4 { transition-delay: .4s; }
 
-    /* ===== Hamburger ===== */
+    /* ===== Hamburger button ===== */
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -543,68 +543,118 @@
     .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
     .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-    .nav-hamburger.open span { background: var(--c-white) !important; }
+    .nav-hamburger.open span { background: var(--c-text) !important; }
 
-    /* ===== Mobile overlay menu ===== */
-    .nav-overlay {
+    /* ===== Drawer backdrop ===== */
+    .drawer-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 300;
-      background: rgba(15,12,10,.96);
-      backdrop-filter: blur(8px);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
+      z-index: 290;
+      background: rgba(0,0,0,.45);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .4s var(--ease-out);
+      transition: opacity .35s var(--ease-out);
     }
-    .nav-overlay.open {
+    .drawer-backdrop.open {
       opacity: 1;
       pointer-events: auto;
     }
-    .nav-overlay-links {
+
+    /* ===== Drawer panel ===== */
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      top: 0; right: 0;
+      width: 260px;
+      height: 100%;
+      z-index: 300;
+      background: rgba(26,21,16,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transform: translateX(100%);
+      transition: transform .38s var(--ease-out);
+      flex-direction: column;
+      padding: 80px 32px 40px;
+    }
+    .nav-drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      background: none;
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.7);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, color .2s;
+      line-height: 1;
+    }
+    .drawer-close:hover {
+      background: rgba(255,255,255,.1);
+      color: var(--c-white);
+    }
+    .drawer-links {
       list-style: none;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: auto;
     }
-    .nav-overlay-links li {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity .4s var(--ease-out), transform .4s var(--ease-out);
+    .drawer-links li {
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .nav-overlay.open .nav-overlay-links li:nth-child(1) { transition-delay: .1s; opacity: 1; transform: none; }
-    .nav-overlay.open .nav-overlay-links li:nth-child(2) { transition-delay: .18s; opacity: 1; transform: none; }
-    .nav-overlay.open .nav-overlay-links li:nth-child(3) { transition-delay: .26s; opacity: 1; transform: none; }
-    .nav-overlay-links a {
+    .drawer-links a {
       display: block;
-      padding: 20px 40px;
+      padding: 18px 0;
       font-family: var(--f-serif);
-      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-size: 1.1rem;
       font-weight: 300;
-      letter-spacing: .2em;
-      color: rgba(255,255,255,.85);
-      transition: color .25s;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.82);
+      transition: color .22s, padding-left .22s;
     }
-    .nav-overlay-links a:hover { color: var(--c-primary); }
-    .nav-overlay-tel {
-      margin-top: 40px;
-      font-size: .85rem;
-      letter-spacing: .1em;
-      color: rgba(255,255,255,.45);
-      opacity: 0;
-      transition: opacity .4s .32s;
+    .drawer-links a:hover {
+      color: var(--c-primary);
+      padding-left: 8px;
     }
-    .nav-overlay.open .nav-overlay-tel { opacity: 1; }
-    .nav-overlay-tel a { color: var(--c-primary); }
+    .drawer-tel {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: .72rem;
+      letter-spacing: .18em;
+      color: rgba(255,255,255,.38);
+    }
+    .drawer-tel a {
+      display: block;
+      margin-top: 8px;
+      font-size: 1rem;
+      color: var(--c-primary);
+      letter-spacing: .06em;
+      font-family: var(--f-serif);
+      font-weight: 300;
+    }
 
     /* ===== Responsive ===== */
+    @media (min-width: 769px) {
+      /* PC: 明示的に2カラム保証 */
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .nav-tel { display: none; }
       .nav-hamburger { display: flex; }
-      .nav-overlay { display: flex; }
+      .nav-drawer { display: flex; }
+      .drawer-backdrop { display: block; }
       .services-grid { grid-template-columns: 1fr; }
       .access-grid { grid-template-columns: 1fr; }
       .access-divider { display: none; }
@@ -633,14 +683,21 @@
     </button>
   </nav>
 
-  <!-- ===== MOBILE OVERLAY ===== -->
-  <div class="nav-overlay" id="navOverlay">
-    <ul class="nav-overlay-links">
-      <li><a href="#services" class="nav-overlay-link">サービス</a></li>
-      <li><a href="#price" class="nav-overlay-link">料金</a></li>
-      <li><a href="#access" class="nav-overlay-link">アクセス</a></li>
+  <!-- ===== DRAWER BACKDROP ===== -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <!-- ===== DRAWER MENU ===== -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" id="drawerClose" aria-label="閉じる">&#x2715;</button>
+    <ul class="drawer-links">
+      <li><a href="#services" class="drawer-link">サービス</a></li>
+      <li><a href="#price" class="drawer-link">料金</a></li>
+      <li><a href="#access" class="drawer-link">アクセス</a></li>
     </ul>
-    <p class="nav-overlay-tel">TEL &nbsp;<a href="tel:{{電話番号}}">{{電話番号}}</a></p>
+    <div class="drawer-tel">
+      TEL
+      <a href="tel:{{電話番号}}">{{電話番号}}</a>
+    </div>
   </div>
 
   <!-- ===== HERO ===== -->
@@ -823,22 +880,26 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-    // Hamburger menu
+    // Drawer menu
     const hamburger = document.getElementById('hamburger');
-    const overlay = document.getElementById('navOverlay');
-    const overlayLinks = document.querySelectorAll('.nav-overlay-link');
+    const drawer = document.getElementById('navDrawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const drawerClose = document.getElementById('drawerClose');
+    const drawerLinks = document.querySelectorAll('.drawer-link');
     let menuOpen = false;
 
     function toggleMenu(force) {
       menuOpen = force !== undefined ? force : !menuOpen;
       hamburger.classList.toggle('open', menuOpen);
-      overlay.classList.toggle('open', menuOpen);
+      drawer.classList.toggle('open', menuOpen);
+      backdrop.classList.toggle('open', menuOpen);
       document.body.style.overflow = menuOpen ? 'hidden' : '';
     }
 
     hamburger.addEventListener('click', () => toggleMenu());
-    overlayLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
-    overlay.addEventListener('click', e => { if (e.target === overlay) toggleMenu(false); });
+    drawerClose.addEventListener('click', () => toggleMenu(false));
+    drawerLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+    backdrop.addEventListener('click', () => toggleMenu(false));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });
 
     // Scroll reveal
