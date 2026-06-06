@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{店名}} | 美容室</title>
+  <style>
+    /* ===== Design tokens (derived from hotpepper beauty extraction) ===== */
+    :root {
+      --color-primary:   #e25983;   /* pink accent */
+      --color-secondary: #0f94d2;   /* blue sub */
+      --color-bg:        #fdfdf5;   /* warm off-white */
+      --color-bg-light:  #f6f4f3;
+      --color-bg-pink:   #fae5e7;
+      --color-text:      #333333;
+      --color-text-light:#666666;
+      --color-white:     #ffffff;
+      --color-border:    #dcd6d2;
+      --font-main:       'Hiragino Mincho ProN', 'Yu Mincho', 'Georgia', serif;
+      --font-sans:       'Hiragino Sans', 'Meiryo', sans-serif;
+      --radius-sm:       4px;
+      --radius-md:       8px;
+      --radius-full:     9999px;
+      --shadow:          0 2px 12px rgba(0,0,0,.08);
+    }
+
+    /* ===== Reset ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-main);
+      line-height: 1.8;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ===== Layout ===== */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+    section { padding: 64px 0; }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: .12em;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--color-primary);
+      margin: 12px auto 0;
+    }
+
+    /* ===== Header / Hero ===== */
+    header {
+      background: linear-gradient(180deg, #fff 0%, var(--color-bg-pink) 100%);
+      text-align: center;
+      padding: 60px 20px 48px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .salon-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+    .catch-copy {
+      font-size: 1rem;
+      color: var(--color-text-light);
+      letter-spacing: .08em;
+      margin-bottom: 28px;
+    }
+    .header-tel {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-primary);
+      color: var(--color-white);
+      font-family: var(--font-sans);
+      font-size: 1.3rem;
+      font-weight: 700;
+      padding: 12px 32px;
+      border-radius: var(--radius-full);
+      letter-spacing: .06em;
+      box-shadow: var(--shadow);
+      transition: opacity .2s;
+    }
+    .header-tel:hover { opacity: .88; }
+    .header-tel .icon { font-size: 1.1rem; }
+
+    /* ===== Nav bar ===== */
+    nav {
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 0;
+    }
+    nav ul li a {
+      display: block;
+      padding: 14px 24px;
+      font-family: var(--font-sans);
+      font-size: .85rem;
+      letter-spacing: .08em;
+      color: var(--color-text-light);
+      border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    nav ul li a:hover {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* ===== Services ===== */
+    #services { background: var(--color-white); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .service-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      text-align: center;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .service-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .service-card .icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .service-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+    .service-card p {
+      font-size: .82rem;
+      color: var(--color-text-light);
+      line-height: 1.6;
+      font-family: var(--font-sans);
+    }
+
+    /* ===== Price ===== */
+    #price { background: var(--color-bg-light); }
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-sans);
+      font-size: .9rem;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .price-table thead tr {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+    .price-table thead th {
+      padding: 14px 20px;
+      text-align: left;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+    .price-table tbody tr {
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      transition: background .15s;
+    }
+    .price-table tbody tr:hover { background: var(--color-bg-pink); }
+    .price-table tbody tr:last-child { border-bottom: none; }
+    .price-table tbody td {
+      padding: 14px 20px;
+      color: var(--color-text);
+    }
+    .price-table .price-amount {
+      text-align: right;
+      font-weight: 700;
+      color: var(--color-primary);
+      white-space: nowrap;
+    }
+    .price-note {
+      font-family: var(--font-sans);
+      font-size: .78rem;
+      color: var(--color-text-light);
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    /* ===== Access ===== */
+    #access { background: var(--color-white); }
+    .access-box {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 36px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .access-item h4 {
+      font-family: var(--font-sans);
+      font-size: .8rem;
+      letter-spacing: .12em;
+      color: var(--color-text-light);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .access-item p {
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      line-height: 1.7;
+    }
+    .access-divider {
+      border: none;
+      border-left: 1px solid var(--color-border);
+    }
+
+    /* ===== CTA ===== */
+    #cta {
+      background: linear-gradient(180deg, var(--color-bg-pink) 0%, #fff 100%);
+      text-align: center;
+      padding: 72px 20px;
+    }
+    #cta h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      margin-bottom: 32px;
+      color: var(--color-text);
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 40px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s, transform .2s;
+      box-shadow: var(--shadow);
+    }
+    .btn:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+    .btn-secondary {
+      background: var(--color-white);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--color-text);
+      color: var(--color-white);
+      text-align: center;
+      padding: 28px 20px;
+      font-family: var(--font-sans);
+      font-size: .8rem;
+      letter-spacing: .06em;
+    }
+    footer .footer-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: .14em;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+      .salon-name { font-size: 1.6rem; }
+      nav ul li a { padding: 12px 14px; font-size: .75rem; }
+      .access-box { grid-template-columns: 1fr; }
+      .access-divider { display: none; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <p class="catch-copy">{{キャッチコピー}}</p>
+    <h1 class="salon-name">{{店名}}</h1>
+    <a href="tel:{{電話番号}}" class="header-tel">
+      <span class="icon">📞</span>{{電話番号}}
+    </a>
+  </header>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <ul>
+      <li><a href="#services">サービス</a></li>
+      <li><a href="#price">料金</a></li>
+      <li><a href="#access">アクセス</a></li>
+      <li><a href="#cta">ご予約</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== SERVICES ===== -->
+  <section id="services">
+    <div class="container">
+      <h2 class="section-title">サービス</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <span class="icon">✂️</span>
+          <h3>{{サービス1}}</h3>
+          <p>丁寧なカウンセリングで<br>理想のスタイルに仕上げます。</p>
+        </div>
+        <div class="service-card">
+          <span class="icon">🎨</span>
+          <h3>{{サービス2}}</h3>
+          <p>豊富なカラーバリエーションで<br>お好みの色味を実現。</p>
+        </div>
+        <div class="service-card">
+          <span class="icon">🌿</span>
+          <h3>{{サービス3}}</h3>
+          <p>頭皮と髪を健やかに保つ<br>本格的なトリートメント。</p>
+        </div>
+        <div class="service-card">
+          <span class="icon">💆</span>
+          <h3>{{サービス4}}</h3>
+          <p>リラックスできる空間で<br>特別なひとときをどうぞ。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICE ===== -->
+  <section id="price">
+    <div class="container">
+      <h2 class="section-title">料金表</h2>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>メニュー</th>
+            <th class="price-amount">料金（税込）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>カット</td>
+            <td class="price-amount">¥4,400〜</td>
+          </tr>
+          <tr>
+            <td>カラー（全体）</td>
+            <td class="price-amount">¥8,800〜</td>
+          </tr>
+          <tr>
+            <td>パーマ</td>
+            <td class="price-amount">¥9,900〜</td>
+          </tr>
+          <tr>
+            <td>カット＋カラー</td>
+            <td class="price-amount">¥12,100〜</td>
+          </tr>
+          <tr>
+            <td>トリートメント</td>
+            <td class="price-amount">¥3,300〜</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="price-note">※価格は目安です。髪の長さ・状態により異なります。詳細はお問い合わせください。</p>
+    </div>
+  </section>
+
+  <!-- ===== ACCESS ===== -->
+  <section id="access">
+    <div class="container">
+      <h2 class="section-title">アクセス・営業時間</h2>
+      <div class="access-box">
+        <div class="access-item">
+          <h4>住所</h4>
+          <p>{{住所}}</p>
+        </div>
+        <hr class="access-divider">
+        <div class="access-item">
+          <h4>電話番号</h4>
+          <p><a href="tel:{{電話番号}}">{{電話番号}}</a></p>
+        </div>
+        <div class="access-item">
+          <h4>営業時間</h4>
+          <p>{{営業時間}}</p>
+        </div>
+        <hr class="access-divider">
+        <div class="access-item">
+          <h4>定休日</h4>
+          <p>{{定休日}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section id="cta">
+    <div class="container">
+      <h2>ご予約・お問い合わせ</h2>
+      <div class="cta-buttons">
+        <a href="tel:{{電話番号}}" class="btn btn-primary">
+          <span>📞</span> 電話で予約する
+        </a>
+        <a href="#access" class="btn btn-secondary">
+          <span>📍</span> アクセスを確認
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p class="footer-name">{{店名}}</p>
+    <p>{{住所}}　{{電話番号}}</p>
+    <p style="margin-top:8px;opacity:.6;">© {{店名}} All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
