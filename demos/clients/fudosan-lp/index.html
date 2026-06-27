@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIに選ばれる不動産店へ｜集客と業務効率化のご提案</title>
+<style>
+  :root {
+    --ai: #1a2b4a; --ai-deep: #11203a; --ai-darker: #0c1830; --sumi: #1c1c1a;
+    --kinari: #f4f1e9; --kinari-2: #ece7da; --accent: #b6552e; --accent-soft: #c9764f;
+    --line: #d8d2c4; --muted: #6a6a63;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+    color: var(--sumi); background: var(--kinari); line-height: 2; font-size: 17px;
+    letter-spacing: 0.02em; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 0 24px; }
+  .gothic { font-family: "Hiragino Sans","Yu Gothic",sans-serif; }
+  .hero { background: var(--ai-deep); color: var(--kinari); padding: 92px 0 80px; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(182,85,46,0.20), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(70,100,160,0.16), transparent 55%); pointer-events: none; }
+  .hero .wrap { position: relative; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.22em; color: var(--accent-soft);
+    font-family: "Hiragino Sans","Yu Gothic",sans-serif; margin-bottom: 28px; font-weight: 600; }
+  .hero .q { display: block; font-size: 19px; color: #cfd6e2; font-weight: 400;
+    margin-bottom: 20px; padding-left: 16px; border-left: 2px solid var(--accent); line-height: 1.9; }
+  .hero h1 { font-size: 31px; line-height: 1.65; font-weight: 600; margin-bottom: 30px; }
+  .hero .lead { font-size: 16px; color: #c4cad6; line-height: 2.1; }
+  .hero-slot { margin-top: 34px; height: 150px; border: 1px dashed rgba(255,255,255,0.22);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 12px; color: rgba(255,255,255,0.4); }
+  section { padding: 70px 0; }
+  .dark { background: var(--ai-deep); color: var(--kinari); }
+  .dark h2 { color: var(--kinari); } .dark p { color: #c8cdd8; } .dark strong { color: #fff; }
+  .dark .section-num { color: var(--accent-soft); }
+  .section-num { font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 12px;
+    letter-spacing: 0.2em; color: var(--accent); font-weight: 700; margin-bottom: 20px; }
+  h2 { font-size: 24px; line-height: 1.6; font-weight: 600; margin-bottom: 30px; }
+  p { margin-bottom: 22px; } p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; color: var(--ai); }
+  .pull { text-align: center; font-size: 27px; line-height: 1.75; font-weight: 600;
+    color: var(--ai); padding: 50px 0; margin: 0; position: relative; }
+  .pull::before, .pull::after { content: ""; display: block; width: 40px; height: 2px; background: var(--accent); margin: 0 auto; }
+  .pull::before { margin-bottom: 30px; } .pull::after { margin-top: 30px; }
+  .pull em { font-style: normal; color: var(--accent); }
+  .bignum { text-align: center; font-family: "Hiragino Sans","Yu Gothic",sans-serif; padding: 24px 0 8px; }
+  .bignum .n { font-size: 64px; font-weight: 700; color: var(--accent); letter-spacing: 0.02em; line-height: 1; }
+  .bignum .u { font-size: 20px; font-weight: 600; color: var(--kinari); }
+  .bignum .cap { display: block; font-size: 13px; color: #aeb4c0; margin-top: 14px; letter-spacing: 0.08em; }
+  .dark .bignum .n { color: #fff; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 26px; margin: 32px 0; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+  .card .badge { display: inline-block; font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 11px;
+    letter-spacing: 0.1em; color: var(--accent); border: 1px solid var(--accent); border-radius: 2px; padding: 2px 8px; margin-bottom: 16px; font-weight: 600; }
+  .card-row { display: flex; font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 14px;
+    line-height: 1.7; padding: 8px 0; border-bottom: 1px dashed var(--kinari-2); }
+  .card-row:last-child { border-bottom: none; }
+  .card-row .k { width: 92px; color: var(--muted); flex-shrink: 0; } .card-row .v { color: var(--sumi); }
+  .path-box { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 28px 26px; margin-bottom: 20px; }
+  .path-box:last-child { margin-bottom: 0; }
+  .path-tag { font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--accent); margin-bottom: 14px; letter-spacing: 0.04em; }
+  .path-box p { margin-bottom: 0; font-size: 16px; }
+  .svc { list-style: none; margin: 30px 0 0; }
+  .svc li { font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 15px; line-height: 1.7;
+    padding: 15px 0 15px 26px; border-top: 1px solid var(--line); position: relative; }
+  .svc li:last-child { border-bottom: 1px solid var(--line); }
+  .svc li::before { content: ""; position: absolute; left: 4px; top: 23px; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+  .svc li b { color: var(--ai); font-weight: 600; }
+  .author { display: flex; gap: 20px; align-items: flex-start; background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 24px; margin-top: 30px; }
+  .author .photo { width: 76px; height: 76px; border-radius: 50%; background: var(--kinari-2); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-family: "Hiragino Sans","Yu Gothic",sans-serif;
+    font-size: 11px; color: var(--muted); border: 1px solid var(--line); text-align: center; line-height: 1.4; }
+  .author .who { font-size: 15px; line-height: 1.95; }
+  .author .who span { display: block; font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .price { background: var(--ai-darker); color: var(--kinari); text-align: center; }
+  .price .section-num { color: var(--accent-soft); } .price h2 { color: var(--kinari); }
+  .price .yen-from { font-family: "Hiragino Sans","Yu Gothic",sans-serif; margin: 6px 0 28px; color: #fff; }
+  .price .yen-from .pre { font-size: 17px; } .price .yen-from .n { font-size: 58px; font-weight: 700; letter-spacing: 0.02em; }
+  .price .yen-from .u { font-size: 20px; } .price .yen-from .post { font-size: 15px; color: #c4cad6; margin-left: 8px; }
+  .price p { color: #c8cdd8; font-size: 15px; }
+  .cta { text-align: center; padding: 70px 0 78px; } .cta h2 { margin-bottom: 24px; }
+  .cta .free { color: var(--accent); font-weight: 600; }
+  .btn { display: inline-block; background: var(--accent); color: #fff; font-family: "Hiragino Sans","Yu Gothic",sans-serif;
+    font-size: 17px; font-weight: 600; text-decoration: none; padding: 19px 52px; border-radius: 3px; margin-top: 28px;
+    letter-spacing: 0.04em; transition: background 0.2s, transform 0.1s; }
+  .btn:hover { background: var(--accent-soft); } .btn:active { transform: translateY(1px); }
+  .cta .note { font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 13px; color: var(--muted); margin-top: 18px; }
+  footer { background: var(--sumi); color: #9a9a92; text-align: center; padding: 32px 0;
+    font-family: "Hiragino Sans","Yu Gothic",sans-serif; font-size: 12px; letter-spacing: 0.05em; }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+  @media (max-width: 640px) {
+    body { font-size: 16px; } .hero { padding: 66px 0 58px; } .hero h1 { font-size: 25px; } .hero .q { font-size: 17px; }
+    section { padding: 56px 0; } h2 { font-size: 21px; } .pull { font-size: 22px; padding: 42px 0; }
+    .bignum .n { font-size: 54px; } .price .yen-from .n { font-size: 50px; } .author { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">不動産業の経営者の方へ</div>
+      <span class="q">「この街で家を買うなら、どこに相談したらいい？」</span>
+      <h1>そう聞かれたAIが、あなたの店の名前を出せるか。</h1>
+      <p class="lead">住まいを探す人の最初の一手が、いま静かに変わりはじめています。これから問い合わせの数を左右するのは、ポータルでも広告費でもなく、「AIにどう紹介されるか」です。</p>
+      <div class="hero-slot gothic">［ 街並み・物件のヒーロー画像 ］</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="section-num">01 ── いま起きていること</div>
+      <h2>家を探す人の動きが、<br>変わりはじめています。</h2>
+      <p>少し前まで、住まい探しはポータルサイトから始まるものでした。一覧を眺めて、気になった物件に問い合わせる。最近、その手前にもう一段、別の入口ができました。<strong>AIチャットです。</strong></p>
+      <p>「子育てしやすくて予算内の家を探すには、どこに相談したらいい？」――人はもう、こういう問いをAIに投げはじめています。まずAIに聞いて、出てきた答えから動く。その習慣が、家探しにも入ってきました。</p>
+    </div>
+  </section>
+
+  <div class="wrap"><p class="pull reveal">この流れは戻りません。<br><em>想像より早く、当たり前になります。</em></p></div>
+
+  <section class="dark">
+    <div class="wrap reveal">
+      <div class="section-num">02 ── 静かに始まっている分かれ道</div>
+      <h2>AIが紹介する店と、<br>しない店。</h2>
+      <p>AIが住まい探しに入り込むと、一つの分かれ道が生まれます。その人に紹介される店と、されない店です。</p>
+      <p>紹介されなければ、どれだけ良い物件を持っていても、<strong>その客の選択肢にすら入りません。</strong>店の存在を、知ってすらもらえない。ここで差がつきはじめています。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="section-num">03 ── すべての土台</div>
+      <h2>では、AIは何を見て<br>店を選ぶのか。</h2>
+      <p>答えは、Googleに溜まっている店の情報です。所在地、営業時間、写真、口コミ、日々の投稿――<strong>Googleビジネスプロフィール（GBP）</strong>の中身です。ここが充実している店を、AIは「ちゃんとした店」と判断して名前を出します。</p>
+      <div class="card">
+        <span class="badge">Google ビジネスプロフィール</span>
+        <div class="card-row"><span class="k">所在地</span><span class="v">○○県○○市○○町 0-0-0</span></div>
+        <div class="card-row"><span class="k">営業時間</span><span class="v">9:00 – 18:00／水曜定休</span></div>
+        <div class="card-row"><span class="k">写真</span><span class="v">店舗・スタッフ・取扱物件</span></div>
+        <div class="card-row"><span class="k">口コミ</span><span class="v">★★★★☆ 評価と返信</span></div>
+        <div class="card-row"><span class="k">最新の投稿</span><span class="v">新着物件・地域の情報</span></div>
+      </div>
+      <p>この土台には、もう一つの効き目があります。GBPの充実は、AI対策であると同時に、<strong>いまこの瞬間の通常のGoogle検索にも効く。</strong>「地域名 不動産」で調べている、今日の客にも届きます。</p>
+    </div>
+  </section>
+
+  <div class="wrap"><p class="pull reveal">新しい客と、これからの客。<br><em>両方を、同じ場所で拾える。</em></p></div>
+
+  <section class="dark">
+    <div class="wrap reveal">
+      <div class="section-num">04 ── なぜ「いま」なのか</div>
+      <h2>先に整えた店が、有利です。</h2>
+      <p>AIへの対策をしている不動産店は、まだほとんどいません。手をつけていない店は、AI検索でも通常検索でも、二重に損をしています。</p>
+      <div class="bignum">
+        <span class="n">24</span><span class="u">時間</span>　<span class="n">365</span><span class="u">日</span>
+        <span class="cap">AIに紹介される店は、休まず働く営業を一人雇うのと同じ。</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="section-num">05 ── 二つの入口</div>
+      <h2>どちらの店にも、<br>手つかずの余地があります。</h2>
+      <div class="path-box">
+        <div class="path-tag">まず集客を何とかしたい、という店へ</div>
+        <p>AIに選ばれる店になることが、これから最も効率のいい集客になります。情報を整えるだけで、何もしていない競合より一歩前に出られます。</p>
+      </div>
+      <div class="path-box">
+        <div class="path-tag">集客は、もう十分やっている――という店へ</div>
+        <p>では業務はどうでしょう。問い合わせへの初動、追客のメール、物件情報の更新。こうした繰り返しの作業を、いまのAIは肩代わりできます。人の時間を、本来の仕事に戻せます。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap reveal">
+      <div class="section-num">06 ── お手伝いできること</div>
+      <h2>集客から業務まで、<br>まとめて一人で。</h2>
+      <ul class="svc">
+        <li><b>GBPの整備と運用</b>／放置されがちな店舗情報を、毎月手を入れて育てます</li>
+        <li><b>AIに選ばれるための情報設計</b>／客が問いそうな形に、店の情報を整えます</li>
+        <li><b>写真・動画の制作</b>／物件と街の魅力が伝わる映像を、本職の目で撮ります</li>
+        <li><b>YouTube制作・SNS運用代行</b>／撮った素材を育て、InstagramやXにも展開します</li>
+        <li><b>業務の自動化</b>／追客・更新・初動対応など、繰り返しをAIに任せる仕組みを作ります</li>
+      </ul>
+      <div class="author">
+        <div class="photo">顔写真<br>（予定）</div>
+        <div class="who">映像はもともとの本職です。外注に出さず、撮影から編集まで私が手がけます。一本の撮影が、複数の場所で長く働き続ける形を作ります。
+          <span>不動産の現場に関わってきた経験があり、業界の話が早いのも強みです。窓口は最初から最後まで私一人。別の業者に頼み分ける必要はありません。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="price">
+    <div class="wrap reveal">
+      <div class="section-num">07 ── 費用</div>
+      <h2>無理のないところから。</h2>
+      <div class="yen-from"><span class="pre">月々 </span><span class="n">2</span><span class="u">万円台</span><span class="post">から</span></div>
+      <p>正直に言えば、この形のサービスは始めたばかりで、実績はこれから積み上げる立場です。だからこそ、<strong>最初にご一緒する数社には、ふだん以上に手をかけます。</strong>後から来る依頼より、ずっと深く関わるつもりです。</p>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap reveal">
+      <div class="section-num" style="text-align:center;">08 ── まずは現状を知ることから</div>
+      <h2>いまあなたの店が、<br>GoogleとAIの目に<br>どう映っているか。</h2>
+      <p><span class="free">無料で調べて、お見せします。</span><br>見たうえで、必要なさそうなら遠慮なく断ってください。</p>
+      <a class="btn" href="#contact">無料診断を依頼する</a>
+      <div class="note">お話を聞くだけでも構いません。しつこい売り込みはしません。</div>
+    </div>
+  </section>
+
+  <footer id="contact"><div class="wrap">© 2026　お問い合わせ ／ ［連絡先を記載］</div></footer>
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
