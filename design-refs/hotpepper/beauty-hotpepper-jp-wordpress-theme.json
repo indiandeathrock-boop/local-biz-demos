@@ -1,0 +1,188 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "color": {
+      "palette": [
+        {
+          "slug": "primary",
+          "color": "#0f94d2",
+          "name": "Primary"
+        },
+        {
+          "slug": "secondary",
+          "color": "#e25983",
+          "name": "Secondary"
+        },
+        {
+          "slug": "accent",
+          "color": "#dcd6d2",
+          "name": "Accent"
+        },
+        {
+          "slug": "neutral-1",
+          "color": "#4c4c80",
+          "name": "Neutral 1"
+        },
+        {
+          "slug": "neutral-2",
+          "color": "#333333",
+          "name": "Neutral 2"
+        },
+        {
+          "slug": "neutral-3",
+          "color": "#000000",
+          "name": "Neutral 3"
+        },
+        {
+          "slug": "neutral-4",
+          "color": "#444444",
+          "name": "Neutral 4"
+        },
+        {
+          "slug": "neutral-5",
+          "color": "#ffffff",
+          "name": "Neutral 5"
+        },
+        {
+          "slug": "bg-fdfdf5",
+          "color": "#fdfdf5",
+          "name": "Background #fdfdf5"
+        },
+        {
+          "slug": "bg-bfb4ab",
+          "color": "#bfb4ab",
+          "name": "Background #bfb4ab"
+        },
+        {
+          "slug": "bg-ffffff",
+          "color": "#ffffff",
+          "name": "Background #ffffff"
+        }
+      ],
+      "gradients": [
+        {
+          "slug": "gradient-1",
+          "gradient": "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 10px, rgb(216, 216, 216) 100%)",
+          "name": "Gradient 1"
+        },
+        {
+          "slug": "gradient-2",
+          "gradient": "linear-gradient(rgb(255, 255, 255) 0%, rgb(250, 229, 231) 100%)",
+          "name": "Gradient 2"
+        }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "Times",
+          "slug": "times",
+          "name": "Times"
+        },
+        {
+          "fontFamily": "lucida grande",
+          "slug": "lucida-grande",
+          "name": "lucida grande"
+        }
+      ],
+      "fontSizes": [
+        {
+          "size": "16px",
+          "slug": "size-16",
+          "name": "16px"
+        },
+        {
+          "size": "14px",
+          "slug": "size-14",
+          "name": "14px"
+        },
+        {
+          "size": "13px",
+          "slug": "size-13",
+          "name": "13px"
+        },
+        {
+          "size": "12px",
+          "slug": "size-12",
+          "name": "12px"
+        },
+        {
+          "size": "11px",
+          "slug": "size-11",
+          "name": "11px"
+        },
+        {
+          "size": "10px",
+          "slug": "size-10",
+          "name": "10px"
+        },
+        {
+          "size": "0px",
+          "slug": "size-0",
+          "name": "0px"
+        }
+      ]
+    },
+    "spacing": {
+      "spacingSizes": [
+        {
+          "size": "1px",
+          "slug": "spacing-1",
+          "name": "1px"
+        },
+        {
+          "size": "18px",
+          "slug": "spacing-18",
+          "name": "18px"
+        },
+        {
+          "size": "20px",
+          "slug": "spacing-20",
+          "name": "20px"
+        },
+        {
+          "size": "22px",
+          "slug": "spacing-22",
+          "name": "22px"
+        },
+        {
+          "size": "25px",
+          "slug": "spacing-25",
+          "name": "25px"
+        },
+        {
+          "size": "28px",
+          "slug": "spacing-28",
+          "name": "28px"
+        },
+        {
+          "size": "30px",
+          "slug": "spacing-30",
+          "name": "30px"
+        },
+        {
+          "size": "32px",
+          "slug": "spacing-32",
+          "name": "32px"
+        }
+      ]
+    },
+    "layout": {
+      "contentSize": "1200px",
+      "wideSize": "1400px"
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "#fdfdf5",
+      "text": "#000000"
+    },
+    "typography": {
+      "fontSize": "10px",
+      "lineHeight": "15px",
+      "fontFamily": "Times"
+    },
+    "spacing": {}
+  }
+}

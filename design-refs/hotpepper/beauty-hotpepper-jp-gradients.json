@@ -1,0 +1,44 @@
+{
+  "$schema": "https://designlang.app/schemas/gradients.json",
+  "source": "https://beauty.hotpepper.jp",
+  "generated": "2026-06-06T00:24:34.069Z",
+  "count": 2,
+  "gradients": [
+    {
+      "raw": "linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 10px, rgb(216, 216, 216) 100%)",
+      "type": "linear",
+      "direction": null,
+      "stops": [
+        {
+          "color": "rgb(255, 255, 255)",
+          "position": "0px"
+        },
+        {
+          "color": "rgb(255, 255, 255)",
+          "position": "10px"
+        },
+        {
+          "color": "rgb(216, 216, 216)",
+          "position": "100%"
+        }
+      ],
+      "classification": "bold"
+    },
+    {
+      "raw": "linear-gradient(rgb(255, 255, 255) 0%, rgb(250, 229, 231) 100%)",
+      "type": "linear",
+      "direction": null,
+      "stops": [
+        {
+          "color": "rgb(255, 255, 255)",
+          "position": "0%"
+        },
+        {
+          "color": "rgb(250, 229, 231)",
+          "position": "100%"
+        }
+      ],
+      "classification": "brand"
+    }
+  ]
+}

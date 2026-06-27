@@ -1,0 +1,27 @@
+{
+  "openGraph": {},
+  "twitter": {},
+  "description": "美容院・美容室・ヘアサロンが探せる日本最大級の検索・予約サイト。2359万点あるスタイルや、ブログ、口コミをチェックして、気になるスタイリストを直接指名。２４時間いつでもネット予約OK。美容院や美容室、ヘアサロンを検索・予約するならホットペッパービューティー",
+  "canonical": null,
+  "themeColor": null,
+  "viewport": null,
+  "favicons": [
+    {
+      "rel": "shortcut icon",
+      "href": "https://beauty.hotpepper.jp/favicon.ico",
+      "sizes": "",
+      "type": ""
+    }
+  ],
+  "manifest": null,
+  "structuredData": [],
+  "score": {
+    "hasOg": false,
+    "hasTwitter": false,
+    "hasDescription": true,
+    "hasCanonical": false,
+    "hasStructuredData": false,
+    "hasFavicon": true,
+    "hasThemeColor": false
+  }
+}

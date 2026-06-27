@@ -1,0 +1,18 @@
+{
+  "tone": "neutral",
+  "pronoun": "third-person",
+  "headingStyle": "unknown",
+  "headingLengthClass": "tight",
+  "ctaVerbs": [],
+  "buttonPatterns": [
+    {
+      "value": "ログインする",
+      "count": 1
+    }
+  ],
+  "sampleHeadings": [],
+  "stats": {
+    "buttons": 1,
+    "headings": 0
+  }
+}

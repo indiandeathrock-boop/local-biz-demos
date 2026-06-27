@@ -1,0 +1,19 @@
+/* shadcn/ui Theme — extracted from https://beauty.hotpepper.jp */
+/* Paste into your globals.css */
+
+@layer base {
+  :root {
+    --background: 60 67% 98%;
+    --foreground: 0 0% 0%;
+    --primary: 199 87% 44%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 342 70% 62%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 24 13% 84%;
+    --accent-foreground: 0 0% 0%;
+    --muted: 210 3% 88%;
+    --muted-foreground: 240 25% 40%;
+    --border: 0 0% 100%;
+    --radius: 2px;
+  }
+}

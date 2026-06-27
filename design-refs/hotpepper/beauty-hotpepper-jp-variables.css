@@ -1,0 +1,70 @@
+:root {
+  /* Colors — Primary */
+  --color-primary: #0f94d2;
+  --color-secondary: #e25983;
+  --color-accent: #dcd6d2;
+
+  /* Colors — Neutrals */
+  --color-neutral-50: #4c4c80;
+  --color-neutral-100: #333333;
+  --color-neutral-200: #000000;
+  --color-neutral-300: #444444;
+  --color-neutral-400: #ffffff;
+  --color-neutral-500: #666666;
+  --color-neutral-600: #595959;
+  --color-neutral-700: #999999;
+  --color-neutral-800: #cdcdcd;
+  --color-neutral-900: #bfb4ab;
+
+  /* Colors — Backgrounds */
+  --color-bg: #fdfdf5;
+  --color-bg-1: #bfb4ab;
+  --color-bg-2: #ffffff;
+  --color-bg-3: #f6f4f3;
+
+  /* Colors — Text */
+  --color-text: #000000;
+  --color-text-1: #333333;
+  --color-text-2: #ffffff;
+  --color-text-3: #4c4c80;
+  --color-text-4: #666666;
+
+  /* Typography — Families */
+  --font-body: 'Times', sans-serif;
+  --font-body: 'lucida grande', sans-serif;
+
+  /* Typography — Scale */
+  --font-size-16: 16px;
+  --font-size-14: 14px;
+  --font-size-13: 13px;
+  --font-size-12: 12px;
+  --font-size-11: 11px;
+  --font-size-10: 10px;
+  --font-size-0: 0px;
+
+  /* Spacing */
+  --spacing-1: 1px;
+  --spacing-18: 18px;
+  --spacing-20: 20px;
+  --spacing-22: 22px;
+  --spacing-25: 25px;
+  --spacing-28: 28px;
+  --spacing-30: 30px;
+  --spacing-32: 32px;
+  --spacing-37: 37px;
+  --spacing-40: 40px;
+  --spacing-140: 140px;
+  --spacing-208: 208px;
+
+  /* Border Radius */
+  --radius-xs: 2px;
+  --radius-sm: 5px;
+
+  /* Original Site Variables */
+  /* — semantic — */
+  success: [object Object];
+  warning: [object Object];
+  error: [object Object];
+  info: [object Object];
+
+}

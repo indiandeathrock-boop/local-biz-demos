@@ -1,0 +1,24 @@
+{
+  "pageIntent": {
+    "type": "landing",
+    "confidence": 0.45,
+    "path": "/",
+    "title": "ホットペッパービューティー｜美容院・美容室・ヘアサロンの検索予約サイト",
+    "description": "美容院・美容室・ヘアサロンが探せる日本最大級の検索・予約サイト。2359万点あるスタイルや、ブログ、口コミをチェックして、気になるスタイリストを直接指名。２４時間いつでもネット予約OK。美容院や美容室、ヘアサロンを検索・予約するならホットペッパービューティー",
+    "signals": [
+      {
+        "kind": "url",
+        "type": "landing",
+        "weight": 0.45,
+        "detail": "root-path"
+      }
+    ],
+    "alternates": [],
+    "needsSmart": true
+  },
+  "sectionRoles": {
+    "sections": [],
+    "counts": {},
+    "readingOrder": []
+  }
+}
