@@ -1,0 +1,199 @@
+{
+  "label": "Solairo（文字多め）",
+  "url": "https://service.solairo.co.jp/lp/whatya_202102/index.html",
+  "topColors": [
+    {
+      "hex": "#e7316e",
+      "count": 14
+    },
+    {
+      "hex": "#8d8d8d",
+      "count": 10
+    },
+    {
+      "hex": "#f6ac0e",
+      "count": 9
+    },
+    {
+      "hex": "#f2f2f2",
+      "count": 6
+    },
+    {
+      "hex": "#fafafa",
+      "count": 6
+    },
+    {
+      "hex": "#00a2de",
+      "count": 4
+    },
+    {
+      "hex": "#f5f7fa",
+      "count": 4
+    },
+    {
+      "hex": "#007aff",
+      "count": 4
+    }
+  ],
+  "topFonts": [
+    "\"Noto Sans JP\", \"Original Yu Gothic\", \"Yu Gothic\", YuGothic, \"Hiragino Sans\", sans-serif",
+    "Overpass, sans-serif",
+    "\"Times New Roman\"",
+    "sans-serif",
+    "Arial"
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "30px",
+      "fontWeight": "400",
+      "lineHeight": "15px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Noto Sans JP\""
+    },
+    "h2": {
+      "fontSize": "38px",
+      "fontWeight": "700",
+      "lineHeight": "60.0001px",
+      "letterSpacing": "1.9px",
+      "fontFamily": "\"Noto Sans JP\""
+    },
+    "h3": {
+      "fontSize": "30px",
+      "fontWeight": "700",
+      "lineHeight": "48px",
+      "letterSpacing": "1.5px",
+      "fontFamily": "\"Noto Sans JP\""
+    },
+    "p": {
+      "fontSize": "20px",
+      "fontWeight": "700",
+      "lineHeight": "46px",
+      "letterSpacing": "1px",
+      "fontFamily": "\"Noto Sans JP\""
+    },
+    "body": {
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "lineHeight": "15px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Noto Sans JP\""
+    }
+  },
+  "radii": {
+    "25px": 1,
+    "35px": 2,
+    "50%": 1
+  },
+  "sectionOrder": [
+    {
+      "tag": "HEADER",
+      "classes": "header",
+      "text": "資料請求・お問い合わせ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "hero",
+      "text": "LTVを上げる戦略的チャットサービス  優良顧客を増やすのも、 セールスを上げるのも、 実はチャット"
+    },
+    {
+      "tag": "DIV",
+      "classes": "hero-inner",
+      "text": "LTVを上げる戦略的チャットサービス  優良顧客を増やすのも、 セールスを上げるのも、 実はチャット"
+    },
+    {
+      "tag": "DIV",
+      "classes": "hero-title appear",
+      "text": "LTVを上げる戦略的チャットサービス  優良顧客を増やすのも、 セールスを上げるのも、 実はチャット"
+    },
+    {
+      "tag": "P",
+      "classes": "hero-title-lead",
+      "text": "LTVを上げる戦略的チャットサービス"
+    },
+    {
+      "tag": "H2",
+      "classes": "hero-title-copy",
+      "text": "優良顧客を増やすのも、 セールスを上げるのも、 実はチャットから。"
+    },
+    {
+      "tag": "P",
+      "classes": "hero-title-text",
+      "text": "ECサイトのチャットから、商品を購入する顧客を 増やしませんか？ WhatYaはデジタル上の顧客体験"
+    },
+    {
+      "tag": "DIV",
+      "classes": "hero-capture appear",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "hero-capture-frame scene01 scene02",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "hero-capture-frame-inner",
+      "text": ""
+    },
+    {
+      "tag": "A",
+      "classes": "hero-capture-skip",
+      "text": ""
+    },
+    {
+      "tag": "SECTION",
+      "classes": "intro",
+      "text": "INTRODUCTION チャットによるオンライン接客で、顧客満足度を高めよう。  QUESTION"
+    }
+  ],
+  "ctas": [
+    {
+      "text": "資料請求・お問い合わせ",
+      "bg": "rgb(246, 172, 14)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://service.solairo.co.jp/lp/whatya_202102/contact/index.html"
+    },
+    {
+      "text": "Top",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "About",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "Performance",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "Future",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "Developer",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "Contact",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "href": "javascript:void(0)"
+    },
+    {
+      "text": "まずは資料請求",
+      "bg": "rgb(231, 49, 110)",
+      "color": "rgb(0, 0, 0)",
+      "href": "https://service.solairo.co.jp/lp/whatya_202102/contact/index.html"
+    }
+  ]
+}

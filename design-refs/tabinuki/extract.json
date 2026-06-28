@@ -1,0 +1,196 @@
+{
+  "label": "たびぬき（キャラ押し）",
+  "url": "https://lp.tabinuki.com/",
+  "topColors": [
+    {
+      "hex": "#3d312a",
+      "count": 720
+    },
+    {
+      "hex": "#00236a",
+      "count": 60
+    },
+    {
+      "hex": "#023d97",
+      "count": 39
+    },
+    {
+      "hex": "#003da5",
+      "count": 38
+    },
+    {
+      "hex": "#fbf9d5",
+      "count": 30
+    },
+    {
+      "hex": "#e3a700",
+      "count": 16
+    },
+    {
+      "hex": "#e3f7ff",
+      "count": 12
+    },
+    {
+      "hex": "#86daa2",
+      "count": 8
+    }
+  ],
+  "topFonts": [
+    "\"Zen Kaku Gothic New\", YakuHanJP, \"Hiragino Sans\", \"Hiragino Kaku Gothic ProN\", \"Noto Sans JP\", \"Yu Gothic Medium\", \"游ゴシック Medium\", YuGothic, 游ゴシック体, メイリオ, Meiryo, sans-serif",
+    "YakuHanJP, \"Zen Kaku Gothic New\", sans-serif",
+    "\"Font Awesome 6 Free\""
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "h2": {
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "h3": {
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "p": {
+      "fontSize": "18px",
+      "fontWeight": "900",
+      "lineHeight": "26px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "body": {
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    }
+  },
+  "radii": {
+    "24px": 1,
+    "1440px": 1
+  },
+  "sectionOrder": [
+    {
+      "tag": "HEADER",
+      "classes": "",
+      "text": "デジタルマップ&ラリー トップ マップ ラリー 拡張サービス 会社情報 お問い合わせ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "t-hero",
+      "text": "AI × デジタル × 観光の最適解がここにあります"
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__copy isActive",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__text",
+      "text": "AI × デジタル × 観光の最適解がここにあります"
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__character",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__stamp",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__bg-sky",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__bg-town",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__bg-ground",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__mat-stone",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__mat-grass is-grass-front isActive",
+      "text": ""
+    },
+    {
+      "tag": "DIV",
+      "classes": "t-hero__mat-grass is-grass-back",
+      "text": ""
+    }
+  ],
+  "ctas": [
+    {
+      "text": "デジタルマップ&ラリー",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 61, 165)",
+      "href": "https://lp.tabinuki.com/index.html"
+    },
+    {
+      "text": "トップ",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(61, 49, 42)",
+      "href": "https://lp.tabinuki.com/index.html"
+    },
+    {
+      "text": "マップ",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(61, 49, 42)",
+      "href": "https://lp.tabinuki.com/map.html"
+    },
+    {
+      "text": "ラリー",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(61, 49, 42)",
+      "href": "https://lp.tabinuki.com/rally.html"
+    },
+    {
+      "text": "拡張サービス",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(61, 49, 42)",
+      "href": "https://lp.tabinuki.com/extensions.html"
+    },
+    {
+      "text": "会社情報",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(61, 49, 42)",
+      "href": "https://lp.tabinuki.com/company.html"
+    },
+    {
+      "text": "お問い合わせ",
+      "bg": "rgb(40, 167, 69)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://tayori.com/form/93ffc3b14d78a304c1b5c9ec9ff1be47395e8bc3"
+    },
+    {
+      "text": "トップ",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://lp.tabinuki.com/index.html"
+    }
+  ]
+}

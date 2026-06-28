@@ -1,0 +1,189 @@
+{
+  "label": "AI Model（最悪な好例）",
+  "url": "https://www.ai-model.jp/movie/",
+  "topColors": [
+    {
+      "hex": "#131313",
+      "count": 3636
+    },
+    {
+      "hex": "#c0c0c0",
+      "count": 131
+    },
+    {
+      "hex": "#737373",
+      "count": 93
+    },
+    {
+      "hex": "#f2f2f2",
+      "count": 17
+    },
+    {
+      "hex": "#262626",
+      "count": 17
+    },
+    {
+      "hex": "#d9d9d9",
+      "count": 7
+    }
+  ],
+  "topFonts": [
+    "\"Helvetica Neue\", Arial, \"Hiragino Kaku Gothic ProN\", \"Hiragino Sans\", Meiryo, sans-serif",
+    "ElevenEleven-Light, sans-serif",
+    "\"Noto Sans JP\", serif",
+    "\"Times New Roman\""
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "9px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Helvetica Neue\""
+    },
+    "h2": {
+      "fontSize": "90px",
+      "fontWeight": "400",
+      "lineHeight": "90px",
+      "letterSpacing": "-4.5px",
+      "fontFamily": "ElevenEleven-Light"
+    },
+    "h3": {
+      "fontSize": "90px",
+      "fontWeight": "400",
+      "lineHeight": "90px",
+      "letterSpacing": "-4.5px",
+      "fontFamily": "ElevenEleven-Light"
+    },
+    "p": {
+      "fontSize": "9px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Helvetica Neue\""
+    },
+    "body": {
+      "fontSize": "9px",
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "fontFamily": "\"Helvetica Neue\""
+    }
+  },
+  "radii": {
+    "18px": 14,
+    "45px": 2
+  },
+  "sectionOrder": [
+    {
+      "tag": "HEADER",
+      "classes": "header",
+      "text": "AI MODEL MENU MENU"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "about",
+      "text": "A B O U T ABOUT   A I M O D E L AI MODEL  AIモデルで ブ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "clip weDo",
+      "text": "WHAT WE DO 01 02 03 03 O R I G I N A L ORIGINAL   "
+    },
+    {
+      "tag": "DIV",
+      "classes": "weDo_sections",
+      "text": "O R I G I N A L ORIGINAL   M O D E L S MODELS  オリジ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "weDoSection",
+      "text": "O R I G I N A L ORIGINAL   M O D E L S MODELS  オリジ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "weDoSection",
+      "text": "M O V I E X MOVIE X   A I M O D E L AI MODEL  AIを活"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "weDoSection",
+      "text": "I N T R O D U C T I O N INTRODUCTION   S U P P O R"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "solution",
+      "text": "O U R OUR   S O L U T I O N SOLUTION  AIだからできる新しい表"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "solutionSection",
+      "text": "伝えたい世界観やメッセージを映像で表現しきれない… 伝えたい世界観やメッセージを映像で表現しきれない"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "solutionSection",
+      "text": "複雑な映像制作に 時間とコストがかかりすぎる… 複雑な映像制作に 時間とコストがかかりすぎる… 複雑"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "solutionSection",
+      "text": "権利関係が複雑で安心して映像を使えない… 権利関係が複雑で安心して映像を使えない… 権利関係が複雑で"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "solutionSection",
+      "text": "専門知識不足でクオリティが不安定… 専門知識不足でクオリティが不安定… 専門知識不足でクオリティが不"
+    }
+  ],
+  "ctas": [
+    {
+      "text": "AI MODEL",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(19, 19, 19)",
+      "href": "https://www.ai-model.jp/"
+    },
+    {
+      "text": "MENU\nMENU",
+      "bg": "rgba(255, 255, 255, 0.2)",
+      "color": "rgb(19, 19, 19)",
+      "href": ""
+    },
+    {
+      "text": "ナビゲーションを閉じる",
+      "bg": "rgba(255, 255, 255, 0.2)",
+      "color": "rgb(19, 19, 19)",
+      "href": ""
+    },
+    {
+      "text": "お問い合わせ\nお問い合わせ",
+      "bg": "rgba(255, 255, 255, 0.2)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://www.ai-model.jp/contact/"
+    },
+    {
+      "text": "資料ダウンロード\n資料ダウンロード",
+      "bg": "rgba(255, 255, 255, 0.2)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://www.ai-model.jp/contact/"
+    },
+    {
+      "text": "CONTACT\n\n動画制作に関するお問い合わせは\nお気軽にご相談ください。",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(19, 19, 19)",
+      "href": "https://www.ai-model.jp/contact/"
+    },
+    {
+      "text": "01\nAI modelで動画を制作するメリットは何ですか？",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(19, 19, 19)",
+      "href": ""
+    },
+    {
+      "text": "02\nAI modelの動画制作にはどのくらいの期間がかかりますか？",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(19, 19, 19)",
+      "href": ""
+    }
+  ]
+}

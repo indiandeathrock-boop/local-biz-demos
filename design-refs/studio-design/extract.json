@@ -1,0 +1,151 @@
+{
+  "label": "Studio Design（基準例）",
+  "url": "https://studio.design/ja/business",
+  "topColors": [
+    {
+      "hex": "#333333",
+      "count": 1059
+    },
+    {
+      "hex": "#222222",
+      "count": 413
+    },
+    {
+      "hex": "#0766f4",
+      "count": 211
+    },
+    {
+      "hex": "#f7f7f7",
+      "count": 137
+    },
+    {
+      "hex": "#f6f6f6",
+      "count": 72
+    },
+    {
+      "hex": "#e6e6e6",
+      "count": 66
+    },
+    {
+      "hex": "#c4dfff",
+      "count": 35
+    },
+    {
+      "hex": "#707070",
+      "count": 30
+    }
+  ],
+  "topFonts": [
+    "sans-serif",
+    "\"ゴシックMB101 R JIS2004\"",
+    "\"ゴシックMB101 B JIS2004\"",
+    "Times",
+    "\"ゴシックMB101 DB JIS2004\""
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "32px",
+      "fontWeight": "700",
+      "lineHeight": "32px",
+      "letterSpacing": "normal",
+      "fontFamily": "sans-serif"
+    },
+    "h2": {
+      "fontSize": "24px",
+      "fontWeight": "700",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "fontFamily": "sans-serif"
+    },
+    "h3": {
+      "fontSize": "17px",
+      "fontWeight": "600",
+      "lineHeight": "23.8px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"ゴシックMB101 R JIS2004\""
+    },
+    "p": {
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "lineHeight": "12px",
+      "letterSpacing": "normal",
+      "fontFamily": "\"ゴシックMB101 R JIS2004\""
+    },
+    "body": {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "sans-serif"
+    }
+  },
+  "radii": {
+    "999px": 7,
+    "50%": 8,
+    "12px": 2,
+    "6px": 4,
+    "500px": 3
+  },
+  "sectionOrder": [
+    {
+      "tag": "HEADER",
+      "classes": "box symbol-1",
+      "text": "法人向け製品紹介サイト  導入事例  お役立ち資料  サポート  お問い合わせ  法人向け製品資料"
+    },
+    {
+      "tag": "FOOTER",
+      "classes": "box symbol-4",
+      "text": "Studio   法人向け製品紹介サイト   自社での活用を相談する  3分でわかる  法人向け製品"
+    }
+  ],
+  "ctas": [
+    {
+      "text": "法人向け製品紹介サイト",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/business"
+    },
+    {
+      "text": "導入事例",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/customer-story"
+    },
+    {
+      "text": "お役立ち資料",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/resources"
+    },
+    {
+      "text": "サポート",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/support"
+    },
+    {
+      "text": "お問い合わせ",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/business/inquiry"
+    },
+    {
+      "text": "法人向け製品資料",
+      "bg": "rgb(7, 102, 244)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/business/download"
+    },
+    {
+      "text": "法人向け製品資料を受け取る",
+      "bg": "rgb(247, 247, 247)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/business/download"
+    },
+    {
+      "text": "自社での活用を相談する",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(51, 51, 51)",
+      "href": "https://studio.design/ja/contact/sales"
+    }
+  ]
+}
