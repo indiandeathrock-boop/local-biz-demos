@@ -1,0 +1,214 @@
+{
+  "label": "HRN 月額サポーター",
+  "url": "https://hrn.or.jp/monthly_supporter/",
+  "topColors": [
+    {
+      "hex": "#4c5d67",
+      "count": 350
+    },
+    {
+      "hex": "#0252e5",
+      "count": 324
+    },
+    {
+      "hex": "#6c3c2c",
+      "count": 40
+    },
+    {
+      "hex": "#fdd23c",
+      "count": 39
+    },
+    {
+      "hex": "#0693ce",
+      "count": 34
+    },
+    {
+      "hex": "#a26991",
+      "count": 30
+    },
+    {
+      "hex": "#78baae",
+      "count": 28
+    },
+    {
+      "hex": "#5e5959",
+      "count": 24
+    }
+  ],
+  "topFonts": [
+    "TazuganeGothicStdN-Black, sans-serif",
+    "TazuganeGothicStdN-Regular, sans-serif",
+    "TazuganeGothicStdN-Bold, sans-serif",
+    "MyriadPro-Black, sans-serif",
+    "Times"
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "16px",
+      "fontWeight": "700",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "TazuganeGothicStdN-Regular"
+    },
+    "h2": {
+      "fontSize": "16px",
+      "fontWeight": "700",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "TazuganeGothicStdN-Regular"
+    },
+    "h3": {
+      "fontSize": "30px",
+      "fontWeight": "700",
+      "lineHeight": "30px",
+      "letterSpacing": "normal",
+      "fontFamily": "TazuganeGothicStdN-Black"
+    },
+    "p": {
+      "fontSize": "50px",
+      "fontWeight": "400",
+      "lineHeight": "75px",
+      "letterSpacing": "-1px",
+      "fontFamily": "TazuganeGothicStdN-Black"
+    },
+    "body": {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "16px",
+      "letterSpacing": "normal",
+      "fontFamily": "TazuganeGothicStdN-Regular"
+    }
+  },
+  "spacings": [
+    {
+      "paddingTop": "280px",
+      "paddingBottom": "0px"
+    },
+    {
+      "paddingTop": "0px",
+      "paddingBottom": "0px"
+    },
+    {
+      "paddingTop": "0px",
+      "paddingBottom": "0px"
+    },
+    {
+      "paddingTop": "90px",
+      "paddingBottom": "100px"
+    },
+    {
+      "paddingTop": "0px",
+      "paddingBottom": "0px"
+    }
+  ],
+  "radii": {
+    "9999px": 21
+  },
+  "sectionOrder": [
+    {
+      "tag": "HEADER",
+      "classes": "done",
+      "text": ""
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_issue para",
+      "text": "Our Issues 私たちが取り組む 人権問題"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_activity para",
+      "text": "私たちは、これらの人権問題に対して、 「調べる」「発信する」「支援する」という方"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_2023 para",
+      "text": "in 2023 刑法性犯罪規定の改正が実現、 性暴力のない社会への大きな一歩に。"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_archive para",
+      "text": "近年の主な声明や調査 2024年10月 【声明】袴田事件再審無罪判決を受けて 2"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_number para",
+      "text": "Numbers from 2018 to 2023 これまでの実績 （2018年"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_sdgs para",
+      "text": "ヒューマンライツ・ナウはさまざまな活動を通して、 SDGsの達成を目指しています"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_message para",
+      "text": "Message 事務局長からのメッセージ  認定NPO法人 ヒューマンライツ・ナ"
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_aboutus para",
+      "text": "About Us 団体概要 名称  特定非営利活動法人ヒューマンライツ・ナウ  "
+    },
+    {
+      "tag": "SECTION",
+      "classes": "s_faq para",
+      "text": "Q&A よくあるご質問 寄付金額の変更や、個人情報に変更（住所・カード情報など）"
+    },
+    {
+      "tag": "FOOTER",
+      "classes": "",
+      "text": "ご支援に関するご不明点や、 お手続きに関してなど、お気軽にお問い合わせください。"
+    }
+  ],
+  "ctas": [
+    {
+      "text": "マンスリーサポーターに申し込む",
+      "bg": "rgb(2, 82, 229)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://humanrightsnow.my.salesforce-sites.com/?dt=2&pt=0"
+    },
+    {
+      "text": "詳しくはこちら",
+      "bg": "rgb(255, 255, 255)",
+      "color": "rgb(235, 0, 27)",
+      "href": "https://hrn.or.jp/donation/kojyo/"
+    },
+    {
+      "text": "2024年10月\n【声明】袴田事件再審無罪判決を受けて",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://hrn.or.jp/wpHN/wp-content/uploads/2024/10/83e755aa5f854bc6e45e8a393b7ee0a6.pdf"
+    },
+    {
+      "text": "2024年4月\n【声明】ガザの情勢に関する声明",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://hrn.or.jp/wpHN/wp-content/uploads/2024/04/b05c8fc607bc000916b076318a5d39c0.pdf"
+    },
+    {
+      "text": "2022年5月\n【要望書】AV出演強要をなくす議員立法への共同要望書",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://hrn.or.jp/wpHN/wp-content/uploads/2022/05/310d3d850009820948ed11c493139efe-1.pdf"
+    },
+    {
+      "text": "マンスリーサポーターに申し込む",
+      "bg": "rgb(2, 82, 229)",
+      "color": "rgb(255, 255, 255)",
+      "href": "https://humanrightsnow.my.salesforce-sites.com/?dt=2&pt=0"
+    },
+    {
+      "text": "詳しくはこちら",
+      "bg": "rgb(255, 255, 255)",
+      "color": "rgb(235, 0, 27)",
+      "href": "https://hrn.or.jp/donation/kojyo/"
+    },
+    {
+      "text": "全部読む",
+      "bg": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 178, 237)",
+      "href": "https://hrn.or.jp/monthly_supporter/#"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "local-biz-demos",
+  "version": "1.0.0",
+  "description": "ローカル事業者向けデモサイト置き場",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indiandeathrock-boop/local-biz-demos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/indiandeathrock-boop/local-biz-demos/issues"
+  },
+  "homepage": "https://github.com/indiandeathrock-boop/local-biz-demos#readme",
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

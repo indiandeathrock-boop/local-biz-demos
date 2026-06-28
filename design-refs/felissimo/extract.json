@@ -1,0 +1,105 @@
+{
+  "label": "フェリシモ gopeace",
+  "url": "https://www.felissimo.co.jp/gopeace/fundreport/",
+  "topColors": [
+    {
+      "hex": "#1067c8",
+      "count": 852
+    },
+    {
+      "hex": "#0164cb",
+      "count": 204
+    },
+    {
+      "hex": "#333333",
+      "count": 168
+    },
+    {
+      "hex": "#e5e5e5",
+      "count": 136
+    },
+    {
+      "hex": "#202020",
+      "count": 70
+    },
+    {
+      "hex": "#fbeac5",
+      "count": 4
+    },
+    {
+      "hex": "#777777",
+      "count": 2
+    },
+    {
+      "hex": "#eaeaea",
+      "count": 1
+    }
+  ],
+  "topFonts": [
+    "\"Zen Kaku Gothic New\", sans-serif",
+    "Manrope, sans-serif",
+    "\"ヒラギノ角ゴ ProN\", \"Hiragino Kaku Gothic ProN\", \"Yu Gothic\", yugothic, メイリオ, meiryo, sans-serif",
+    "\"Times New Roman\"",
+    "游ゴシック, \"yu gothic\", yugothic, \"ヒラギノ角ゴ pro w3\", \"ヒラギノ角ゴ w3\", \"hiragino kaku gothic pron\", \"hiragino kaku gothic\", メイリオ, meiryo, \"noto sans\", \"noto sans cjk jp\", system-ui, sans-serif"
+  ],
+  "typeScale": {
+    "h1": {
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "lineHeight": "13px",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "h2": {
+      "fontSize": "57.6px",
+      "fontWeight": "700",
+      "lineHeight": "57.6px",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "h3": {
+      "fontSize": "43.2px",
+      "fontWeight": "500",
+      "lineHeight": "43.2px",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    },
+    "p": {
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "lineHeight": "13px",
+      "fontFamily": "\"Zen Kaku Gothic New\""
+    }
+  },
+  "ctas": [
+    {
+      "text": "フェリシモトップへ",
+      "href": "https://www.felissimo.co.jp/"
+    },
+    {
+      "text": "初めての方へ",
+      "href": "https://www.felissimo.co.jp/guide/welcome/welcome_gd.html"
+    },
+    {
+      "text": "ご利用ガイド",
+      "href": "https://www.felissimo.co.jp/guide/top_gd.html"
+    },
+    {
+      "text": "お問い合わせ",
+      "href": "https://www.felissimo.co.jp/info/"
+    },
+    {
+      "text": "新規会員登録",
+      "href": "https://www.felissimo.co.jp/regist/full/"
+    },
+    {
+      "text": "フェリシモの森基金",
+      "href": "https://www.felissimo.co.jp/kraso/667821.html"
+    },
+    {
+      "text": "フェリシモわんにゃん基金",
+      "href": "https://www.felissimo.co.jp/nekobu/759313.html"
+    },
+    {
+      "text": "フェリシモ地球村の基金",
+      "href": "https://www.felissimo.co.jp/kraso/771122.html"
+    }
+  ]
+}
