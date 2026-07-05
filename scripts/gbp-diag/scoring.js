@@ -41,12 +41,19 @@ function scoreBasicInfo(target) {
   };
 }
 
+/**
+ * 評価値が同率の場合、クチコミ数（userRatingCount）降順でタイブレークする（2026-07-05追加）。
+ * 理由: 評価4.9同率が実際に発生し（東宝ハウス松戸とルームプラス）、根拠のない配列順で
+ * 「1位」を決めていたため。クチコミ数が多いほど評価の信頼性が高いとみなし優先する。
+ */
 function scoreRatingRelative(target, competitors) {
   const all = [target, ...competitors].filter((c) => typeof c.rating === 'number');
   if (all.length < 2) {
     return { score: null, max: 15, note: '判定不能（比較対象不足）' };
   }
-  const sorted = [...all].sort((a, b) => b.rating - a.rating);
+  const sorted = [...all].sort(
+    (a, b) => b.rating - a.rating || (b.userRatingCount || 0) - (a.userRatingCount || 0)
+  );
   const rank = sorted.findIndex((c) => c === target);
   const percentile = rank / (all.length - 1); // 0 = 最上位
 
@@ -60,10 +67,12 @@ function scoreRatingRelative(target, competitors) {
   } else {
     score = 5;
   }
+  const tieCount = all.filter((c) => c.rating === target.rating).length;
+  const tieNote = tieCount > 1 ? `（評価${target.rating}同率${tieCount}社中、クチコミ数順で${rank + 1}位）` : '';
   return {
     score,
     max: 15,
-    note: `評価${target.rating} / エリア内${all.length}社中${rank + 1}位`,
+    note: `評価${target.rating} / エリア内${all.length}社中${rank + 1}位${tieNote}`,
   };
 }
 
