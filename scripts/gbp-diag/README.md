@@ -24,15 +24,15 @@ set -a; source ~/.secrets/gbp-diag.env; set +a
    → `gbp-reports/{事業者名}_{日付}.data.json` が生成される。
 
 2. `data.json` を読み、以下2項目をClaude自身が判定する:
-   - `reviewQuality`（クチコミ内容の質・配点10）: `target.reviews` の本文を読み、具体性・好意度・最近性から採点
-   - `categoryFit`（カテゴリ設定・配点10）: `target.types` / `primaryType` と競合の types を比較して採点
+   - `reviewQuality`（クチコミ内容の質・配点10）: `target.reviews` の本文・`publishTime`/`relativePublishTimeDescription` を見て、具体性・好意度・最近性から採点
+   - `primaryCategoryFit`（主カテゴリの適切性・配点6）: `target.types` / `primaryType` と競合の types を比較して採点。追加カテゴリの有無（4点）はAPIで確認不能なため機械採点側で常に判定不能扱い（`additionalCategoryPresence`）
    - 併せて `insight`（所見3〜5行）、`priorities`（改善優先順位、配列、効果の大きい順に3つ）、`risk`（放置した場合の見通し）も生成する
 
    これらを `gbp-reports/{事業者名}_{日付}.judged.json` として保存する。形式:
    ```json
    {
      "reviewQuality": { "score": 7, "max": 10, "note": "..." },
-     "categoryFit": { "score": 8, "max": 10, "note": "..." },
+     "primaryCategoryFit": { "score": 5, "max": 6, "note": "..." },
      "insight": "...",
      "priorities": ["...", "...", "..."],
      "risk": "..."

@@ -13,9 +13,12 @@ const DETAILS_FIELDS = [
   'rating',
   'userRatingCount',
   'reviews',
+  'reviews.publishTime',
+  'reviews.relativePublishTimeDescription',
   'types',
   'primaryType',
   'photos',
+  'location',
 ].join(',');
 
 function getApiKey() {
@@ -28,7 +31,20 @@ function getApiKey() {
   return key;
 }
 
-async function searchText(query, apiKey) {
+/**
+ * locationBias: 対象事業者の座標が分かっている場合、その周辺円内を優先させる。
+ * 未指定だとGoogle側のランキングのみに依存し、競合セットの再現性が下がる（Q-1対応）。
+ */
+async function searchText(query, apiKey, { locationBias } = {}) {
+  const body = { textQuery: query, languageCode: 'ja', regionCode: 'JP' };
+  if (locationBias) {
+    body.locationBias = {
+      circle: {
+        center: { latitude: locationBias.latitude, longitude: locationBias.longitude },
+        radius: locationBias.radius || 3000,
+      },
+    };
+  }
   const res = await fetch(`${BASE_URL}:searchText`, {
     method: 'POST',
     headers: {
@@ -36,24 +52,26 @@ async function searchText(query, apiKey) {
       'X-Goog-Api-Key': apiKey,
       'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress',
     },
-    body: JSON.stringify({ textQuery: query, languageCode: 'ja' }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Places searchText failed: ${res.status} ${body}`);
+    const errBody = await res.text();
+    throw new Error(`Places searchText failed: ${res.status} ${errBody}`);
   }
   const data = await res.json();
   return data.places || [];
 }
 
 async function getDetails(placeId, apiKey) {
-  const res = await fetch(`${BASE_URL}/${placeId}`, {
-    headers: {
-      'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': DETAILS_FIELDS,
-      'X-Goog-LanguageCode': 'ja',
-    },
-  });
+  const res = await fetch(
+    `${BASE_URL}/${placeId}?languageCode=ja&regionCode=JP`,
+    {
+      headers: {
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': DETAILS_FIELDS,
+      },
+    }
+  );
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Places getDetails failed: ${res.status} ${body}`);
@@ -77,9 +95,17 @@ async function fetchTargetPlace(name, area, apiKey) {
 /**
  * 同エリア・同業種の競合を Text Search で取得し、Place Details を取得する。
  * 対象事業者は除外する。
+ *
+ * 再現性についての注記（Q-1）: locationBias で対象事業者周辺3km円に絞り込むが、
+ * Google Text Search のランキング自体は検索時点の内部シグナルに依存するため、
+ * 同一条件での再実行でも競合セットが完全に一致する保証はない。
+ * 取得した競合セットは data.json にそのまま保存されるため、後から検証可能。
  */
-async function fetchCompetitors(area, category, excludePlaceId, apiKey, limit = 8) {
-  const candidates = await searchText(`${area} ${category}`, apiKey);
+async function fetchCompetitors(area, category, excludePlaceId, apiKey, limit = 8, targetLocation) {
+  const locationBias = targetLocation
+    ? { latitude: targetLocation.latitude, longitude: targetLocation.longitude, radius: 3000 }
+    : undefined;
+  const candidates = await searchText(`${area} ${category}`, apiKey, { locationBias });
   const filtered = candidates.filter((p) => p.id !== excludePlaceId).slice(0, limit);
   const details = [];
   for (const c of filtered) {

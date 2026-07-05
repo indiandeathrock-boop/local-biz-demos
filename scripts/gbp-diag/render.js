@@ -20,7 +20,8 @@ const ITEM_LABELS = {
   basicInfo: '基本情報の完備',
   ratingRelative: '評価（星）',
   reviewQuality: 'クチコミ内容の質',
-  categoryFit: 'カテゴリ設定',
+  primaryCategoryFit: '主カテゴリの適切性',
+  additionalCategoryPresence: '追加カテゴリの有無',
   photoVolume: '写真の量',
   productsAttributes: '商品・サービス・属性の登録',
 };
@@ -31,21 +32,25 @@ function esc(s) {
 
 function buildBarChart(target, competitors) {
   const entries = [
-    { label: target.displayName?.text || '対象', count: target.userRatingCount || 0, isTarget: true },
-    ...competitors.map((c) => ({ label: c.displayName?.text || '競合', count: c.userRatingCount || 0, isTarget: false })),
+    { label: target.displayName?.text || '対象', count: target.userRatingCount || 0, rating: target.rating, isTarget: true },
+    ...competitors.map((c) => ({ label: c.displayName?.text || '競合', count: c.userRatingCount || 0, rating: c.rating, isTarget: false })),
   ].sort((a, b) => b.count - a.count);
   const max = Math.max(...entries.map((e) => e.count), 1);
 
   return entries
     .map((e) => {
+      // F-6: 評価値の根拠を可視化するためバー行に併記する
+      // 最小幅2%は表示上のクランプ（Q-3）。実比率が1〜2%程度でも視認できるようにするための意図的な措置。
       const pct = Math.max((e.count / max) * 100, 2);
       const color = e.isTarget ? 'var(--accent)' : 'var(--gray)';
       const weight = e.isTarget ? '700' : '400';
+      const ratingText = typeof e.rating === 'number' ? `★${e.rating.toFixed(1)}` : '★—';
       return `
       <div class="bar-row">
         <div class="bar-label" style="font-weight:${weight}">${esc(e.label)}</div>
         <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
         <div class="bar-value" style="font-weight:${weight}">${e.count}</div>
+        <div class="bar-rating">${esc(ratingText)}</div>
       </div>`;
     })
     .join('\n');
@@ -80,7 +85,7 @@ function render(dataPath, judgedPath) {
     ? JSON.parse(fs.readFileSync(judgedPath, 'utf-8'))
     : {
         reviewQuality: { score: null, max: 10, note: '未判定' },
-        categoryFit: { score: null, max: 10, note: '未判定' },
+        primaryCategoryFit: { score: null, max: 6, note: '未判定' },
         insight: '',
         priorities: [],
         risk: '',
@@ -88,13 +93,16 @@ function render(dataPath, judgedPath) {
 
   const combined = combineScores(data.mechanical, {
     reviewQuality: judged.reviewQuality,
-    categoryFit: judged.categoryFit,
+    primaryCategoryFit: judged.primaryCategoryFit,
   });
 
   const targetName = data.target.displayName?.text || data.name;
-  const scoreLine = combined.hasUnjudged
-    ? `自動診断 ${combined.earned}点 ／ 判定完了${combined.possible}点満点中（人間診断は未実施）`
-    : `自動診断 ${combined.earned}点／100点（人間診断は未実施）`;
+  // F-1: 分母は常に100固定。判定不能項目の存在はバッジ文言で語らず注記行（unjudgedNote）に出す。
+  const scoreLine = `自動診断 ${combined.earned}点／100点（人間診断は未実施）`;
+  const unjudgedItems = Object.entries(combined.items).filter(([, item]) => item.score === null);
+  const unjudgedNote = unjudgedItems.length
+    ? `※ 一部項目（${unjudgedItems.map(([key]) => `${ITEM_LABELS[key]}／${combined.items[key].max}点分`).join('、')}）はAPI経由で確認できないため「判定不能」としています。`
+    : '';
 
   const ratingAll = [data.target, ...data.competitors].filter((c) => typeof c.rating === 'number');
   const sorted = [...ratingAll].sort((a, b) => b.userRatingCount - a.userRatingCount);
@@ -146,6 +154,7 @@ function render(dataPath, judgedPath) {
   .bar-track { flex: 1; background: var(--bg-soft); border-radius: 3px; height: 18px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 3px; }
   .bar-value { width: 40px; text-align: right; flex-shrink: 0; }
+  .bar-rating { width: 44px; text-align: right; flex-shrink: 0; color: #8a8478; }
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   td { padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .score-cell { white-space: nowrap; font-weight: 700; width: 90px; }
@@ -166,6 +175,8 @@ function render(dataPath, judgedPath) {
     display: flex; align-items: center; justify-content: center;
   }
   .human-note { font-size: 12.5px; color: #8a8478; margin-bottom: 10px; }
+  .unjudged-note { font-size: 12.5px; color: #8a8478; margin-top: 10px; }
+  .score-explain { font-size: 12.5px; color: #8a8478; margin-top: 10px; max-width: 560px; }
   footer { font-size: 12px; color: #a39d90; margin-top: 60px; border-top: 1px solid var(--border); padding-top: 16px; }
 </style>
 </head>
@@ -176,6 +187,8 @@ function render(dataPath, judgedPath) {
     <div class="date">診断日: ${esc(new Date(data.generatedAt).toLocaleDateString('ja-JP'))}</div>
     <h1>${esc(targetName)} — GBP診断レポート</h1>
     <div class="score-badge">${esc(scoreLine)}</div>
+    ${unjudgedNote ? `<div class="unjudged-note">${esc(unjudgedNote)}</div>` : ''}
+    <div class="score-explain">本診断は「自動診断100点＋人間診断100点」の2部構成で、両方完了後の平均値が最終スコアとなります。本レポートは自動診断のみ完了した段階のものです。</div>
   </header>
 
   <section>

@@ -93,8 +93,21 @@ function scoreProductsAttributes() {
 }
 
 /**
+ * カテゴリ設定10点のうち、追加カテゴリ有無（4点）はPlaces APIのtypes/primaryTypeでは
+ * 確認できない（GBP管理画面上の追加カテゴリはAPI非公開）。常に判定不能として扱う（F-7）。
+ * 残り6点（主カテゴリの適切性）はClaudeがtypes/primaryTypeを見て判定する（primaryCategoryFit）。
+ */
+function scoreAdditionalCategoryPresence() {
+  return {
+    score: null,
+    max: 4,
+    note: '判定不能（追加カテゴリの登録有無はPlaces APIのtypes/primaryTypeからは確認できないため。人間診断で確認）',
+  };
+}
+
+/**
  * 機械的に採点できる項目のみを計算する。
- * クチコミ内容の質・カテゴリ設定の適切さはClaudeが個別に判定し、後段でマージする。
+ * クチコミ内容の質・主カテゴリの適切さはClaudeが個別に判定し、後段でマージする。
  */
 function scoreMechanical(target, competitors) {
   return {
@@ -103,15 +116,16 @@ function scoreMechanical(target, competitors) {
     ratingRelative: scoreRatingRelative(target, competitors),
     photoVolume: scorePhotoVolume(target),
     productsAttributes: scoreProductsAttributes(),
+    additionalCategoryPresence: scoreAdditionalCategoryPresence(),
   };
 }
 
 /**
- * 機械採点 + Claude判定分（reviewQuality, categoryFit）を合算して総合スコアを出す。
- * judged = { reviewQuality: {score,max,note}, categoryFit: {score,max,note} }
+ * 機械採点 + Claude判定分（reviewQuality, primaryCategoryFit）を合算して総合スコアを出す。
+ * judged = { reviewQuality: {score,max,note}, primaryCategoryFit: {score,max,note} }
  */
 function combineScores(mechanical, judged) {
-  const all = { ...mechanical, reviewQuality: judged.reviewQuality, categoryFit: judged.categoryFit };
+  const all = { ...mechanical, reviewQuality: judged.reviewQuality, primaryCategoryFit: judged.primaryCategoryFit };
   let earned = 0;
   let possible = 0;
   let hasUnjudged = false;

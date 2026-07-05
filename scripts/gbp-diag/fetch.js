@@ -27,7 +27,7 @@ async function main() {
   }
 
   const category = target.primaryType || (target.types && target.types[0]) || '';
-  const competitors = await fetchCompetitors(area, category, target.id, apiKey, 8);
+  const competitors = await fetchCompetitors(area, category, target.id, apiKey, 8, target.location);
 
   const mechanical = scoreMechanical(target, competitors);
 
