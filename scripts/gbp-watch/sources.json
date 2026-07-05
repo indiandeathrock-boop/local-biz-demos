@@ -1,0 +1,37 @@
+[
+  {
+    "id": "google-search-central",
+    "name": "Google Search Central Blog",
+    "kind": "rss",
+    "url": "https://feeds.feedburner.com/blogspot/amDG",
+    "note": "公式。developers.google.com/search/blog のフィード（feedburner経由）。2026-07-05に実在確認済み"
+  },
+  {
+    "id": "gbp-api-latest-updates",
+    "name": "Google Business Profile APIs - Latest updates",
+    "kind": "html-diff",
+    "url": "https://developers.google.com/my-business/content/latest-updates?hl=en",
+    "note": "公式。GBPヘルプの専用アナウンスページ（support.google.com/business/announcements）は2026-07-05時点で廃止済み・404のため、公式の更新情報はこのAPIアップデートページのHTML差分検知で代替する"
+  },
+  {
+    "id": "brightlocal",
+    "name": "BrightLocal (Learn/Blog)",
+    "kind": "rss",
+    "url": "https://www.brightlocal.com/learn/feed/",
+    "note": "海外専門メディア。/feed/ と /blog/feed/ はHTMLを返すため /learn/feed/ が正。2026-07-05に実在確認済み"
+  },
+  {
+    "id": "pinmeto",
+    "name": "PinMeTo Blog",
+    "kind": "rss",
+    "url": "https://www.pinmeto.com/blog/rss.xml",
+    "note": "海外専門メディア。2026-07-05に実在確認済み"
+  },
+  {
+    "id": "canly",
+    "name": "カンリー コラム",
+    "kind": "rss",
+    "url": "https://jp.can-ly.com/column/feed/",
+    "note": "国内メディア。WordPress標準フィード。2026-07-05に実在確認済み"
+  }
+]

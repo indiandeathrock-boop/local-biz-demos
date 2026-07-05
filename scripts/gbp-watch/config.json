@@ -1,0 +1,11 @@
+{
+  "chatId": "5881925140",
+  "telegramEnvFile": "~/.claude/channels/telegram/.env",
+  "stateDir": "~/.gbp-watch",
+  "logDir": "~/logs/gbp-watch",
+  "claudeBin": "/opt/homebrew/bin/claude",
+  "claudeModel": "haiku",
+  "rulesFile": "gbp-scoring-rules.md",
+  "fetchTimeoutMs": 20000,
+  "maxContentCharsForClassify": 2000
+}
