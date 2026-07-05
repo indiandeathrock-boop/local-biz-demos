@@ -4,6 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 const { combineScores } = require('./scoring');
+const { COMPETITOR_RADIUS_METERS } = require('./places');
+
+const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
 const HUMAN_ITEMS = [
   ['投稿の頻度と質（月4回目安・APSORA構成・誘導ボタン）', 20],
@@ -148,6 +151,7 @@ function render(dataPath, judgedPath) {
   section { margin-bottom: 40px; }
   h2 { font-size: 17px; border-left: 5px solid var(--accent); padding-left: 10px; margin-bottom: 16px; }
   .rank-line { font-size: 15px; }
+  .rank-note { font-size: 12px; color: #8a8478; margin-top: 6px; }
   .rank-num { font-size: 28px; font-weight: 700; color: var(--accent); }
   .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 13px; }
   .bar-label { width: 150px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -194,6 +198,7 @@ function render(dataPath, judgedPath) {
   <section>
     <h2>エリア内順位（クチコミ数）</h2>
     <div class="rank-line"><span class="rank-num">${rank || '—'}</span> 位 / ${ratingAll.length}社中（${esc(data.area)}エリア）</div>
+    <div class="rank-note">※対象事業者から半径${COMPETITOR_RADIUS_KM}km圏内でGoogleマップ上位表示される同業種${data.competitors.length}社との比較です（エリア内の全事業者数ではありません）</div>
   </section>
 
   <section>
@@ -234,7 +239,7 @@ function render(dataPath, judgedPath) {
   </section>
 
   <footer>
-    Google Business Profile 公開情報（Google Places API）をもとに自動生成。取得競合数: ${data.competitors.length}社。
+    Google Business Profile 公開情報（Google Places API）をもとに自動生成。取得競合数: ${data.competitors.length}社（対象事業者から半径${COMPETITOR_RADIUS_KM}km以内、Nearby Search上位${data.competitors.length}件）。
   </footer>
 
 </div>

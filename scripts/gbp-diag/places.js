@@ -164,4 +164,4 @@ async function fetchCompetitors(targetLocation, category, excludePlaceId, apiKey
   return details;
 }
 
-module.exports = { getApiKey, searchText, searchNearby, getDetails, fetchTargetPlace, fetchCompetitors };
+module.exports = { getApiKey, searchText, searchNearby, getDetails, fetchTargetPlace, fetchCompetitors, COMPETITOR_RADIUS_METERS };
