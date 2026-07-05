@@ -4,7 +4,9 @@ GBP関連の最新情報を月次で自動収集・分類し、採点基準（`g
 
 ## 全体フロー
 
-毎月15日 09:00 JST（launchd）→ RSS/HTML巡回 → キーワード一次フィルタ → Claude二次分類 → 影響あり1件以上ならTelegram通知 → RKの承認コマンドで更新履歴に追記。
+**手動トリガー**（毎月15日目安・RKがカレンダーリマインダー等で起動）→ RSS/HTML巡回 → キーワード一次フィルタ → Claude二次分類 → 影響あり1件以上ならTelegram通知 → RKの承認コマンドで更新履歴に追記。
+
+> **自動実行は無効化中（2026-07-05変更）。** 理由: 無人実行は `claude -p` のプログラマティック利用にあたり、Anthropicがこの種の利用をサブスクリプション枠から分離・別課金化する変更を過去に複数回発表しており（現在は凍結中）、予告なき課金変更リスクを避けるため人間トリガー運用に変更した。実行トリガー自体は既存の `/gbp-diag` 等と同じTelegram Bot経由の運用と同等で、新たなリスクは増えていない。調査・要否判断は必要に応じてClaude.aiの対話チャットで検討してから実行の是非を決めてよい。
 
 ## ファイル構成
 
@@ -28,6 +30,7 @@ GBP関連の最新情報を月次で自動収集・分類し、採点基準（`g
 
 CC（自分自身）がTelegramで以下のコマンドを受けたら、対応するCLIを実行して結果を返信する:
 
+- `/gbp_watch_run` → `bash scripts/gbp-watch/run.sh` を実行（パイプライン本体を今すぐ1回実行）。実行結果サマリー（新着・通過・relevant件数）を返信
 - `/gbp_rules_review` → `node scripts/gbp-watch/review.js list` の出力を返信（長ければ分割）
 - `/gbp_rules_approve {番号}` → `node scripts/gbp-watch/review.js approve {番号}` を実行。gbp-scoring-rules.md の更新履歴に追記され、出典URL入りでcommit/pushされる。結果を返信
 - `/gbp_rules_reject {番号} [理由]` → `node scripts/gbp-watch/review.js reject {番号} [理由]` を実行。結果を返信
@@ -37,26 +40,25 @@ CC（自分自身）がTelegramで以下のコマンドを受けたら、対応�
 - パイプラインが書き込むのは更新履歴の情報エントリまで。採点式・配点の変更はRKの明示的な別指示でのみ行う
 - Google検索結果・GoogleマップのスクレイピングをRSS代替に使わない
 
-## 手動実行
+## 手動実行（方式B・ターミナル用）
 
 ```bash
-node scripts/gbp-watch/run.js            # 通常実行
-node scripts/gbp-watch/run.js --init     # 初回のみ: 全記事を既読化（分類・通知なし）
-node scripts/gbp-watch/run.js --no-notify   # テスト: 通知だけスキップ
-node scripts/gbp-watch/run.js --inject FILE # テスト: ダミー記事を注入
+bash scripts/gbp-watch/run.sh            # 通常実行
+bash scripts/gbp-watch/run.sh --init     # 初回のみ: 全記事を既読化（分類・通知なし）
+bash scripts/gbp-watch/run.sh --no-notify   # テスト: 通知だけスキップ
+bash scripts/gbp-watch/run.sh --inject FILE # テスト: ダミー記事を注入
 ```
 
-## launchd設定（毎月15日 09:00 JST）
+## launchd自動実行（現在は無効化中）
 
-plist: `~/Library/LaunchAgents/com.rk.gbp-watch.plist`
+旧plistは `scripts/gbp-watch/launchd/com.rk.gbp-watch.plist` にアーカイブ済み。将来自動実行に戻す判断がされた場合:
 
 ```bash
-launchctl load ~/Library/LaunchAgents/com.rk.gbp-watch.plist   # 有効化
-launchctl list | grep gbp-watch                                 # 確認
-launchctl start com.rk.gbp-watch                                # 手動トリガー（テスト）
+cp scripts/gbp-watch/launchd/com.rk.gbp-watch.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.rk.gbp-watch.plist
 ```
 
-launchdはスリープ中の発火時刻をスキップせず起床後に実行する（StartCalendarInterval仕様）。Mac miniは常時稼働のため通常は定刻実行。
+実行し忘れ対策はカレンダーリマインダー運用に委ねる（CCは常駐tmuxセッションで動いており「セッション起動時に知らせる」方式は発火機会がほぼ無いため実装しない）。
 
 ## ソース定義（2026-07-05実在確認済み）
 
