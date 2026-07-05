@@ -1,0 +1,8 @@
+{
+  "name": "gbp-core",
+  "version": "1.0.0",
+  "description": "GBP診断の共有コア（Places API取得・機械採点・競合選定）。Telegram版(scripts/gbp-diag)とWeb版(web/)の両方が参照する。採点基準は gbp-scoring-rules.md を正とする。",
+  "main": "index.js",
+  "type": "commonjs",
+  "private": true
+}

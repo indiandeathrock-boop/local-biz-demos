@@ -3,8 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { getApiKey, fetchTargetPlace, fetchCompetitors } = require('./places');
-const { scoreMechanical } = require('./scoring');
+const { getApiKey, runAutoDiagnosis } = require('../../packages/gbp-core');
 
 function todayStr() {
   const d = new Date();
@@ -20,16 +19,11 @@ async function main() {
 
   const apiKey = getApiKey();
 
-  const target = await fetchTargetPlace(name, area, apiKey);
-  if (!target) {
+  const payload = await runAutoDiagnosis(name, area, apiKey);
+  if (!payload) {
     console.error(`事業者が見つかりませんでした: ${name} (${area})`);
     process.exit(2);
   }
-
-  const category = target.primaryType || (target.types && target.types[0]) || '';
-  const competitors = await fetchCompetitors(target.location, category, target.id, apiKey, 8);
-
-  const mechanical = scoreMechanical(target, competitors);
 
   const outDir = path.join(__dirname, '..', '..', 'gbp-reports');
   fs.mkdirSync(outDir, { recursive: true });
@@ -37,19 +31,9 @@ async function main() {
   const safeName = name.replace(/[\\/:*?"<>|]/g, '');
   const dataPath = path.join(outDir, `${safeName}_${stamp}.data.json`);
 
-  const payload = {
-    name,
-    area,
-    generatedAt: new Date().toISOString(),
-    target,
-    competitors,
-    mechanical,
-    apiCallCount: 1 + 1 + competitors.length, // target search+details + competitor search + N details (概算)
-  };
-
   fs.writeFileSync(dataPath, JSON.stringify(payload, null, 2), 'utf-8');
   console.log(`OK: ${dataPath}`);
-  console.log(`競合取得数: ${competitors.length}`);
+  console.log(`競合取得数: ${payload.competitors.length}`);
 }
 
 main().catch((err) => {

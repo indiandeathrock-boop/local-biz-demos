@@ -3,8 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { combineScores } = require('./scoring');
-const { COMPETITOR_RADIUS_METERS } = require('./places');
+const { combineScores, COMPETITOR_RADIUS_METERS } = require('../../packages/gbp-core');
 
 const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
