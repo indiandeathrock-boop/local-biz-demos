@@ -211,9 +211,9 @@ export default function CheckSheet({
   return (
     <div className="pad-bottom">
       <div className="score-bar">
-        <span className="auto-score">自動診断 {autoEarned}/{autoPossible}（確定）</span>
+        <span className="auto-score">ファーストチェック {autoEarned}/{autoPossible}（確定）</span>
         <div className="score-total">
-          人間診断 {totals.total}
+          パーソナルインサイト {totals.total}
           <span className="denom">/{totals.effectiveMax}</span>
         </div>
         <div className="score-sub">

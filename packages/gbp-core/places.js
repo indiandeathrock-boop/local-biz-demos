@@ -69,6 +69,14 @@ async function searchText(query, apiKey, { locationBias } = {}) {
  * rankPreference: "POPULARITY" は2回連続で完全一致する結果セットを実測済み。
  */
 async function searchNearby(includedType, center, radius, apiKey, maxResultCount = 20) {
+  const body = {
+    maxResultCount,
+    languageCode: 'ja',
+    regionCode: 'JP',
+    locationRestriction: { circle: { center, radius } },
+    rankPreference: 'POPULARITY',
+  };
+  if (includedType) body.includedTypes = [includedType];
   const res = await fetch(`${BASE_URL}:searchNearby`, {
     method: 'POST',
     headers: {
@@ -76,18 +84,13 @@ async function searchNearby(includedType, center, radius, apiKey, maxResultCount
       'X-Goog-Api-Key': apiKey,
       'X-Goog-FieldMask': 'places.id,places.displayName,places.userRatingCount',
     },
-    body: JSON.stringify({
-      includedTypes: [includedType],
-      maxResultCount,
-      languageCode: 'ja',
-      regionCode: 'JP',
-      locationRestriction: { circle: { center, radius } },
-      rankPreference: 'POPULARITY',
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Places searchNearby failed: ${res.status} ${body}`);
+    const errBody = await res.text();
+    const err = new Error(`Places searchNearby failed: ${res.status} ${errBody}`);
+    err.isUnsupportedType = res.status === 400 && /Unsupported types/i.test(errBody);
+    throw err;
   }
   const data = await res.json();
   return data.places || [];
@@ -112,15 +115,71 @@ async function getDetails(placeId, apiKey) {
 
 /**
  * 対象事業者を検索し、Place Details を取得する。
- * 複数候補がヒットした場合は最初の1件を採用する。
+ * address が指定された場合、formattedAddress に含まれる候補を優先する
+ * （同名法人の混同対策。2026-07-06追加）。一致がなければ従来通り最初の1件。
  */
-async function fetchTargetPlace(name, area, apiKey) {
+async function fetchTargetPlace(name, area, apiKey, address) {
   const candidates = await searchText(`${area} ${name}`, apiKey);
   if (candidates.length === 0) {
     return null;
   }
-  const details = await getDetails(candidates[0].id, apiKey);
+  let chosen = candidates[0];
+  if (address) {
+    const norm = (s) => String(s || '').replace(/[\s　\-−ー]/g, '');
+    const target = norm(address);
+    const match = candidates.find((c) => {
+      const a = norm(c.formattedAddress);
+      return target.length > 0 && (a.includes(target) || target.includes(a));
+    });
+    if (match) chosen = match;
+  }
+  const details = await getDetails(chosen.id, apiKey);
   return details;
+}
+
+/**
+ * Google Placesの汎用バケツ型カテゴリ（Nearby Searchのフィルタに使うと
+ * 業種を問わず何でもヒットしてしまう）。2026-07-06発見: 不動産会社の
+ * primaryTypeが"service"だったため、Nearby Search(includedTypes:["service"])が
+ * ドン・キホーテ/ビックカメラ/ホテル等を「競合」として返す事象が発生した
+ * （これらのtypesにも"service"が含まれるため）。原因はGoogleの汎用カテゴリを
+ * そのまま競合検索フィルタに使っていたこと。
+ */
+const GENERIC_PLACE_TYPES = new Set([
+  'service',
+  'point_of_interest',
+  'establishment',
+  'store',
+  'food',
+]);
+
+/**
+ * 競合検索カテゴリの候補リストを優先順位順に作る。
+ * 1. categoryOverride（人間が業種を明示指定した場合）
+ * 2. primaryType（汎用カテゴリでなければ）
+ * 3. types配列のうち汎用でない値（登場順）
+ * 実際にどれが採用されるかはNearby Search APIが受理するかどうかにも依存する
+ * （Googleの全typesリストとNearby SearchのincludedTypes対応リストは完全一致しない。
+ * 例: primaryTypeやtypesに含まれる"general_contractor"はNearby Searchでは
+ * "Unsupported types"エラーになることを実測で確認。2026-07-06）。
+ * 呼び出し側（fetchCompetitors）が候補を順に試し、最初に成功したものを採用する。
+ */
+function candidateCompetitorCategories(target, categoryOverride) {
+  const list = [];
+  if (categoryOverride) list.push({ category: categoryOverride, source: 'manual' });
+  const primaryType = target.primaryType;
+  if (primaryType && !GENERIC_PLACE_TYPES.has(primaryType)) {
+    list.push({ category: primaryType, source: 'primaryType' });
+  }
+  for (const t of target.types || []) {
+    if (!GENERIC_PLACE_TYPES.has(t) && !list.some((c) => c.category === t)) {
+      list.push({ category: t, source: 'types-fallback' });
+    }
+  }
+  if (list.length === 0) {
+    list.push({ category: primaryType || (target.types && target.types[0]) || '', source: 'generic-only' });
+  }
+  return list;
 }
 
 const COMPETITOR_RADIUS_METERS = 3000;
@@ -142,17 +201,34 @@ const COMPETITOR_CANDIDATE_POOL = 20; // Nearby Searchの取得件数上限
  * 取得した候補プール（最大20件）からは、こちらのコード側でuserRatingCount降順に
  * 決定論的にソートして上位N件を選ぶ（タイは place id 昇順で確定させる）。
  */
-async function fetchCompetitors(targetLocation, category, excludePlaceId, apiKey, limit = 8) {
+async function fetchCompetitors(targetLocation, target, categoryOverride, excludePlaceId, apiKey, limit = 8) {
   if (!targetLocation) {
     throw new Error('targetLocation が取得できていません（Place Details の location フィールドを確認）');
   }
-  const candidates = await searchNearby(
-    category,
-    targetLocation,
-    COMPETITOR_RADIUS_METERS,
-    apiKey,
-    COMPETITOR_CANDIDATE_POOL
-  );
+  const candidateList = candidateCompetitorCategories(target, categoryOverride);
+  let usedCandidates = null;
+  let candidates = null;
+  for (const cand of candidateList) {
+    try {
+      candidates = await searchNearby(
+        cand.category,
+        targetLocation,
+        COMPETITOR_RADIUS_METERS,
+        apiKey,
+        COMPETITOR_CANDIDATE_POOL
+      );
+      usedCandidates = cand;
+      break;
+    } catch (e) {
+      if (e.isUnsupportedType) continue; // 次の候補を試す
+      throw e;
+    }
+  }
+  if (candidates === null) {
+    // すべての候補がNearby Searchに拒否された場合のみ、フィルタなしで取得する
+    candidates = await searchNearby(null, targetLocation, COMPETITOR_RADIUS_METERS, apiKey, COMPETITOR_CANDIDATE_POOL);
+    usedCandidates = { category: null, source: 'no-type-filter' };
+  }
   const filtered = candidates
     .filter((p) => p.id !== excludePlaceId)
     .sort((a, b) => (b.userRatingCount || 0) - (a.userRatingCount || 0) || (a.id < b.id ? -1 : 1))
@@ -161,7 +237,17 @@ async function fetchCompetitors(targetLocation, category, excludePlaceId, apiKey
   for (const c of filtered) {
     details.push(await getDetails(c.id, apiKey));
   }
-  return details;
+  return { competitors: details, categoryResolution: usedCandidates };
 }
 
-module.exports = { getApiKey, searchText, searchNearby, getDetails, fetchTargetPlace, fetchCompetitors, COMPETITOR_RADIUS_METERS };
+module.exports = {
+  getApiKey,
+  searchText,
+  searchNearby,
+  getDetails,
+  fetchTargetPlace,
+  fetchCompetitors,
+  candidateCompetitorCategories,
+  GENERIC_PLACE_TYPES,
+  COMPETITOR_RADIUS_METERS,
+};

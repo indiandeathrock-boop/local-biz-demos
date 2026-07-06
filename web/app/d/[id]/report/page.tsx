@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import {
   fetchDiagnosis,
@@ -13,6 +14,19 @@ import PrintButton from "./print-button";
 
 export const dynamic = "force-dynamic";
 
+// ブラウザの印刷/PDF保存ダイアログは document.title をデフォルトファイル名に使うため、
+// 会社名ベースの名前にする（2026-07-06追加）。
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const row = await fetchDiagnosis(id);
+  const safeName = (row?.business_name || "事業者").replace(/[\\/:*?"<>|]/g, "");
+  return { title: `${safeName}_診断結果` };
+}
+
 // 強み/弱みの判定しきい値（得点率）。判定不能は対象外
 const STRONG = 0.7;
 const WEAK = 0.45;
@@ -24,14 +38,14 @@ function collectStrengthsWeaknesses(row: DiagnosisRow, human: ReturnType<typeof 
   for (const [key, item] of Object.entries(auto.items)) {
     if (item.score === null) continue;
     const ratio = item.score / item.max;
-    const label = `${ITEM_LABELS[key] || key}（自動 ${item.score}/${item.max}）`;
+    const label = `${ITEM_LABELS[key] || key}（ファーストチェック ${item.score}/${item.max}）`;
     if (ratio >= STRONG) strengths.push(label);
     else if (ratio <= WEAK) weaknesses.push(label);
   }
   for (const r of human.results) {
     if (r.effectiveMax === 0) continue;
     const ratio = r.score / r.effectiveMax;
-    const label = `${r.section.title.replace(/^\d+\.\s*/, "")}（人間 ${r.score}/${r.effectiveMax}）`;
+    const label = `${r.section.title.replace(/^\d+\.\s*/, "")}（パーソナルインサイト ${r.score}/${r.effectiveMax}）`;
     if (ratio >= STRONG) strengths.push(label);
     else if (ratio <= WEAK) weaknesses.push(label);
   }
@@ -73,7 +87,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
     <div className="wrap">
       <header className="page">
         <div className="date">
-          診断日: {new Date(row.created_at).toLocaleDateString("ja-JP")} ／ 人間診断:{" "}
+          診断日: {new Date(row.created_at).toLocaleDateString("ja-JP")} ／ パーソナルインサイト:{" "}
           {row.human.updatedAt ? new Date(row.human.updatedAt).toLocaleDateString("ja-JP") : "-"}
         </div>
         <h1>{row.business_name} — GBP総合診断レポート</h1>
@@ -82,17 +96,17 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
           <span className="total-score-denom">/ 100点（総合スコア）</span>
         </div>
         <div className="breakdown">
-          <span>自動診断: {auto.earned} / {auto.possible}点</span>
+          <span>ファーストチェック: {auto.earned} / {auto.possible}点</span>
           <span>
-            人間診断: {human.total} / {human.effectiveMax}点
+            パーソナルインサイト: {human.total} / {human.effectiveMax}点
             {human.hasNa ? "（判定不能分を除外した満点）" : ""}
           </span>
         </div>
-        <p className="score-explain">総合スコア =（自動診断 + 人間診断）÷ 2。満点は常に100点。</p>
+        <p className="score-explain">総合スコア =（ファーストチェック + パーソナルインサイト）÷ 2。満点は常に100点。</p>
         {(unjudgedAuto.length > 0 || naHuman.length > 0) && (
           <p className="unjudged-note">
             判定不能項目:{" "}
-            {[...unjudgedAuto.map((s) => `${s}（自動）`), ...naHuman.map((s) => `${s}（人間）`)].join("、")}
+            {[...unjudgedAuto.map((s) => `${s}（ファーストチェック）`), ...naHuman.map((s) => `${s}（パーソナルインサイト）`)].join("、")}
             ※比例換算・0点混入はしていません
           </p>
         )}
@@ -110,7 +124,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
       </section>
 
       <section>
-        <h2>自動診断の内訳</h2>
+        <h2>ファーストチェックの内訳</h2>
         <table className="score">
           <tbody>
             {Object.entries(auto.items).map(([key, item]) => (
@@ -129,7 +143,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
       </section>
 
       <section>
-        <h2>人間診断の内訳</h2>
+        <h2>パーソナルインサイトの内訳</h2>
         <table className="score">
           <tbody>
             {human.results.map((r) => (
@@ -192,7 +206,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
               </div>
             )
         )}
-        <p className="score-explain">※自動診断の改善優先順位（効果の大きい順）を時間軸に展開。</p>
+        <p className="score-explain">※ファーストチェックの改善優先順位（効果の大きい順）を時間軸に展開。</p>
       </section>
 
       <section>
@@ -226,10 +240,10 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
       <div style={{ marginTop: 32, display: "flex", gap: 10, flexWrap: "wrap" }} className="no-print">
         <PrintButton />
         <Link className="btn btn-secondary" href={`/d/${row.id}`}>
-          自動診断結果へ
+          ファーストチェック結果へ
         </Link>
         <Link className="btn btn-secondary" href={`/d/${row.id}/human`}>
-          人間診断を修正
+          パーソナルインサイトを修正
         </Link>
         <Link className="btn btn-secondary" href="/">
           一覧へ

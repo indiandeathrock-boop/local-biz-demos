@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 
 export default function DiagnoseForm() {
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
+  const [address, setAddress] = useState("");
+  const [industry, setIndustry] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -19,7 +22,7 @@ export default function DiagnoseForm() {
       const res = await fetch("/api/diagnose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, area }),
+        body: JSON.stringify({ name, area, address, industry }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -54,6 +57,27 @@ export default function DiagnoseForm() {
       <div className="field">
         <label htmlFor="area">エリア</label>
         <input id="area" value={area} onChange={(e) => setArea(e.target.value)} placeholder="例: 松戸" />
+      </div>
+      <div className="field">
+        <label htmlFor="address">住所（任意・同名法人の混同を防ぎます）</label>
+        <input
+          id="address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="例: 千葉県柏市旭町7-3-7"
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="industry">
+          業種（任意・競合の絞り込みが不正確な場合に指定してください）
+        </label>
+        <select id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)}>
+          {INDUSTRY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
       {error && <p className="error-note">{error}</p>}
       <button className="btn" type="submit" disabled={!name || !area}>

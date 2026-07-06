@@ -11,18 +11,23 @@ function todayStr() {
 }
 
 async function main() {
-  const [name, area] = process.argv.slice(2);
+  const [name, area, address, categoryOverride] = process.argv.slice(2);
   if (!name || !area) {
-    console.error('使い方: node fetch.js "事業者名" "エリア"');
+    console.error(
+      '使い方: node fetch.js "事業者名" "エリア" ["住所（任意・同名法人対策）"] ["業種カテゴリ（任意・Google Place Type）"]'
+    );
     process.exit(1);
   }
 
   const apiKey = getApiKey();
 
-  const payload = await runAutoDiagnosis(name, area, apiKey);
+  const payload = await runAutoDiagnosis(name, area, apiKey, { address, categoryOverride });
   if (!payload) {
     console.error(`事業者が見つかりませんでした: ${name} (${area})`);
     process.exit(2);
+  }
+  if (payload.categoryResolution) {
+    console.log(`競合検索カテゴリ: ${payload.categoryResolution.category}（${payload.categoryResolution.source}）`);
   }
 
   const outDir = path.join(__dirname, '..', '..', 'gbp-reports');

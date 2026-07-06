@@ -25,7 +25,7 @@ export default async function HomePage() {
       <header className="page">
         <h1>GBP診断ツール</h1>
         <p className="score-explain">
-          自動診断100点＋人間診断100点の2部構成。総合スコアは両者の平均。
+          ファーストチェック100点＋パーソナルインサイト100点の2部構成。総合スコアは両者の平均。
         </p>
       </header>
 
@@ -44,7 +44,7 @@ export default async function HomePage() {
             {humanDone ? (
               <span className="tag done">総合 {r.total_score}点</span>
             ) : (
-              <span className="tag pending">{humanStarted ? "人間診断 入力中" : "人間診断 未実施"}</span>
+              <span className="tag pending">{humanStarted ? "パーソナルインサイト 入力中" : "パーソナルインサイト 未実施"}</span>
             )}
             <div className="meta">
               {r.area}エリア ／ {new Date(r.created_at).toLocaleString("ja-JP")}

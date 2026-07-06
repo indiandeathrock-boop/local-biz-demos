@@ -70,10 +70,42 @@ languageCode/regionCodeの追加自体が原因ではなく、Text Search内部�
 
 競合発見はNearby Search（構造化フィルタ、自由文を使わない）に一本化した。
 
-- `includedTypes: [対象事業者のprimaryType]`
+- `includedTypes: [対象事業者のカテゴリ]`（カテゴリ決定ロジックは次項参照）
 - `locationRestriction`: 対象事業者の座標（Place Details の `location`）を中心に半径3kmの circle
 - `rankPreference: "POPULARITY"`
 - `maxResultCount: 20`（候補プール）
+
+### カテゴリ決定ロジック（2026-07-06追加・不具合修正）
+
+**発見された不具合**: 不動産会社（primaryType: `service`）を診断した際、競合候補に
+ドン・キホーテ・ビックカメラ・ホテル等の全く無関係な業態が並んだ。原因は
+`primaryType`をそのままNearby Searchの`includedTypes`に渡していたが、`service`
+（および`point_of_interest`/`establishment`/`store`/`food`）はGoogleの汎用
+バケツ型カテゴリで、あらゆる業態のtypes配列に含まれるため、実質「フィルタなし」
+と同義になっていたこと。
+
+**対応**: `resolveCompetitorCategory()`（packages/gbp-core/places.js）で以下の優先順位により
+カテゴリを決定する。
+
+1. 人間による業種の手動指定（Web版画面1の「業種」選択、任意項目）
+2. `primaryType`が汎用カテゴリでなければそれを採用
+3. 汎用カテゴリの場合、`types`配列から汎用でない最初の値を採用
+4. すべて汎用の場合のみ、やむを得ずprimaryTypeをそのまま使う（この場合は競合の質が保証されない旨をレポートに記載すべき。現状は`categoryResolution.source: "generic-only"`として`data.json`に記録するのみ）
+
+決定したカテゴリと採用理由（`source`）は`categoryResolution`として`data.json`に保存され、
+後から検証可能。
+
+**実装上の注意**: Googleの`types`配列に含まれる値のすべてがNearby Search APIの
+`includedTypes`として有効とは限らない（例: `general_contractor`は`types`には
+現れるがNearby Searchでは"Unsupported types"エラーになる）。そのため
+`fetchCompetitors()`は候補を優先順位順に実際に試行し、APIが拒否した候補は
+スキップして次を試す。全候補が拒否された場合のみ`includedTypes`なしで検索する
+（`source: "no-type-filter"`）。
+
+**実測値（バリュー・アップHD、primaryType: service, types: [consultant, general_contractor, service, ...]）**:
+自動フォールバックでは`consultant`が採用され、不動産会社中心だが一部無関係業種
+（法律事務所等）が混入した。業種を「不動産」に手動指定すると8社全てが
+不動産会社になった。**汎用カテゴリのケースでは、可能な限り業種の手動指定を推奨する。**
 
 同一条件で2回連続実行し、候補セットが完全一致することを実測で確認済み。
 取得した候補プール（最大20件）から、こちらのコード側で `userRatingCount` 降順に
@@ -86,6 +118,15 @@ Nearby Search自体の候補プール（POPULARITY順の20件）は実測で安�
 Googleの内部データ（人気度シグナル・営業状態等）が実際に更新された場合、
 将来的に候補プールの内容が変わる可能性はゼロではない。取得した競合セットは
 `data.json` にそのまま保存されるため、後から何と比較したかは常に検証可能。
+
+## 対象事業者の特定精度（2026-07-06追加）
+
+同名法人が複数存在する場合、Text Searchの1件目が誤った事業者を指す可能性がある。
+Web版画面1では「住所」を任意入力でき、指定時は`fetchTargetPlace()`が
+候補一覧の`formattedAddress`と照合し一致するものを優先する。一致がなければ
+従来通り検索結果の1件目を採用する（Telegram版は住所入力の手段がないため、
+このフォールバック動作のみとなる。誤認識が疑われる場合はエリア指定をより
+詳細にする、またはWeb版で住所を指定して再診断する）。
 
 ## 既知のAPI制約と対応
 
@@ -113,3 +154,7 @@ Googleの内部データ（人気度シグナル・営業状態等）が実際�
   - 競合選定をText Search（暫定対応）からNearby Search（構造化フィルタ）に全面置き換え。根本原因（Text Searchの関連度ランキングが同一パラメータでも実行毎に揺れる）を実測で特定し、再現性を実測で担保（Q-1）。
   - クチコミ数（競合相対）の得点が同一事業者（アルドマーニ）で3点→8点に変化した事象を確認。原因は競合セットの違い（Text Search時代の非決定性）による競合平均クチコミ数の変動（273.0件→256.8件）で、比率が10%の閾値をまたいだため。Nearby Search化により今後はこの種の変動が競合セット選定の非決定性に起因することはなくなる（Q-2）。
   - 評価（星）の相対順位で同率が実際に発生（東宝ハウス松戸とルームプラスが共に4.9）したことを受け、クチコミ数降順のタイブレークルールを追加。
+- 2026-07-06: 競合選定の重大バグ修正＋対象特定精度の向上（Web版フィードバック対応）。
+  - 【バグ】不動産会社（primaryType: `service`）の競合候補に無関係な大型店舗（ドン・キホーテ・ビックカメラ・ホテル等）が混入する事象を確認。原因は`service`等のGoogle汎用バケツ型カテゴリをそのままNearby Searchのフィルタに使っていたため、実質フィルタなしになっていたこと。`resolveCompetitorCategory()`を追加し、汎用カテゴリの場合は`types`配列から具体的な分類にフォールバックする方式に修正（詳細は「競合選定ロジック」節）。
+  - Web版画面1に「業種」手動指定（任意・25業種）を追加し、自動判定が不適切な場合に上書き可能にした。
+  - Web版画面1に「住所」入力（任意）を追加し、同名法人の混同を軽減（「対象事業者の特定精度」節）。

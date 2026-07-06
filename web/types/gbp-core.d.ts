@@ -1,6 +1,11 @@
 declare module "gbp-core" {
   export type ScoreItem = { score: number | null; max: number; note: string };
 
+  export type CategoryResolution = {
+    category: string;
+    source: "manual" | "primaryType" | "types-fallback" | "generic-only";
+  };
+
   export type AutoDiagnosisData = {
     name: string;
     area: string;
@@ -8,13 +13,15 @@ declare module "gbp-core" {
     target: Record<string, unknown>;
     competitors: Record<string, unknown>[];
     mechanical: Record<string, ScoreItem>;
+    categoryResolution: CategoryResolution;
     apiCallCount: number;
   };
 
   export function runAutoDiagnosis(
     name: string,
     area: string,
-    apiKey: string
+    apiKey: string,
+    options?: { address?: string; categoryOverride?: string }
   ): Promise<AutoDiagnosisData | null>;
 
   export function scoreMechanical(

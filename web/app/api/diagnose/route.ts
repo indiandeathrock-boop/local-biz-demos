@@ -7,7 +7,7 @@ import { judgeWithClaude } from "@/lib/judge";
 export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
-  const { name, area } = await request.json();
+  const { name, area, address, industry } = await request.json();
   if (!name || !area) {
     return Response.json({ error: "事業者名とエリアを入力してください" }, { status: 400 });
   }
@@ -16,7 +16,10 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "GOOGLE_PLACES_API_KEY が未設定です" }, { status: 500 });
   }
 
-  const data = await runAutoDiagnosis(name, area, apiKey);
+  const data = await runAutoDiagnosis(name, area, apiKey, {
+    address: address || undefined,
+    categoryOverride: industry || undefined,
+  });
   if (!data) {
     return Response.json(
       { error: `事業者が見つかりませんでした: ${name}（${area}）` },

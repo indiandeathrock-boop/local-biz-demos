@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   fetchDiagnosis,
@@ -11,6 +12,17 @@ import {
 } from "@/lib/diag";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const row = await fetchDiagnosis(id);
+  const safeName = (row?.business_name || "事業者").replace(/[\\/:*?"<>|]/g, "");
+  return { title: `${safeName}_診断結果` };
+}
 
 function BarChart({ row }: { row: DiagnosisRow }) {
   const entries = [
@@ -54,13 +66,13 @@ export default async function AutoResultPage({
         <div className="date">診断日: {new Date(row.created_at).toLocaleDateString("ja-JP")}</div>
         <h1>{row.business_name} — GBP診断レポート</h1>
         <div className="score-badge">
-          自動診断 {combined.earned}点 ／ {combined.possible}点
+          ファーストチェック {combined.earned}点 ／ {combined.possible}点
         </div>
         {combined.hasUnjudged && (
           <div className="unjudged-note">※判定不能の項目があります（下表参照。比例換算はしていません）</div>
         )}
         <p className="score-explain">
-          本診断は「自動診断100点＋人間診断100点」の2部構成で、両方完了後の平均値が最終スコアとなります。
+          本診断は「ファーストチェック100点＋パーソナルインサイト100点」の2部構成で、両方完了後の平均値が最終スコアとなります。
         </p>
       </header>
 
@@ -117,7 +129,7 @@ export default async function AutoResultPage({
       </section>
 
       <section>
-        <h2>要確認項目（人間診断・現地確認/ヒアリングが必要）</h2>
+        <h2>要確認項目（パーソナルインサイト・現地確認/ヒアリングが必要）</h2>
         <p className="score-explain">以下はツールでは自動採点していません。現地確認・ヒアリングで採点します。</p>
         <table className="score">
           <tbody>
@@ -138,7 +150,7 @@ export default async function AutoResultPage({
 
       <div style={{ marginTop: 32, display: "flex", gap: 10, flexWrap: "wrap" }} className="no-print">
         <Link className="btn" href={`/d/${row.id}/human`}>
-          {row.human ? (row.human.finalized ? "人間診断を修正する" : "人間診断の続きを入力") : "人間診断を始める"}
+          {row.human ? (row.human.finalized ? "パーソナルインサイトを修正する" : "パーソナルインサイトの続きを入力") : "パーソナルインサイトを始める"}
         </Link>
         {row.human?.finalized && (
           <Link className="btn btn-secondary" href={`/d/${row.id}/report`}>
