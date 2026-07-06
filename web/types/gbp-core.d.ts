@@ -2,8 +2,14 @@ declare module "gbp-core" {
   export type ScoreItem = { score: number | null; max: number; note: string };
 
   export type CategoryResolution = {
-    category: string;
-    source: "manual" | "primaryType" | "types-fallback" | "generic-only";
+    category: string | null;
+    source:
+      | "manual"
+      | "primaryType"
+      | "types-fallback"
+      | "generic-only"
+      | "text-search-fallback"
+      | "no-type-filter";
   };
 
   export type AutoDiagnosisData = {
@@ -21,7 +27,7 @@ declare module "gbp-core" {
     name: string,
     area: string,
     apiKey: string,
-    options?: { address?: string; categoryOverride?: string }
+    options?: { address?: string; categoryOverride?: string; categoryOverrideKeyword?: string }
   ): Promise<AutoDiagnosisData | null>;
 
   export function scoreMechanical(

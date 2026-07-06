@@ -107,6 +107,30 @@ languageCode/regionCodeの追加自体が原因ではなく、Text Search内部�
 （法律事務所等）が混入した。業種を「不動産」に手動指定すると8社全てが
 不動産会社になった。**汎用カテゴリのケースでは、可能な限り業種の手動指定を推奨する。**
 
+### Text Searchフォールバック（2026-07-06追加・第2のバグ修正）
+
+上記の対策後も、`primaryType`が`general_contractor`（建設業）の事業者（芙蓉建設）で
+再度不具合が発生した。原因は`general_contractor`自体がGoogleの分類上は存在する値だが、
+**Nearby Search APIのincludedTypesとしては受理されない**（"Unsupported types"エラー）
+ことだった。この場合、候補リストの全滅→旧実装のフィルタなしNearby Search
+にフォールバックし、テラスモール松戸・21世紀の森と広場・駅など全く無関係な
+人気スポットが競合として返っていた。
+
+**対応**: Nearby Search非対応と実測で確認済みのカテゴリ（`general_contractor`,
+`photographer`）については、日本語キーワードでのText Searchにフォールバックする
+（`deriveTextSearchKeyword()`）。Text Searchは自由文検索のため実行毎の非決定性
+というQ-1の懸念があるが、これは「Nearby Searchの構造化フィルタが原理的に
+使えないカテゴリでの最終手段」に限定しており、通常の競合検索経路（大多数の業種）
+には影響しない。芙蓉建設で検証: フィルタなし検索時は無関係スポットのみ、
+Text Searchフォールバック（キーワード「建設会社」）適用後は8社全て地域の
+建設会社になることを確認。
+
+**Nearby Search非対応が判明しているGoogleカテゴリ一覧（実測・2026-07-06時点）**:
+`general_contractor`, `photographer`, `hvac_contractor`, `construction_company`
+（`construction_company`は`types`に出現しないため通常影響なし）。
+新たに発見した場合は`KNOWN_INVALID_TYPE_KEYWORDS`（packages/gbp-core/places.js）
+に追記する。
+
 同一条件で2回連続実行し、候補セットが完全一致することを実測で確認済み。
 取得した候補プール（最大20件）から、こちらのコード側で `userRatingCount` 降順に
 決定論的にソートし、上位8件を競合として採用する（タイは place id 昇順で確定）。

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { runAutoDiagnosis } from "gbp-core";
 import { supabase } from "@/lib/supabase";
 import { judgeWithClaude } from "@/lib/judge";
+import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 
 // Places API 10回 + Claude判定で数十秒かかり得るため延長
 export const maxDuration = 120;
@@ -16,9 +17,11 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "GOOGLE_PLACES_API_KEY が未設定です" }, { status: 500 });
   }
 
+  const industryOption = INDUSTRY_OPTIONS.find((o) => o.value === industry);
   const data = await runAutoDiagnosis(name, area, apiKey, {
     address: address || undefined,
     categoryOverride: industry || undefined,
+    categoryOverrideKeyword: industryOption?.textSearchKeyword,
   });
   if (!data) {
     return Response.json(

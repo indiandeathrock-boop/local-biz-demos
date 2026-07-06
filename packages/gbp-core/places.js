@@ -35,7 +35,7 @@ function getApiKey() {
  * locationBias: 対象事業者の座標が分かっている場合、その周辺円内を優先させる。
  * 未指定だとGoogle側のランキングのみに依存し、競合セットの再現性が下がる（Q-1対応）。
  */
-async function searchText(query, apiKey, { locationBias } = {}) {
+async function searchText(query, apiKey, { locationBias, fields } = {}) {
   const body = { textQuery: query, languageCode: 'ja', regionCode: 'JP' };
   if (locationBias) {
     body.locationBias = {
@@ -50,7 +50,7 @@ async function searchText(query, apiKey, { locationBias } = {}) {
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress',
+      'X-Goog-FieldMask': fields || 'places.id,places.displayName,places.formattedAddress',
     },
     body: JSON.stringify(body),
   });
@@ -182,6 +182,29 @@ function candidateCompetitorCategories(target, categoryOverride) {
   return list;
 }
 
+/**
+ * Nearby Search では検索不能と実測で確認済みのGoogleカテゴリ（Table B専用等）に対する
+ * Text Searchフォールバック用の日本語キーワード（2026-07-06追加・芙蓉建設の事例）。
+ * 業種を手動指定していない場合でも、primaryType/typesがこれらに一致すればText Searchに
+ * 切り替える。人間が業種を手動指定した場合は web/lib/industry-types.ts の
+ * textSearchKeyword が優先される（categoryOverrideKeywordとして渡される）。
+ */
+const KNOWN_INVALID_TYPE_KEYWORDS = {
+  general_contractor: '建設会社',
+  photographer: '写真スタジオ',
+};
+
+function deriveTextSearchKeyword(target, categoryOverrideKeyword) {
+  if (categoryOverrideKeyword) return categoryOverrideKeyword;
+  if (target.primaryType && KNOWN_INVALID_TYPE_KEYWORDS[target.primaryType]) {
+    return KNOWN_INVALID_TYPE_KEYWORDS[target.primaryType];
+  }
+  for (const t of target.types || []) {
+    if (KNOWN_INVALID_TYPE_KEYWORDS[t]) return KNOWN_INVALID_TYPE_KEYWORDS[t];
+  }
+  return null;
+}
+
 const COMPETITOR_RADIUS_METERS = 3000;
 const COMPETITOR_CANDIDATE_POOL = 20; // Nearby Searchの取得件数上限
 
@@ -201,10 +224,19 @@ const COMPETITOR_CANDIDATE_POOL = 20; // Nearby Searchの取得件数上限
  * 取得した候補プール（最大20件）からは、こちらのコード側でuserRatingCount降順に
  * 決定論的にソートして上位N件を選ぶ（タイは place id 昇順で確定させる）。
  */
-async function fetchCompetitors(targetLocation, target, categoryOverride, excludePlaceId, apiKey, limit = 8) {
+async function fetchCompetitors(
+  targetLocation,
+  target,
+  categoryOverride,
+  excludePlaceId,
+  apiKey,
+  limit = 8,
+  options = {}
+) {
   if (!targetLocation) {
     throw new Error('targetLocation が取得できていません（Place Details の location フィールドを確認）');
   }
+  const { area, categoryOverrideKeyword } = options;
   const candidateList = candidateCompetitorCategories(target, categoryOverride);
   let usedCandidates = null;
   let candidates = null;
@@ -225,9 +257,20 @@ async function fetchCompetitors(targetLocation, target, categoryOverride, exclud
     }
   }
   if (candidates === null) {
-    // すべての候補がNearby Searchに拒否された場合のみ、フィルタなしで取得する
-    candidates = await searchNearby(null, targetLocation, COMPETITOR_RADIUS_METERS, apiKey, COMPETITOR_CANDIDATE_POOL);
-    usedCandidates = { category: null, source: 'no-type-filter' };
+    // Nearby Searchのカテゴリフィルタが全滅した場合。Text Searchへのフォールバックを試み、
+    // キーワードが無い場合のみフィルタなしNearby Search（低品質・最終手段）にする。
+    const keyword = deriveTextSearchKeyword(target, categoryOverrideKeyword);
+    if (keyword && area) {
+      const textCandidates = await searchText(`${area} ${keyword}`, apiKey, {
+        locationBias: { ...targetLocation, radius: COMPETITOR_RADIUS_METERS },
+        fields: 'places.id,places.displayName,places.userRatingCount',
+      });
+      candidates = textCandidates;
+      usedCandidates = { category: keyword, source: 'text-search-fallback' };
+    } else {
+      candidates = await searchNearby(null, targetLocation, COMPETITOR_RADIUS_METERS, apiKey, COMPETITOR_CANDIDATE_POOL);
+      usedCandidates = { category: null, source: 'no-type-filter' };
+    }
   }
   const filtered = candidates
     .filter((p) => p.id !== excludePlaceId)

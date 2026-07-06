@@ -1,7 +1,12 @@
 // 業種手動指定の選択肢。Google Places APIの有効なPlace Type（Table A）のみ。
 // primaryTypeが"service"等の汎用カテゴリで誤認識された場合の上書き用（2026-07-06追加）。
 // LBSの対象業種（地域密着の実店舗・士業・専門サービス）を中心に選定。
-export const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
+//
+// textSearchKeyword: この業種のvalueがNearby Search APIで"Unsupported types"に
+// なることを実測で確認済みのもの（2026-07-06発見・芙蓉建設の事例）。
+// general_contractor（建設業）・photographer（写真）はGoogleのTable A
+// （Nearby Search対応）に含まれず、Text Searchへのフォールバックが必要。
+export const INDUSTRY_OPTIONS: { value: string; label: string; textSearchKeyword?: string }[] = [
   { value: "", label: "自動判定（おまかせ）" },
   { value: "real_estate_agency", label: "不動産" },
   { value: "restaurant", label: "飲食店" },
@@ -17,7 +22,7 @@ export const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
   { value: "insurance_agency", label: "保険代理店" },
   { value: "car_repair", label: "自動車整備" },
   { value: "car_dealer", label: "自動車販売" },
-  { value: "general_contractor", label: "建設・工務店" },
+  { value: "general_contractor", label: "建設・工務店", textSearchKeyword: "建設会社" },
   { value: "electrician", label: "電気工事" },
   { value: "plumber", label: "水道工事" },
   { value: "moving_company", label: "引越し業" },
@@ -26,6 +31,6 @@ export const INDUSTRY_OPTIONS: { value: string; label: string }[] = [
   { value: "bakery", label: "パン屋" },
   { value: "laundry", label: "クリーニング店" },
   { value: "travel_agency", label: "旅行代理店" },
-  { value: "photographer", label: "写真スタジオ" },
+  { value: "photographer", label: "写真スタジオ", textSearchKeyword: "写真スタジオ" },
   { value: "consultant", label: "コンサルタント" },
 ];
