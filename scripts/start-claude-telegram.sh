@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Bot①（CC操作用）起動ラッパー
-# launchdからTTYなしで起動するためtmuxセッション"cc"の中でscriptコマンドにより擬似TTYを確保する
+# tmuxがペインの擬似TTYを提供するため、claudeを直接起動する。
+# 旧実装は script(1) でptyを二重に作っていたが、macOSのscriptはウィンドウ
+# リサイズを内側のptyへ伝えないため、claudeが80x24固定で描画し
+# 「上部ブランク・描画崩れ」の原因になっていた（2026-07-07実測・修正）。
 # launchd(KeepAlive+ThrottleInterval=30)から繰り返し呼ばれても冪等であること
 
 export PATH="/Users/ryukando/.bun/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
@@ -16,4 +19,4 @@ if "$TMUX_BIN" has-session -t "$SESSION" 2>/dev/null; then
 fi
 
 "$TMUX_BIN" new-session -d -s "$SESSION" -c "$WORKDIR" \
-    "script -q /dev/null /opt/homebrew/bin/claude --channels plugin:telegram@claude-plugins-official"
+    "/opt/homebrew/bin/claude --channels plugin:telegram@claude-plugins-official"
