@@ -4,6 +4,7 @@
 #
 # 正は常に ~/.claude 側。ここはバックアップであり、直接編集しない。
 # 復元: cp -R backups/claude-global/skills/* ~/.claude/skills/
+#       cp -R backups/claude-global/agents/* ~/.claude/agents/
 #       cp backups/claude-global/CLAUDE.md ~/.claude/CLAUDE.md
 #
 # 認証情報（.credentials.json等）は絶対に対象へ含めないこと。
@@ -14,6 +15,7 @@ DEST="backups/claude-global"
 mkdir -p "$DEST"
 
 rsync -a --delete ~/.claude/skills/ "$DEST/skills/"
+rsync -a --delete ~/.claude/agents/ "$DEST/agents/"
 cp ~/.claude/CLAUDE.md "$DEST/CLAUDE.md"
 
 # 機密が紛れ込んでいないか確認（実キーのパターンのみ検出。変数名への言及は許容）
