@@ -17,6 +17,8 @@ mkdir -p "$DEST"
 rsync -a --delete ~/.claude/skills/ "$DEST/skills/"
 rsync -a --delete ~/.claude/agents/ "$DEST/agents/"
 cp ~/.claude/CLAUDE.md "$DEST/CLAUDE.md"
+cp ~/.claude/intro-log.md "$DEST/intro-log.md" 2>/dev/null || true
+cp ~/.claude/tool-inventory.md "$DEST/tool-inventory.md" 2>/dev/null || true
 
 # 機密が紛れ込んでいないか確認（実キーのパターンのみ検出。変数名への言及は許容）
 if grep -rE "sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20,}|sb_secret_[A-Za-z0-9_]{10,}|ghp_[A-Za-z0-9]{20,}" "$DEST" ; then
