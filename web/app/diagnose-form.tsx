@@ -6,7 +6,6 @@ import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 
 export default function DiagnoseForm() {
   const [name, setName] = useState("");
-  const [area, setArea] = useState("");
   const [address, setAddress] = useState("");
   const [industry, setIndustry] = useState("");
   const [busy, setBusy] = useState(false);
@@ -22,7 +21,7 @@ export default function DiagnoseForm() {
       const res = await fetch("/api/diagnose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, area, address, industry }),
+        body: JSON.stringify({ name, address, industry }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -52,19 +51,15 @@ export default function DiagnoseForm() {
     <form onSubmit={submit}>
       <div className="field">
         <label htmlFor="biz">事業者名</label>
-        <input id="biz" value={name} onChange={(e) => setName(e.target.value)} placeholder="例: アルドマーニ" />
+        <input id="biz" value={name} onChange={(e) => setName(e.target.value)} placeholder="例: 喫茶みほん堂" />
       </div>
       <div className="field">
-        <label htmlFor="area">エリア</label>
-        <input id="area" value={area} onChange={(e) => setArea(e.target.value)} placeholder="例: 松戸" />
-      </div>
-      <div className="field">
-        <label htmlFor="address">住所（任意・同名法人の混同を防ぎます）</label>
+        <label htmlFor="address">住所（競合の検索範囲は住所の町名から自動設定されます）</label>
         <input
           id="address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="例: 千葉県柏市旭町7-3-7"
+          placeholder="例: 東京都中央区京橋9丁目99-9"
         />
       </div>
       <div className="field">
@@ -80,7 +75,7 @@ export default function DiagnoseForm() {
         </select>
       </div>
       {error && <p className="error-note">{error}</p>}
-      <button className="btn" type="submit" disabled={!name || !area}>
+      <button className="btn" type="submit" disabled={!name || !address}>
         診断する
       </button>
     </form>

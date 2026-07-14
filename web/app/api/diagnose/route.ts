@@ -8,9 +8,9 @@ import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
-  const { name, area, address, industry } = await request.json();
-  if (!name || !area) {
-    return Response.json({ error: "事業者名とエリアを入力してください" }, { status: 400 });
+  const { name, address, industry } = await request.json();
+  if (!name || !address) {
+    return Response.json({ error: "事業者名と住所を入力してください" }, { status: 400 });
   }
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
   if (!apiKey) {
@@ -18,14 +18,13 @@ export async function POST(request: NextRequest) {
   }
 
   const industryOption = INDUSTRY_OPTIONS.find((o) => o.value === industry);
-  const data = await runAutoDiagnosis(name, area, apiKey, {
-    address: address || undefined,
+  const data = await runAutoDiagnosis(name, address, apiKey, {
     categoryOverride: industry || undefined,
     categoryOverrideKeyword: industryOption?.textSearchKeyword,
   });
   if (!data) {
     return Response.json(
-      { error: `事業者が見つかりませんでした: ${name}（${area}）` },
+      { error: `事業者が見つかりませんでした: ${name}（${address}）` },
       { status: 404 }
     );
   }
@@ -35,9 +34,10 @@ export async function POST(request: NextRequest) {
   );
 
   const db = supabase();
+  // areaカラムには町名スコープのラベル（例: 台東区千束）を格納する（2026-07-14エリア入力廃止）
   const { data: row, error } = await db
     .from("diagnoses")
-    .insert({ business_name: name, area, data, judged })
+    .insert({ business_name: name, area: (data as { area?: string | null }).area ?? address, data, judged })
     .select("id")
     .single();
   if (error) {

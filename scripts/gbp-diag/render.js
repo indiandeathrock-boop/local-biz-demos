@@ -7,6 +7,30 @@ const { combineScores, COMPETITOR_RADIUS_METERS } = require('../../packages/gbp-
 
 const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
+/**
+ * 競合母集団の注記文（web/lib/diag.ts の competitorScopeNote と同一ロジック。
+ * 2026-07-14の町名スコープ化以降のデータはcompetitorScopeを持ち、
+ * それ以前の保存データは従来の半径3km文言にフォールバックする）。
+ */
+function competitorScopeNote(scope, competitorCount) {
+  if (scope && scope.mode === 'town' && scope.townName) {
+    const km = scope.radiusUsed / 1000;
+    return `※競合は対象事業者と同じ町名「${scope.townName}」の同業種を最優先し、不足分を半径${km}km圏内の近隣同業種で補完した${competitorCount}社です（エリア内の全事業者数ではありません）`;
+  }
+  const base = `※対象事業者から半径${COMPETITOR_RADIUS_KM}km圏内でGoogleマップ上位表示される同業種${competitorCount}社との比較です（エリア内の全事業者数ではありません）`;
+  if (scope && scope.mode === 'radius-fallback') {
+    return `${base}（町名スコープ不可のため半径${COMPETITOR_RADIUS_KM}km方式で算出）`;
+  }
+  return base;
+}
+
+function competitorScopeFooter(scope) {
+  if (scope && scope.mode === 'town' && scope.townName) {
+    return `町名「${scope.townName}」優先・半径${scope.radiusUsed / 1000}km圏`;
+  }
+  return `対象事業者から半径${COMPETITOR_RADIUS_KM}km以内`;
+}
+
 const HUMAN_ITEMS = [
   ['投稿の頻度と質（月4回目安・APSORA構成・誘導ボタン）', 20],
   ['クチコミ返信（全件返信・低評価対応の作法）', 20],
@@ -196,8 +220,8 @@ function render(dataPath, judgedPath) {
 
   <section>
     <h2>エリア内順位（クチコミ数）</h2>
-    <div class="rank-line"><span class="rank-num">${rank || '—'}</span> 位 / ${ratingAll.length}社中（${esc(data.area)}エリア）</div>
-    <div class="rank-note">※対象事業者から半径${COMPETITOR_RADIUS_KM}km圏内でGoogleマップ上位表示される同業種${data.competitors.length}社との比較です（エリア内の全事業者数ではありません）</div>
+    <div class="rank-line"><span class="rank-num">${rank || '—'}</span> 位 / ${ratingAll.length}社中（${esc(data.area || data.address || '')}エリア）</div>
+    <div class="rank-note">${esc(competitorScopeNote(data.competitorScope, data.competitors.length))}</div>
   </section>
 
   <section>
@@ -238,7 +262,7 @@ function render(dataPath, judgedPath) {
   </section>
 
   <footer>
-    Google Business Profile 公開情報（Google Places API）をもとに自動生成。取得競合数: ${data.competitors.length}社（対象事業者から半径${COMPETITOR_RADIUS_KM}km以内、Nearby Search上位${data.competitors.length}件）。
+    Google Business Profile 公開情報（Google Places API）をもとに自動生成。取得競合数: ${data.competitors.length}社（${esc(competitorScopeFooter(data.competitorScope))}、Nearby Search上位${data.competitors.length}件）。
   </footer>
 
 </div>

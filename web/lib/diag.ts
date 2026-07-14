@@ -27,6 +27,34 @@ export const HUMAN_OVERVIEW: [string, number][] = [
 
 export const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
+export type CompetitorScope = {
+  mode: "town" | "radius-fallback";
+  townName: string | null;
+  locality: string | null;
+  radiusUsed: number;
+  sameTownCount: number;
+};
+
+/**
+ * 競合母集団の注記文（採点基準3-6: 母集団の前提を必ず明記する）。
+ * 2026-07-14の町名スコープ化以降のデータはcompetitorScopeを持つ。
+ * それ以前の保存データ（半径3km固定時代）は従来文言にフォールバックする。
+ */
+export function competitorScopeNote(
+  scope: CompetitorScope | undefined,
+  competitorCount: number
+): string {
+  if (scope?.mode === "town" && scope.townName) {
+    const km = scope.radiusUsed / 1000;
+    return `※競合は対象事業者と同じ町名「${scope.townName}」の同業種を最優先し、不足分を半径${km}km圏内の近隣同業種で補完した${competitorCount}社です（エリア内の全事業者数ではありません）`;
+  }
+  const base = `※対象事業者から半径${COMPETITOR_RADIUS_KM}km圏内でGoogleマップ上位表示される同業種${competitorCount}社との比較です（エリア内の全事業者数ではありません）`;
+  if (scope?.mode === "radius-fallback") {
+    return `${base}（町名スコープ不可のため半径${COMPETITOR_RADIUS_KM}km方式で算出）`;
+  }
+  return base;
+}
+
 export type Place = {
   id?: string;
   displayName?: { text?: string };
@@ -44,6 +72,7 @@ export type DiagnosisRow = {
     competitors: (Place & Record<string, unknown>)[];
     mechanical: Record<string, ScoreItem>;
     apiCallCount?: number;
+    competitorScope?: CompetitorScope;
   };
   judged: Judged;
   human: (HumanAnswers & { finalized?: boolean; updatedAt?: string }) | null;

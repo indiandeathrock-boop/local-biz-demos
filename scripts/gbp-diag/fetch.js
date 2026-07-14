@@ -11,23 +11,32 @@ function todayStr() {
 }
 
 async function main() {
-  const [name, area, address, categoryOverride] = process.argv.slice(2);
-  if (!name || !area) {
+  const [name, address, categoryOverride] = process.argv.slice(2);
+  if (!name || !address) {
     console.error(
-      '使い方: node fetch.js "事業者名" "エリア" ["住所（任意・同名法人対策）"] ["業種カテゴリ（任意・Google Place Type）"]'
+      '使い方: node fetch.js "事業者名" "住所" ["業種カテゴリ（任意・Google Place Type）"]\n' +
+        '（2026-07-14: エリア引数を廃止。競合の検索範囲は住所の町名から自動設定されます）'
     );
     process.exit(1);
   }
 
   const apiKey = getApiKey();
 
-  const payload = await runAutoDiagnosis(name, area, apiKey, { address, categoryOverride });
+  const payload = await runAutoDiagnosis(name, address, apiKey, { categoryOverride });
   if (!payload) {
-    console.error(`事業者が見つかりませんでした: ${name} (${area})`);
+    console.error(`事業者が見つかりませんでした: ${name} (${address})`);
     process.exit(2);
   }
   if (payload.categoryResolution) {
     console.log(`競合検索カテゴリ: ${payload.categoryResolution.category}（${payload.categoryResolution.source}）`);
+  }
+  if (payload.competitorScope) {
+    const s = payload.competitorScope;
+    console.log(
+      s.mode === 'town'
+        ? `競合スコープ: 町名「${s.townName}」優先・半径${s.radiusUsed / 1000}km圏（町名一致${s.sameTownCount}件）`
+        : `競合スコープ: 町名スコープ不可のため半径${s.radiusUsed / 1000}km方式`
+    );
   }
 
   const outDir = path.join(__dirname, '..', '..', 'gbp-reports');

@@ -12,22 +12,32 @@ declare module "gbp-core" {
       | "no-type-filter";
   };
 
+  export type CompetitorScope = {
+    mode: "town" | "radius-fallback";
+    townName: string | null;
+    locality: string | null;
+    radiusUsed: number;
+    sameTownCount: number;
+  };
+
   export type AutoDiagnosisData = {
     name: string;
-    area: string;
+    area: string | null;
+    address: string;
     generatedAt: string;
     target: Record<string, unknown>;
     competitors: Record<string, unknown>[];
     mechanical: Record<string, ScoreItem>;
     categoryResolution: CategoryResolution;
+    competitorScope: CompetitorScope;
     apiCallCount: number;
   };
 
   export function runAutoDiagnosis(
     name: string,
-    area: string,
+    address: string,
     apiKey: string,
-    options?: { address?: string; categoryOverride?: string; categoryOverrideKeyword?: string }
+    options?: { categoryOverride?: string; categoryOverrideKeyword?: string }
   ): Promise<AutoDiagnosisData | null>;
 
   export function scoreMechanical(
@@ -46,5 +56,6 @@ declare module "gbp-core" {
   };
 
   export const COMPETITOR_RADIUS_METERS: number;
+  export const COMPETITOR_RADIUS_STAGES: number[];
   export const PHOTO_CAP: number;
 }

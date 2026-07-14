@@ -7,6 +7,7 @@ import {
   reviewCountRank,
   ITEM_LABELS,
   COMPETITOR_RADIUS_KM,
+  competitorScopeNote,
   type DiagnosisRow,
 } from "@/lib/diag";
 import { scoreHuman, HUMAN_SECTIONS, EXTRA_MEMOS } from "@/lib/human-items";
@@ -118,8 +119,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
           <span className="rank-num">{rank ?? "—"}</span> 位 / {rankTotal}社中（{row.area}エリア）
         </div>
         <div className="rank-note">
-          ※対象事業者から半径{COMPETITOR_RADIUS_KM}km圏内でGoogleマップ上位表示される同業種
-          {row.data.competitors.length}社との比較です（エリア内の全事業者数ではありません）
+          {competitorScopeNote(row.data.competitorScope, row.data.competitors.length)}
         </div>
       </section>
 
@@ -252,8 +252,11 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
 
       <footer className="page">
         Google Business Profile 公開情報（Google Places API）＋現地確認・ヒアリングをもとに作成。取得競合数:{" "}
-        {row.data.competitors.length}社（対象事業者から半径{COMPETITOR_RADIUS_KM}km以内、Nearby Search上位
-        {row.data.competitors.length}件）。
+        {row.data.competitors.length}社（
+        {row.data.competitorScope?.mode === "town"
+          ? `町名「${row.data.competitorScope.townName}」優先・半径${row.data.competitorScope.radiusUsed / 1000}km圏`
+          : `対象事業者から半径${COMPETITOR_RADIUS_KM}km以内`}
+        、Nearby Search上位{row.data.competitors.length}件）。
       </footer>
     </div>
   );

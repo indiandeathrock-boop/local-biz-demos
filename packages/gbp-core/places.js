@@ -19,6 +19,7 @@ const DETAILS_FIELDS = [
   'primaryType',
   'photos',
   'location',
+  'addressComponents',
 ].join(',');
 
 function getApiKey() {
@@ -82,7 +83,10 @@ async function searchNearby(includedType, center, radius, apiKey, maxResultCount
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'places.id,places.displayName,places.userRatingCount',
+      // primaryType/types/addressComponents は業種ポストフィルタと町名スコープの判定に使う
+      // （2026-07-14。includedTypesはtypes配列への包含でマッチするため、取得後の再検証が必須）
+      'X-Goog-FieldMask':
+        'places.id,places.displayName,places.userRatingCount,places.primaryType,places.types,places.addressComponents',
     },
     body: JSON.stringify(body),
   });
@@ -115,26 +119,45 @@ async function getDetails(placeId, apiKey) {
 
 /**
  * 対象事業者を検索し、Place Details を取得する。
- * address が指定された場合、formattedAddress に含まれる候補を優先する
- * （同名法人の混同対策。2026-07-06追加）。一致がなければ従来通り最初の1件。
+ * 検索クエリは「事業者名＋住所」。住所は対象特定（同名法人の混同対策）と
+ * 町名スコープの起点を兼ねる（2026-07-14にエリア入力を廃止し住所必須に変更）。
+ * formattedAddress の正規化照合で候補を選別し、一致がなければ最初の1件。
  */
-async function fetchTargetPlace(name, area, apiKey, address) {
-  const candidates = await searchText(`${area} ${name}`, apiKey);
+async function fetchTargetPlace(name, address, apiKey) {
+  const candidates = await searchText(`${name} ${address}`, apiKey);
   if (candidates.length === 0) {
     return null;
   }
   let chosen = candidates[0];
-  if (address) {
-    const norm = (s) => String(s || '').replace(/[\s　\-−ー]/g, '');
-    const target = norm(address);
-    const match = candidates.find((c) => {
-      const a = norm(c.formattedAddress);
-      return target.length > 0 && (a.includes(target) || target.includes(a));
-    });
-    if (match) chosen = match;
-  }
+  const norm = (s) => String(s || '').replace(/[\s　\-−ー]/g, '');
+  const target = norm(address);
+  const match = candidates.find((c) => {
+    const a = norm(c.formattedAddress);
+    return target.length > 0 && (a.includes(target) || target.includes(a));
+  });
+  if (match) chosen = match;
   const details = await getDetails(chosen.id, apiKey);
   return details;
+}
+
+/**
+ * addressComponents から日本の住所階層の「町名」を抽出する。
+ * 実測（2026-07-14）: 台東区千束4丁目→sublocality_level_2=「千束」、
+ * 松戸市本町→sublocality_level_2=「本町」。区部・市部ともlevel_2が町名に相当した。
+ * level_2が無い住所に備えてlevel_1にフォールバックする。どちらも無ければnull
+ * （呼び出し側が半径3km方式にフォールバックする）。
+ */
+function extractTownName(addressComponents) {
+  for (const level of ['sublocality_level_2', 'sublocality_level_1']) {
+    const c = (addressComponents || []).find((x) => (x.types || []).includes(level));
+    if (c) return c.longText || c.shortText || null;
+  }
+  return null;
+}
+
+function extractLocality(addressComponents) {
+  const c = (addressComponents || []).find((x) => (x.types || []).includes('locality'));
+  return c ? c.longText || c.shortText || null : null;
 }
 
 /**
@@ -205,8 +228,36 @@ function deriveTextSearchKeyword(target, categoryOverrideKeyword) {
   return null;
 }
 
-const COMPETITOR_RADIUS_METERS = 3000;
+const COMPETITOR_RADIUS_METERS = 3000; // 町名スコープ不可時のフォールバック半径
+const COMPETITOR_RADIUS_STAGES = [800, 1500, 3000]; // 町名スコープの段階的拡張（件数閾値のみで判定・決定的）
 const COMPETITOR_CANDIDATE_POOL = 20; // Nearby Searchの取得件数上限
+
+/**
+ * 業種ポストフィルタ（2026-07-14追加）。
+ * 根本原因: Nearby SearchのincludedTypesは候補のtypes配列への「包含」でマッチする。
+ * 館内カフェを持つ大型施設はtypesに"cafe"を含むため、includedTypes:["cafe"]で
+ * TOHOシネマズ上野（primaryType=movie_theater）が返ることを実測で確認した。
+ * 対応: 候補のprimaryTypeが検索カテゴリと同一業態の場合のみ競合として採用する。
+ * 判定は (1)完全一致 (2)類縁グループ表 (3)suffix規則（restaurant⇔italian_restaurant等の
+ * Google type階層の命名規則）の3段。全て決定的な文字列比較。
+ */
+const RELATED_PRIMARY_TYPE_GROUPS = [
+  ['cafe', 'coffee_shop', 'tea_house'],
+];
+
+function isSamePrimaryCategory(searchCategory, candidate) {
+  const primary =
+    candidate.primaryType ||
+    (candidate.types || []).find((t) => !GENERIC_PLACE_TYPES.has(t)) ||
+    '';
+  if (!searchCategory || !primary) return false;
+  if (primary === searchCategory) return true;
+  for (const group of RELATED_PRIMARY_TYPE_GROUPS) {
+    if (group.includes(searchCategory) && group.includes(primary)) return true;
+  }
+  if (primary.endsWith(`_${searchCategory}`) || searchCategory.endsWith(`_${primary}`)) return true;
+  return false;
+}
 
 /**
  * 同エリア・同業種の競合を取得する。対象事業者は除外する。
@@ -224,6 +275,22 @@ const COMPETITOR_CANDIDATE_POOL = 20; // Nearby Searchの取得件数上限
  * 取得した候補プール（最大20件）からは、こちらのコード側でuserRatingCount降順に
  * 決定論的にソートして上位N件を選ぶ（タイは place id 昇順で確定させる）。
  */
+/**
+ * 町名スコープ（2026-07-14追加・修正依頼「競合選定の町名スコープ化」）:
+ * 半径3km固定では観光エリアの看板店・大型施設が競合を独占し、地域密着の
+ * 事業者にとって「本当に競っている相手」にならない（蔦重の事例）。
+ * 対象事業者の町名（例: 千束）と同じ町の同業種を最優先で採用する。
+ *
+ * 指示書からの意図的な逸脱（理由つき）:
+ * 指示書は「町名で厳密フィルタし、8件未満なら半径拡張（町名フィルタ維持）」だが、
+ * 実測の結果、蔦重（台東区千束）の800m圏cafe検索20件中「千束」は1件のみで、
+ * 3kmまで拡張しても町名一致だけでは8件がまず埋まらないことを確認した。
+ * 厳密適用すると競合1件のレポートになり比較が成立しないため、
+ * 「町名一致を最優先ソート＋不足分は同半径圏内の同業種（近隣）で補完」とし、
+ * 半径拡張の判定は業種フィルタ通過件数の閾値（決定的）で行う。
+ * これにより競合は「同じ町＋徒歩圏の地域店」で構成され、指示書の受け入れ条件
+ * （千束またはごく近隣の地域密着カフェ）を満たす。
+ */
 async function fetchCompetitors(
   targetLocation,
   target,
@@ -236,51 +303,90 @@ async function fetchCompetitors(
   if (!targetLocation) {
     throw new Error('targetLocation が取得できていません（Place Details の location フィールドを確認）');
   }
-  const { area, categoryOverrideKeyword } = options;
+  const { categoryOverrideKeyword } = options;
+  const townName = extractTownName(target.addressComponents);
+  const locality = extractLocality(target.addressComponents);
   const candidateList = candidateCompetitorCategories(target, categoryOverride);
+
+  // 町名が取れる場合は段階的拡張、取れない場合は従来の3km単段（フォールバック）
+  const stages = townName ? COMPETITOR_RADIUS_STAGES : [COMPETITOR_RADIUS_METERS];
+
   let usedCandidates = null;
-  let candidates = null;
-  for (const cand of candidateList) {
-    try {
-      candidates = await searchNearby(
-        cand.category,
-        targetLocation,
-        COMPETITOR_RADIUS_METERS,
-        apiKey,
-        COMPETITOR_CANDIDATE_POOL
-      );
-      usedCandidates = cand;
-      break;
-    } catch (e) {
-      if (e.isUnsupportedType) continue; // 次の候補を試す
-      throw e;
+  let typeFiltered = null;
+  let radiusUsed = null;
+  let workingCategory; // Nearby Searchが受理したカテゴリ（ステージ間で再利用）
+
+  for (const radius of stages) {
+    let candidates = null;
+    if (workingCategory === undefined) {
+      // 初回ステージ: 候補カテゴリを順に試し、APIが受理したものを採用
+      for (const cand of candidateList) {
+        try {
+          candidates = await searchNearby(cand.category, targetLocation, radius, apiKey, COMPETITOR_CANDIDATE_POOL);
+          usedCandidates = cand;
+          workingCategory = cand.category;
+          break;
+        } catch (e) {
+          if (e.isUnsupportedType) continue; // 次の候補を試す
+          throw e;
+        }
+      }
+      if (candidates === null) break; // 全カテゴリ全滅 → Text Searchフォールバックへ
+    } else {
+      candidates = await searchNearby(workingCategory, targetLocation, radius, apiKey, COMPETITOR_CANDIDATE_POOL);
     }
+    // 業種ポストフィルタ（町名スコープとは独立に必ず適用）
+    typeFiltered = candidates.filter(
+      (p) => p.id !== excludePlaceId && isSamePrimaryCategory(workingCategory, p)
+    );
+    radiusUsed = radius;
+    if (typeFiltered.length >= limit) break; // 判定は件数閾値のみ（決定的）
   }
-  if (candidates === null) {
+
+  if (typeFiltered === null || usedCandidates === null) {
     // Nearby Searchのカテゴリフィルタが全滅した場合。Text Searchへのフォールバックを試み、
     // キーワードが無い場合のみフィルタなしNearby Search（低品質・最終手段）にする。
+    // Text Searchは業種typeを持たないため業種ポストフィルタは適用しない（キーワード自体が業種）。
     const keyword = deriveTextSearchKeyword(target, categoryOverrideKeyword);
-    if (keyword && area) {
-      const textCandidates = await searchText(`${area} ${keyword}`, apiKey, {
+    const areaLabel = [locality, townName].filter(Boolean).join('') || options.area || '';
+    if (keyword && areaLabel) {
+      typeFiltered = await searchText(`${areaLabel} ${keyword}`, apiKey, {
         locationBias: { ...targetLocation, radius: COMPETITOR_RADIUS_METERS },
-        fields: 'places.id,places.displayName,places.userRatingCount',
+        fields: 'places.id,places.displayName,places.userRatingCount,places.addressComponents',
       });
-      candidates = textCandidates;
+      typeFiltered = typeFiltered.filter((p) => p.id !== excludePlaceId);
       usedCandidates = { category: keyword, source: 'text-search-fallback' };
     } else {
-      candidates = await searchNearby(null, targetLocation, COMPETITOR_RADIUS_METERS, apiKey, COMPETITOR_CANDIDATE_POOL);
+      const candidates = await searchNearby(null, targetLocation, COMPETITOR_RADIUS_METERS, apiKey, COMPETITOR_CANDIDATE_POOL);
+      typeFiltered = candidates.filter((p) => p.id !== excludePlaceId);
       usedCandidates = { category: null, source: 'no-type-filter' };
     }
+    radiusUsed = COMPETITOR_RADIUS_METERS;
   }
-  const filtered = candidates
-    .filter((p) => p.id !== excludePlaceId)
-    .sort((a, b) => (b.userRatingCount || 0) - (a.userRatingCount || 0) || (a.id < b.id ? -1 : 1))
+
+  // 選定: 町名一致を最優先、次にクチコミ数降順、タイはplace id昇順（全て決定的）
+  const inTown = (p) => (townName && extractTownName(p.addressComponents) === townName ? 1 : 0);
+  const selected = typeFiltered
+    .sort(
+      (a, b) =>
+        inTown(b) - inTown(a) ||
+        (b.userRatingCount || 0) - (a.userRatingCount || 0) ||
+        (a.id < b.id ? -1 : 1)
+    )
     .slice(0, limit);
+
   const details = [];
-  for (const c of filtered) {
+  for (const c of selected) {
     details.push(await getDetails(c.id, apiKey));
   }
-  return { competitors: details, categoryResolution: usedCandidates };
+  const competitorScope = {
+    mode: townName ? 'town' : 'radius-fallback',
+    townName: townName || null,
+    locality: locality || null,
+    radiusUsed,
+    sameTownCount: selected.filter((p) => inTown(p) === 1).length,
+  };
+  return { competitors: details, categoryResolution: usedCandidates, competitorScope };
 }
 
 module.exports = {
@@ -291,6 +397,9 @@ module.exports = {
   fetchTargetPlace,
   fetchCompetitors,
   candidateCompetitorCategories,
+  extractTownName,
+  isSamePrimaryCategory,
   GENERIC_PLACE_TYPES,
   COMPETITOR_RADIUS_METERS,
+  COMPETITOR_RADIUS_STAGES,
 };

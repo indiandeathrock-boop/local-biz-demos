@@ -90,6 +90,8 @@ LLM出力はJSONスキーマで構造化し（structured outputs）、max値は�
 | 5 | **第三者事業者の商品登録・追加カテゴリはAPIから取得不能** | 該当項目が採点できない | 常に判定不能とし、人間診断（現地確認）に委ねる |
 | 6 | **同名法人の混同**: Text Searchの1件目が別法人のことがある | 誤った事業者を診断する | 住所（任意入力）とformattedAddressの正規化照合で候補を選別 |
 | 7 | **言語ネゴシエーション**: Accept-Language未指定だとリクエスト毎に応答言語が変わることがある | HTML差分監視が毎回「変更あり」誤検知 | `hl=en`固定＋Accept-Languageヘッダ明示（gbp-watchで発生） |
+| 8 | **includedTypesはtypes配列への包含でマッチ**: 検索フィルタは候補の主業態（primaryType）を保証しない | カフェ検索の競合に館内カフェを持つ映画館（TOHOシネマズ上野、primaryType=movie_theater、typesにcafeを含む）が混入 | 取得後に`isSamePrimaryCategory()`でprimaryTypeを再検証（2026-07-14・蔦重の事例） |
+| 9 | **半径固定の母集団は商圏とズレる**: POPULARITY順は観光地の看板店が独占し、地域密着店が候補プールに入らない | 千束のカフェ診断で競合が浅草・上野の観光大箱（クチコミ2,000件超）のみになる | 町名スコープ（addressComponentsのsublocality_level_2で町名抽出→町名一致優先・800m起点の段階拡張）。詳細はgbp-scoring-rules.md「町名スコープ」節 |
 
 新しい落とし穴を発見したら: この表と gbp-scoring-rules.md の該当節の両方に追記する。
 「Googleの分類にある＝APIの検索フィルタで使える」ではない、が最大の教訓。
@@ -121,8 +123,8 @@ curl -s "$SUPABASE_URL/rest/v1/diagnoses?select=data&id=eq.{id}" \
 set -a; source ~/.secrets/gbp-diag.env; set +a
 node -e "const {runAutoDiagnosis}=require('./packages/gbp-core'); ..."
 
-# Telegram版の一括実行
-node scripts/gbp-diag/fetch.js "事業者名" "エリア" ["住所"] ["業種type"]
+# Telegram版の一括実行（2026-07-14: エリア引数廃止・住所必須）
+node scripts/gbp-diag/fetch.js "事業者名" "住所" ["業種type"]
 ```
 
 ## 6. 変更種別ごとのチェックリスト
