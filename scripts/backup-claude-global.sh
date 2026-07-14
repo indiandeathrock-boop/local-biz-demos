@@ -16,6 +16,7 @@ mkdir -p "$DEST"
 
 rsync -a --delete ~/.claude/skills/ "$DEST/skills/"
 rsync -a --delete ~/.claude/agents/ "$DEST/agents/"
+rsync -a --delete ~/.claude/hooks/ "$DEST/hooks/"
 cp ~/.claude/CLAUDE.md "$DEST/CLAUDE.md"
 cp ~/.claude/intro-log.md "$DEST/intro-log.md" 2>/dev/null || true
 cp ~/.claude/tool-inventory.md "$DEST/tool-inventory.md" 2>/dev/null || true

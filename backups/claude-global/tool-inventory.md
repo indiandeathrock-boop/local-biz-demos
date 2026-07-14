@@ -3,7 +3,7 @@
 初版。intro-logで新規導入を記録するたびに、この表へ1行追記する。
 ※依頼時の指定は「スキル4」だったが、実際の`~/.claude/skills/`には5件ある（2026-07-13導入のbrowser-fetchを含む）ため、実態の5件で記載。
 
-## 1. 一覧（導入済み10件）
+## 1. 一覧（導入済み11件）
 
 | 名称 | 6分類 | 権限範囲 | ブラスト半径 | 保守リスク | 標準機能で代替 | 判定 |
 |---|---|---|---|---|---|---|
@@ -17,12 +17,13 @@
 | verifier (Haiku 4.5) | agent | Read/Grep/Glob/Bash/WebFetch（Bashを持つため理論上書き込み可。役割上は検証のみ） | 小 | 自作 | 一部可（/verify・/code-reviewと部分重複。安価な要件照合は固有） | 維持 |
 | Telegramプラグイン | MCP | メッセージ送受信・ファイル送受信（対外送信） | 中（誤送信＝外部公開。botトークンの管理が前提） | 公式プラグイン（claude-plugins-official） | 不可（スマホのみ運用の生命線） | 維持 |
 | Google Drive MCP | MCP | Drive読み取り＋作成・複製（ツール一覧に削除なし） | 小〜中（Drive上へのファイル作成・複製。削除不可のため既存データ破壊はなし） | 公式（claude.aiコネクタ） | 不可 | 維持 |
+| deny-dangerous-bash | hook | Bashコマンドの検査のみ（deny判定を返すだけで自身は無変更） | なし（誤検知時に正当コマンドが止まる程度。壊れた場合は素通し＝permission層が残る） | 自作 | 一部可（denyルールはprefix一致のみで複合コマンドを見逃す。全文regex検査はhook固有） | 維持 |
 
 補足:
 - **agent 3件は導入以来まだ実使用ゼロ**（2026-07-14時点）。intro-logの後日評価（3週間後目安）で「未使用のまま」なら外す判断の対象にする。
 - Google Drive MCPは2026-07-13に大容量PDF（各5〜10MB）のアップロード用途で検討したが、ペイロードサイズの懸念から実行せずローカル保存に切り替えた実績あり。大容量ファイルには不向き。
 - claude.aiコネクタとしてGmail・Google Calendarも接続可能な状態にあるが、認証・使用実績は未確認。使い始めたらこの表に追加する。
-- hooksは未導入（settings.jsonにhooksなし）。launchdジョブ（claude-telegram起動、gemini-compass通知）はCC外のOS層の仕組みのため本表の対象外とした。
+- hookは2026-07-14にdeny-dangerous-bashを導入。6分類のうちloopとgoalが未導入だが、現時点で必要が生じていない。launchdジョブ（claude-telegram起動、gemini-compass通知）はCC外のOS層の仕組みのため本表の対象外とした。
 
 ## 2. 振り分け不能
 
