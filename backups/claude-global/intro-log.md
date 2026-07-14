@@ -1,5 +1,15 @@
 # 導入記録（intro-log）
 
+## 導入記録: session-start-log（SessionStart hook）＋fileCheckpointingEnabled
+- 日付: 2026-07-15
+- レベル分類: L2
+- 6分類: hook
+- 解決したい問題: 公式リリース情報の棚卸し（RK依頼）で判明した未導入機能のうち、安全で即実装可能な2点。(1) checkpointing未確認だったため明示的にON化し/rewindでの復元を保証。(2) セッション開始時刻をログ化し、Telegram応答不能等のトラブル時に「いつから動いていたか」を追跡可能にする
+- 権限の範囲: ~/.claude/logs/session-start.log への追記のみ
+- 失敗時に壊れるもの: 特になし。ログ追記が失敗しても他システムに影響しない
+- 後日評価: (未評価)
+- 見送った項目（同じ棚卸しで検討・不採用）: sandboxing（誤設定でTelegram/SSH経路を壊すリスクがスマホ専用運用と相性最悪）、background agents claude agents --bg（無人commit→push→PR作成が事前承認原則に反する）。tool-inventory.mdの「観察リスト」または「見送り」に反映予定
+
 ## 導入記録: deny-dangerous-bash（PreToolUse hook）
 - 日付: 2026-07-14
 - レベル分類: L3

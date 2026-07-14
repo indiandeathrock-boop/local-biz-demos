@@ -1,9 +1,9 @@
-# ツール棚卸し (最終更新: 2026-07-14)
+# ツール棚卸し (最終更新: 2026-07-15)
 
 初版。intro-logで新規導入を記録するたびに、この表へ1行追記する。
 ※依頼時の指定は「スキル4」だったが、実際の`~/.claude/skills/`には5件ある（2026-07-13導入のbrowser-fetchを含む）ため、実態の5件で記載。
 
-## 1. 一覧（導入済み11件）
+## 1. 一覧（導入済み12件）
 
 | 名称 | 6分類 | 権限範囲 | ブラスト半径 | 保守リスク | 標準機能で代替 | 判定 |
 |---|---|---|---|---|---|---|
@@ -18,12 +18,14 @@
 | Telegramプラグイン | MCP | メッセージ送受信・ファイル送受信（対外送信） | 中（誤送信＝外部公開。botトークンの管理が前提） | 公式プラグイン（claude-plugins-official） | 不可（スマホのみ運用の生命線） | 維持 |
 | Google Drive MCP | MCP | Drive読み取り＋作成・複製（ツール一覧に削除なし） | 小〜中（Drive上へのファイル作成・複製。削除不可のため既存データ破壊はなし） | 公式（claude.aiコネクタ） | 不可 | 維持 |
 | deny-dangerous-bash | hook | Bashコマンドの検査のみ（deny判定を返すだけで自身は無変更） | なし（誤検知時に正当コマンドが止まる程度。壊れた場合は素通し＝permission層が残る） | 自作 | 一部可（denyルールはprefix一致のみで複合コマンドを見逃す。全文regex検査はhook固有） | 維持 |
+| session-start-log | hook | ~/.claude/logs/session-start.log への追記のみ | なし | 自作 | 一部可（外部ログ基盤があれば代替可だが未導入） | 維持 |
 
 補足:
 - **agent 3件は導入以来まだ実使用ゼロ**（2026-07-14時点）。intro-logの後日評価（3週間後目安）で「未使用のまま」なら外す判断の対象にする。
 - Google Drive MCPは2026-07-13に大容量PDF（各5〜10MB）のアップロード用途で検討したが、ペイロードサイズの懸念から実行せずローカル保存に切り替えた実績あり。大容量ファイルには不向き。
 - claude.aiコネクタとしてGmail・Google Calendarも接続可能な状態にあるが、認証・使用実績は未確認。使い始めたらこの表に追加する。
-- hookは2026-07-14にdeny-dangerous-bashを導入。6分類のうちloopとgoalが未導入だが、現時点で必要が生じていない。launchdジョブ（claude-telegram起動、gemini-compass通知）はCC外のOS層の仕組みのため本表の対象外とした。
+- hookは2026-07-14にdeny-dangerous-bash、2026-07-15にsession-start-logを導入。6分類のうちloopとgoalが未導入だが、現時点で必要が生じていない。launchdジョブ（claude-telegram起動、gemini-compass通知）はCC外のOS層の仕組みのため本表の対象外とした。
+- 2026-07-15にCC公式リリース情報を棚卸しし、`fileCheckpointingEnabled: true`を明示的に設定（/rewindでの復元を保証。設定項目のため本表の行としては起こしていない）。
 
 ## 2. 振り分け不能
 
@@ -46,6 +48,8 @@
 | OmniRoute | 231+ AIプロバイダを束ねるゲートウェイ。APIキー等の認証情報を一箇所に集約するためブラスト半径が最大。個人開発で実験的機能も多く保守リスクも高い |
 | claude-video | Claudeに動画を「見せる」スキル。動画分析ニーズが今のところなく、YouTube文字起こしは既にGemini/NotebookLMで運用済みのため代替不要 |
 | system_prompts_leaks | Claude自身のシステムプロンプト抽出物を扱うリポジトリのため、性質上棚卸し対象から除外 |
+| Sandboxing (sandbox.enabled) | CC公式の新機能（ディレクトリ・ネットワークアクセス制限）。誤設定でTelegram/SSH経路自体を壊すリスクがあり、復旧はMac mini物理アクセスかSSH必須。スマホ専用・リモート無人運用（CLAUDE.md）と根本的に相性が悪いため見送り（2026-07-15棚卸し） |
+| Background agents (claude agents --bg) | 完了時に無人でcommit→push→PR作成まで行う公式機能。事前承認原則（CLAUDE.md「破壊的操作は確認を取る」）に反し、既存のworker/advisor/verifierサブエージェント運用と役割も重複するため見送り（2026-07-15棚卸し） |
 
 ## 5. 外す候補
 
