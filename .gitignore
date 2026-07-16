@@ -4,3 +4,8 @@ node_modules/
 package-lock.json
 gbp-reports/
 .vercel
+
+# Xブックマーク自動収集: 個人データ(SQLite)・生API応答は非コミット
+scripts/x-bookmarks/bookmarks.db
+scripts/x-bookmarks/probe_result.json
+scripts/x-bookmarks/__pycache__/
