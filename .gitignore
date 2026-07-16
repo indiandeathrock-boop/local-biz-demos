@@ -9,3 +9,10 @@ gbp-reports/
 scripts/x-bookmarks/bookmarks.db
 scripts/x-bookmarks/probe_result.json
 scripts/x-bookmarks/__pycache__/
+
+# Xグロック会話自動収集: 個人データ(SQLite)・生API応答は非コミット
+scripts/x-grok/grok_conversations.db
+scripts/x-grok/probe_result.json
+scripts/x-grok/probe_history_result.json
+scripts/x-grok/probe_conv_result.json
+scripts/x-grok/__pycache__/
