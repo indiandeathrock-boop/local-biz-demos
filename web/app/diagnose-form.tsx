@@ -37,6 +37,7 @@ export default function DiagnoseForm() {
   if (busy) {
     return (
       <div style={{ textAlign: "center", padding: "40px 0" }}>
+        <div className="spinner" aria-hidden="true" />
         <p style={{ fontSize: 16, fontWeight: 700 }}>分析中…</p>
         <p className="score-explain">
           Googleマップのデータ取得 → 採点 → 所見生成を行っています（30秒〜1分程度）
