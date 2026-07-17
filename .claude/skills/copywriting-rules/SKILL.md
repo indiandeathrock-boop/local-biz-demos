@@ -7,4 +7,4 @@ description: LP執筆、セールスコピー編集、広告文・SNS投稿・�
 
 商品・価格・市場側の設計判断は姉妹スキル market-design-rules を参照。
 
-詳細は同ディレクトリのwriting-rules.mdを参照。
+詳細は同ディレクトリのwriting-rules.mdを参照。実例・借用技法の蓄積は同ディレクトリのswipe-file-closing-examples.mdを参照（原則はwriting-rules.md、実例はswipe-file側という役割分担）。
