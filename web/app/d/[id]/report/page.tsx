@@ -8,6 +8,7 @@ import {
   ITEM_LABELS,
   COMPETITOR_RADIUS_KM,
   competitorScopeNote,
+  displayNote,
   type DiagnosisRow,
 } from "@/lib/diag";
 import { scoreHuman, HUMAN_SECTIONS, EXTRA_MEMOS } from "@/lib/human-items";
@@ -131,7 +132,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
               <tr key={key}>
                 <td>
                   {ITEM_LABELS[key] || key}
-                  <div className="note">{item.note}</div>
+                  <div className="note">{displayNote(item.note)}</div>
                 </td>
                 <td className={`pts${item.score === null ? " na" : ""}`}>
                   {item.score === null ? "判定不能" : `${item.score} / ${item.max}`}

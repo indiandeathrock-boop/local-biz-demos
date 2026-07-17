@@ -27,6 +27,16 @@ export const HUMAN_OVERVIEW: [string, number][] = [
 
 export const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
+/**
+ * 共有コア（gbp-core/scoring.js）の項目note文言はTelegram版と共通のため
+ * 「人間診断」という内部用語のまま生成される（変えるとTelegram版に波及するため
+ * 単一実装側では変更しない。methodology.mdの用語二重体系の方針）。
+ * Web UIの表示名「パーソナルインサイト」に合わせ、表示直前にこの関数で変換する。
+ */
+export function displayNote(note: string): string {
+  return note.replace(/人間診断/g, "パーソナルインサイト");
+}
+
 export type CompetitorScope = {
   mode: "town" | "radius-fallback";
   townName: string | null;
