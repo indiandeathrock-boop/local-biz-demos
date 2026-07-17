@@ -61,6 +61,10 @@ export default async function AutoResultPage({
   const combined = autoScore(row);
   const { rank, total } = reviewCountRank(row);
   const items = combined.items;
+  const scoredEntries = Object.entries(items).filter(([, item]) => item.score !== null);
+  const unscoredLabels = Object.entries(items)
+    .filter(([, item]) => item.score === null)
+    .map(([key]) => ITEM_LABELS[key] || key);
 
   return (
     <div className="wrap">
@@ -70,9 +74,6 @@ export default async function AutoResultPage({
         <div className="score-badge">
           ファーストチェック {combined.earned}点 ／ {combined.possible}点
         </div>
-        {combined.hasUnjudged && (
-          <div className="unjudged-note">※判定不能の項目があります（下表参照。比例換算はしていません）</div>
-        )}
         <p className="score-explain">
           本診断は「ファーストチェック100点＋パーソナルインサイト100点」の2部構成で、両方完了後の平均値が最終スコアとなります。
         </p>
@@ -97,19 +98,22 @@ export default async function AutoResultPage({
         <h2>項目別採点</h2>
         <table className="score">
           <tbody>
-            {Object.entries(items).map(([key, item]) => (
+            {scoredEntries.map(([key, item]) => (
               <tr key={key}>
                 <td>
                   {ITEM_LABELS[key] || key}
                   <div className="note">{displayNote(item.note)}</div>
                 </td>
-                <td className={`pts${item.score === null ? " na" : ""}`}>
-                  {item.score === null ? "判定不能" : `${item.score} / ${item.max}`}
-                </td>
+                <td className="pts">{item.score} / {item.max}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        {unscoredLabels.length > 0 && (
+          <p className="score-explain">
+            以下の項目はパーソナルインサイトで判定します: {unscoredLabels.join("、")}
+          </p>
+        )}
       </section>
 
       <section>

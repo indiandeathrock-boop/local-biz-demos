@@ -69,9 +69,6 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
   const unjudgedAuto = Object.entries(auto.items)
     .filter(([, v]) => v.score === null)
     .map(([k]) => ITEM_LABELS[k] || k);
-  const naHuman = human.results
-    .filter((r) => r.naApplied)
-    .map((r) => r.section.title.replace(/^\d+\.\s*/, ""));
 
   const priorities = row.judged.priorities || [];
   const timeline: { title: string; items: string[] }[] = [
@@ -105,13 +102,6 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
           </span>
         </div>
         <p className="score-explain">総合スコア =（ファーストチェック + パーソナルインサイト）÷ 2。満点は常に100点。</p>
-        {(unjudgedAuto.length > 0 || naHuman.length > 0) && (
-          <p className="unjudged-note">
-            判定不能項目:{" "}
-            {[...unjudgedAuto.map((s) => `${s}（ファーストチェック）`), ...naHuman.map((s) => `${s}（パーソナルインサイト）`)].join("、")}
-            ※比例換算・0点混入はしていません
-          </p>
-        )}
       </header>
 
       <section>
@@ -128,19 +118,24 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
         <h2>ファーストチェックの内訳</h2>
         <table className="score">
           <tbody>
-            {Object.entries(auto.items).map(([key, item]) => (
-              <tr key={key}>
-                <td>
-                  {ITEM_LABELS[key] || key}
-                  <div className="note">{displayNote(item.note)}</div>
-                </td>
-                <td className={`pts${item.score === null ? " na" : ""}`}>
-                  {item.score === null ? "判定不能" : `${item.score} / ${item.max}`}
-                </td>
-              </tr>
-            ))}
+            {Object.entries(auto.items)
+              .filter(([, item]) => item.score !== null)
+              .map(([key, item]) => (
+                <tr key={key}>
+                  <td>
+                    {ITEM_LABELS[key] || key}
+                    <div className="note">{displayNote(item.note)}</div>
+                  </td>
+                  <td className="pts">{item.score} / {item.max}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        {unjudgedAuto.length > 0 && (
+          <p className="score-explain">
+            以下の項目はパーソナルインサイトで判定します: {unjudgedAuto.join("、")}
+          </p>
+        )}
       </section>
 
       <section>
