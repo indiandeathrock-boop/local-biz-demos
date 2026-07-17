@@ -2,13 +2,12 @@ import { NextRequest } from "next/server";
 import { runAutoDiagnosis } from "gbp-core";
 import { supabase } from "@/lib/supabase";
 import { judgeWithClaude } from "@/lib/judge";
-import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 
 // Places API 10回 + Claude判定で数十秒かかり得るため延長
 export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {
-  const { name, address, industry } = await request.json();
+  const { name, address } = await request.json();
   if (!name || !address) {
     return Response.json({ error: "事業者名と住所を入力してください" }, { status: 400 });
   }
@@ -17,11 +16,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "GOOGLE_PLACES_API_KEY が未設定です" }, { status: 500 });
   }
 
-  const industryOption = INDUSTRY_OPTIONS.find((o) => o.value === industry);
-  const data = await runAutoDiagnosis(name, address, apiKey, {
-    categoryOverride: industry || undefined,
-    categoryOverrideKeyword: industryOption?.textSearchKeyword,
-  });
+  const data = await runAutoDiagnosis(name, address, apiKey);
   if (!data) {
     return Response.json(
       { error: `事業者が見つかりませんでした: ${name}（${address}）` },

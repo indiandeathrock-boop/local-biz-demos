@@ -9,10 +9,11 @@ import {
   COMPETITOR_RADIUS_KM,
   competitorScopeNote,
   displayNote,
+  registeredCategories,
   type DiagnosisRow,
 } from "@/lib/diag";
 import { scoreHuman, HUMAN_SECTIONS, EXTRA_MEMOS } from "@/lib/human-items";
-import PrintButton from "./print-button";
+import PrintButton from "../print-button";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
   const unjudgedAuto = Object.entries(auto.items)
     .filter(([, v]) => v.score === null)
     .map(([k]) => ITEM_LABELS[k] || k);
+  const categories = registeredCategories(row.data.target);
 
   const priorities = row.judged.priorities || [];
   const timeline: { title: string; items: string[] }[] = [
@@ -112,6 +114,20 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
         <div className="rank-note">
           {competitorScopeNote(row.data.competitorScope, row.data.competitors.length)}
         </div>
+      </section>
+
+      <section>
+        <h2>登録カテゴリ</h2>
+        <div className="rank-line">
+          主カテゴリ: <strong>{categories.primary?.label ?? "不明"}</strong>
+          {categories.primary && <span className="rank-note"> （{categories.primary.id}）</span>}
+        </div>
+        {categories.additional.length > 0 && (
+          <div className="rank-line">
+            追加カテゴリ: {categories.additional.map((c) => c.label).join("、")}
+          </div>
+        )}
+        <div className="rank-note">この診断は上記の登録カテゴリをもとに競合を検索しています。</div>
       </section>
 
       <section>

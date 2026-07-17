@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { INDUSTRY_OPTIONS } from "@/lib/industry-types";
 
 export default function DiagnoseForm() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [industry, setIndustry] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -21,7 +19,7 @@ export default function DiagnoseForm() {
       const res = await fetch("/api/diagnose", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, address, industry }),
+        body: JSON.stringify({ name, address }),
       });
       const json = await res.json();
       if (!res.ok) {
@@ -61,18 +59,6 @@ export default function DiagnoseForm() {
           onChange={(e) => setAddress(e.target.value)}
           placeholder="例: 東京都中央区京橋9丁目99-9"
         />
-      </div>
-      <div className="field">
-        <label htmlFor="industry">
-          業種（任意・競合の絞り込みが不正確な場合に指定してください）
-        </label>
-        <select id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)}>
-          {INDUSTRY_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
       </div>
       {error && <p className="error-note">{error}</p>}
       <button className="btn" type="submit" disabled={!name || !address}>

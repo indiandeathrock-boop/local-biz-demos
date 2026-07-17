@@ -178,18 +178,24 @@ const GENERIC_PLACE_TYPES = new Set([
 
 /**
  * 競合検索カテゴリの候補リストを優先順位順に作る。
- * 1. categoryOverride（人間が業種を明示指定した場合）
- * 2. primaryType（汎用カテゴリでなければ）
- * 3. types配列のうち汎用でない値（登場順）
+ * 1. primaryType（汎用カテゴリでなければ）
+ * 2. types配列のうち汎用でない値（登場順）
  * 実際にどれが採用されるかはNearby Search APIが受理するかどうかにも依存する
  * （Googleの全typesリストとNearby SearchのincludedTypes対応リストは完全一致しない。
  * 例: primaryTypeやtypesに含まれる"general_contractor"はNearby Searchでは
  * "Unsupported types"エラーになることを実測で確認。2026-07-06）。
  * 呼び出し側（fetchCompetitors）が候補を順に試し、最初に成功したものを採用する。
+ *
+ * 2026-07-17: 人間による業種手動指定（categoryOverride）を廃止した。
+ * 理由: 診断者が選んだ業種と、Googleに実際登録されているprimaryTypeが食い違うと、
+ * 「競合検索カテゴリ」と「主カテゴリの適切性」採点（primaryCategoryFit、実データ基準）が
+ * 別々の判定基準を持つことになり、自己矛盾したレポートが生成される事象が発生した
+ * （蔦重の事例: 手動選択「カフェ」で競合検索→primaryType「art_museum」との不一致を指摘）。
+ * 住所入力が必須化された時点で同名法人対策としての業種欄の役割も消えていたため、
+ * 唯一の情報源をGoogle実データ（primaryType/types）に統一した。
  */
-function candidateCompetitorCategories(target, categoryOverride) {
+function candidateCompetitorCategories(target) {
   const list = [];
-  if (categoryOverride) list.push({ category: categoryOverride, source: 'manual' });
   const primaryType = target.primaryType;
   if (primaryType && !GENERIC_PLACE_TYPES.has(primaryType)) {
     list.push({ category: primaryType, source: 'primaryType' });
@@ -208,17 +214,14 @@ function candidateCompetitorCategories(target, categoryOverride) {
 /**
  * Nearby Search では検索不能と実測で確認済みのGoogleカテゴリ（Table B専用等）に対する
  * Text Searchフォールバック用の日本語キーワード（2026-07-06追加・芙蓉建設の事例）。
- * 業種を手動指定していない場合でも、primaryType/typesがこれらに一致すればText Searchに
- * 切り替える。人間が業種を手動指定した場合は web/lib/industry-types.ts の
- * textSearchKeyword が優先される（categoryOverrideKeywordとして渡される）。
+ * primaryType/typesがこれらに一致すればText Searchに切り替える。
  */
 const KNOWN_INVALID_TYPE_KEYWORDS = {
   general_contractor: '建設会社',
   photographer: '写真スタジオ',
 };
 
-function deriveTextSearchKeyword(target, categoryOverrideKeyword) {
-  if (categoryOverrideKeyword) return categoryOverrideKeyword;
+function deriveTextSearchKeyword(target) {
   if (target.primaryType && KNOWN_INVALID_TYPE_KEYWORDS[target.primaryType]) {
     return KNOWN_INVALID_TYPE_KEYWORDS[target.primaryType];
   }
@@ -294,7 +297,6 @@ function isSamePrimaryCategory(searchCategory, candidate) {
 async function fetchCompetitors(
   targetLocation,
   target,
-  categoryOverride,
   excludePlaceId,
   apiKey,
   limit = 8,
@@ -303,10 +305,9 @@ async function fetchCompetitors(
   if (!targetLocation) {
     throw new Error('targetLocation が取得できていません（Place Details の location フィールドを確認）');
   }
-  const { categoryOverrideKeyword } = options;
   const townName = extractTownName(target.addressComponents);
   const locality = extractLocality(target.addressComponents);
-  const candidateList = candidateCompetitorCategories(target, categoryOverride);
+  const candidateList = candidateCompetitorCategories(target);
 
   // 町名が取れる場合は段階的拡張、取れない場合は従来の3km単段（フォールバック）
   const stages = townName ? COMPETITOR_RADIUS_STAGES : [COMPETITOR_RADIUS_METERS];
@@ -347,7 +348,7 @@ async function fetchCompetitors(
     // Nearby Searchのカテゴリフィルタが全滅した場合。Text Searchへのフォールバックを試み、
     // キーワードが無い場合のみフィルタなしNearby Search（低品質・最終手段）にする。
     // Text Searchは業種typeを持たないため業種ポストフィルタは適用しない（キーワード自体が業種）。
-    const keyword = deriveTextSearchKeyword(target, categoryOverrideKeyword);
+    const keyword = deriveTextSearchKeyword(target);
     const areaLabel = [locality, townName].filter(Boolean).join('') || options.area || '';
     if (keyword && areaLabel) {
       typeFiltered = await searchText(`${areaLabel} ${keyword}`, apiKey, {

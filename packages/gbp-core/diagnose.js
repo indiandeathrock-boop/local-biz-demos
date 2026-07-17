@@ -9,14 +9,13 @@ const { scoreMechanical } = require('./scoring');
  * 町名スコープはaddressから自動抽出されるためエリア入力は廃止。
  * 互換のためdata.areaには町名スコープのラベル（例: 台東区千束）を格納する）。
  *
+ * 2026-07-17: 業種の手動指定（categoryOverride）を廃止。競合検索・
+ * カテゴリ採点ともGoogle実データ（primaryType/types）のみを情報源とする
+ * （詳細はplaces.jsのcandidateCompetitorCategories()コメント参照）。
+ *
  * @param {string} address 対象事業者の住所（対象特定と町名スコープの起点。必須）
- * @param {object} [options]
- * @param {string} [options.categoryOverride] 競合検索カテゴリの手動指定（Google Place Type・任意）
- * @param {string} [options.categoryOverrideKeyword] categoryOverrideがNearby Search非対応の
- *   場合に使うText Search用の日本語キーワード（任意。web/lib/industry-types.tsのtextSearchKeyword）
  */
-async function runAutoDiagnosis(name, address, apiKey, options = {}) {
-  const { categoryOverride, categoryOverrideKeyword } = options;
+async function runAutoDiagnosis(name, address, apiKey) {
   if (!address) {
     throw new Error('address は必須です（町名スコープの起点として使用します）');
   }
@@ -27,11 +26,9 @@ async function runAutoDiagnosis(name, address, apiKey, options = {}) {
   const { competitors, categoryResolution, competitorScope } = await fetchCompetitors(
     target.location,
     target,
-    categoryOverride,
     target.id,
     apiKey,
-    8,
-    { categoryOverrideKeyword }
+    8
   );
   const mechanical = scoreMechanical(target, competitors);
   return {

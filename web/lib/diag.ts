@@ -1,4 +1,4 @@
-import { combineScores, COMPETITOR_RADIUS_METERS, type ScoreItem } from "gbp-core";
+import { combineScores, COMPETITOR_RADIUS_METERS, toDisplayCategories, type ScoreItem } from "gbp-core";
 import { supabase } from "./supabase";
 import type { Judged } from "./judge";
 import { scoreHuman, type HumanAnswers } from "./human-items";
@@ -71,6 +71,19 @@ export type Place = {
   rating?: number;
   userRatingCount?: number;
 };
+
+/**
+ * 対象事業者の登録カテゴリ（primaryType＋追加カテゴリ）を日本語表示用に整形する。
+ * 2026-07-17追加: 業種入力欄の廃止に伴い、「実際に何のカテゴリで競合検索・採点を
+ * 行ったか」をレポート上で開示し透明性を担保する（修正依頼「登録カテゴリ表示」）。
+ */
+export function registeredCategories(target: Record<string, unknown>) {
+  const primaryType = target.primaryType as string | undefined;
+  const types = (target.types as string[] | undefined) || [];
+  const primary = primaryType ? toDisplayCategories([primaryType])[0] ?? null : null;
+  const additional = toDisplayCategories(types).filter((c) => c.id !== primaryType);
+  return { primary, additional };
+}
 
 export type DiagnosisRow = {
   id: string;

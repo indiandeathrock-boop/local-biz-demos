@@ -11,18 +11,19 @@ function todayStr() {
 }
 
 async function main() {
-  const [name, address, categoryOverride] = process.argv.slice(2);
+  const [name, address] = process.argv.slice(2);
   if (!name || !address) {
     console.error(
-      '使い方: node fetch.js "事業者名" "住所" ["業種カテゴリ（任意・Google Place Type）"]\n' +
-        '（2026-07-14: エリア引数を廃止。競合の検索範囲は住所の町名から自動設定されます）'
+      '使い方: node fetch.js "事業者名" "住所"\n' +
+        '（2026-07-14: エリア引数を廃止。競合の検索範囲は住所の町名から自動設定されます）\n' +
+        '（2026-07-17: 業種引数を廃止。競合検索・カテゴリ採点ともGoogle実データ(primaryType/types)のみを情報源とします）'
     );
     process.exit(1);
   }
 
   const apiKey = getApiKey();
 
-  const payload = await runAutoDiagnosis(name, address, apiKey, { categoryOverride });
+  const payload = await runAutoDiagnosis(name, address, apiKey);
   if (!payload) {
     console.error(`事業者が見つかりませんでした: ${name} (${address})`);
     process.exit(2);

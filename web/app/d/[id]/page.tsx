@@ -10,8 +10,10 @@ import {
   COMPETITOR_RADIUS_KM,
   competitorScopeNote,
   displayNote,
+  registeredCategories,
   type DiagnosisRow,
 } from "@/lib/diag";
+import PrintButton from "./print-button";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +25,9 @@ export async function generateMetadata({
   const { id } = await params;
   const row = await fetchDiagnosis(id);
   const safeName = (row?.business_name || "事業者").replace(/[\\/:*?"<>|]/g, "");
-  return { title: `${safeName}_診断結果` };
+  // PDF保存ダイアログのデフォルトファイル名になる（print-button.tsx参照。2026-07-17追加）
+  const dateStr = row ? new Date(row.created_at).toLocaleDateString("ja-JP").replace(/\//g, "") : "";
+  return { title: `${safeName}_GBP診断_${dateStr}` };
 }
 
 function BarChart({ row }: { row: DiagnosisRow }) {
@@ -65,6 +69,7 @@ export default async function AutoResultPage({
   const unscoredLabels = Object.entries(items)
     .filter(([, item]) => item.score === null)
     .map(([key]) => ITEM_LABELS[key] || key);
+  const categories = registeredCategories(row.data.target);
 
   return (
     <div className="wrap">
@@ -92,6 +97,20 @@ export default async function AutoResultPage({
       <section>
         <h2>クチコミ数の競合比較</h2>
         <BarChart row={row} />
+      </section>
+
+      <section>
+        <h2>登録カテゴリ</h2>
+        <div className="rank-line">
+          主カテゴリ: <strong>{categories.primary?.label ?? "不明"}</strong>
+          {categories.primary && <span className="rank-note"> （{categories.primary.id}）</span>}
+        </div>
+        {categories.additional.length > 0 && (
+          <div className="rank-line">
+            追加カテゴリ: {categories.additional.map((c) => c.label).join("、")}
+          </div>
+        )}
+        <div className="rank-note">この診断は上記の登録カテゴリをもとに競合を検索しています。</div>
       </section>
 
       <section>
@@ -154,6 +173,7 @@ export default async function AutoResultPage({
       </section>
 
       <div style={{ marginTop: 32, display: "flex", gap: 10, flexWrap: "wrap" }} className="no-print">
+        <PrintButton />
         <Link className="btn" href={`/d/${row.id}/human`}>
           {row.human ? (row.human.finalized ? "パーソナルインサイトを修正する" : "パーソナルインサイトの続きを入力") : "パーソナルインサイトを始める"}
         </Link>

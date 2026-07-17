@@ -4,7 +4,6 @@ declare module "gbp-core" {
   export type CategoryResolution = {
     category: string | null;
     source:
-      | "manual"
       | "primaryType"
       | "types-fallback"
       | "generic-only"
@@ -36,8 +35,7 @@ declare module "gbp-core" {
   export function runAutoDiagnosis(
     name: string,
     address: string,
-    apiKey: string,
-    options?: { categoryOverride?: string; categoryOverrideKeyword?: string }
+    apiKey: string
   ): Promise<AutoDiagnosisData | null>;
 
   export function scoreMechanical(
@@ -58,4 +56,7 @@ declare module "gbp-core" {
   export const COMPETITOR_RADIUS_METERS: number;
   export const COMPETITOR_RADIUS_STAGES: number[];
   export const PHOTO_CAP: number;
+
+  export type DisplayCategory = { id: string; label: string };
+  export function toDisplayCategories(typeIds: string[]): DisplayCategory[];
 }

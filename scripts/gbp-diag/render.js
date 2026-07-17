@@ -3,7 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { combineScores, COMPETITOR_RADIUS_METERS } = require('../../packages/gbp-core');
+const { combineScores, COMPETITOR_RADIUS_METERS, toDisplayCategories } = require('../../packages/gbp-core');
 
 const COMPETITOR_RADIUS_KM = COMPETITOR_RADIUS_METERS / 1000;
 
@@ -84,18 +84,50 @@ function buildBarChart(target, competitors) {
 
 function buildScoreTable(items) {
   return Object.keys(ITEM_LABELS)
+    .filter((key) => items[key].score !== null)
     .map((key) => {
       const item = items[key];
       const label = ITEM_LABELS[key];
-      const scoreText = item.score === null ? '判定不能' : `${item.score} / ${item.max}`;
       return `
       <tr>
         <td>${esc(label)}</td>
-        <td class="score-cell">${scoreText}</td>
+        <td class="score-cell">${item.score} / ${item.max}</td>
         <td class="note-cell">${esc(item.note)}</td>
       </tr>`;
     })
     .join('\n');
+}
+
+function unscoredNote(items) {
+  const labels = Object.keys(ITEM_LABELS)
+    .filter((key) => items[key].score === null)
+    .map((key) => ITEM_LABELS[key]);
+  if (labels.length === 0) return '';
+  return `<p class="score-explain">以下の項目はパーソナルインサイトで判定します: ${esc(labels.join('、'))}</p>`;
+}
+
+/**
+ * 登録カテゴリ表示（2026-07-17追加）。業種手動指定の廃止に伴い、
+ * 「実際に何のカテゴリで競合検索・採点を行ったか」を開示する。
+ */
+function buildCategorySection(target) {
+  const primaryList = target.primaryType ? toDisplayCategories([target.primaryType]) : [];
+  const primary = primaryList[0] || null;
+  const additional = toDisplayCategories(target.types || []).filter(
+    (c) => c.id !== target.primaryType
+  );
+  const additionalLine = additional.length
+    ? `<div class="rank-line">追加カテゴリ: ${esc(additional.map((c) => c.label).join('、'))}</div>`
+    : '';
+  return `
+  <section>
+    <h2>登録カテゴリ</h2>
+    <div class="rank-line">主カテゴリ: <strong>${esc(primary ? primary.label : '不明')}</strong>${
+      primary ? ` <span class="rank-note">（${esc(primary.id)}）</span>` : ''
+    }</div>
+    ${additionalLine}
+    <div class="rank-note">この診断は上記の登録カテゴリをもとに競合を検索しています。</div>
+  </section>`;
 }
 
 function buildHumanItemsTable() {
@@ -123,12 +155,10 @@ function render(dataPath, judgedPath) {
   });
 
   const targetName = data.target.displayName?.text || data.name;
-  // F-1: 分母は常に100固定。判定不能項目の存在はバッジ文言で語らず注記行（unjudgedNote）に出す。
+  // F-1: 分母は常に100固定。判定不能項目は採点表から分離し「項目別採点」直下の
+  // 注記1行にまとめる（2026-07-17変更。unscoredNote()参照。RKフィードバック:
+  // 判定不能バッジが採点表に混在すると見た目・仕様として違和感が強いため）。
   const scoreLine = `自動診断 ${combined.earned}点／100点（人間診断は未実施）`;
-  const unjudgedItems = Object.entries(combined.items).filter(([, item]) => item.score === null);
-  const unjudgedNote = unjudgedItems.length
-    ? `※ 一部項目（${unjudgedItems.map(([key]) => `${ITEM_LABELS[key]}／${combined.items[key].max}点分`).join('、')}）はAPI経由で確認できないため「判定不能」としています。`
-    : '';
 
   const ratingAll = [data.target, ...data.competitors].filter((c) => typeof c.rating === 'number');
   const sorted = [...ratingAll].sort((a, b) => b.userRatingCount - a.userRatingCount);
@@ -214,7 +244,6 @@ function render(dataPath, judgedPath) {
     <div class="date">診断日: ${esc(new Date(data.generatedAt).toLocaleDateString('ja-JP'))}</div>
     <h1>${esc(targetName)} — GBP診断レポート</h1>
     <div class="score-badge">${esc(scoreLine)}</div>
-    ${unjudgedNote ? `<div class="unjudged-note">${esc(unjudgedNote)}</div>` : ''}
     <div class="score-explain">本診断は「自動診断100点＋人間診断100点」の2部構成で、両方完了後の平均値が最終スコアとなります。本レポートは自動診断のみ完了した段階のものです。</div>
   </header>
 
@@ -229,6 +258,8 @@ function render(dataPath, judgedPath) {
     ${buildBarChart(data.target, data.competitors)}
   </section>
 
+  ${buildCategorySection(data.target)}
+
   <section>
     <h2>項目別採点</h2>
     <table>
@@ -236,6 +267,7 @@ function render(dataPath, judgedPath) {
         ${buildScoreTable(combined.items)}
       </tbody>
     </table>
+    ${unscoredNote(combined.items)}
   </section>
 
   <section>

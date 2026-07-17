@@ -92,6 +92,7 @@ LLM出力はJSONスキーマで構造化し（structured outputs）、max値は�
 | 7 | **言語ネゴシエーション**: Accept-Language未指定だとリクエスト毎に応答言語が変わることがある | HTML差分監視が毎回「変更あり」誤検知 | `hl=en`固定＋Accept-Languageヘッダ明示（gbp-watchで発生） |
 | 8 | **includedTypesはtypes配列への包含でマッチ**: 検索フィルタは候補の主業態（primaryType）を保証しない | カフェ検索の競合に館内カフェを持つ映画館（TOHOシネマズ上野、primaryType=movie_theater、typesにcafeを含む）が混入 | 取得後に`isSamePrimaryCategory()`でprimaryTypeを再検証（2026-07-14・蔦重の事例） |
 | 9 | **半径固定の母集団は商圏とズレる**: POPULARITY順は観光地の看板店が独占し、地域密着店が候補プールに入らない | 千束のカフェ診断で競合が浅草・上野の観光大箱（クチコミ2,000件超）のみになる | 町名スコープ（addressComponentsのsublocality_level_2で町名抽出→町名一致優先・800m起点の段階拡張）。詳細はgbp-scoring-rules.md「町名スコープ」節 |
+| 10 | **診断者の主観と実データの情報源が分裂すると自己矛盾する**: 競合検索カテゴリ（人間の手動選択）とカテゴリ採点（primaryType実データ）が別ソースだと、両者が食い違うレポートが生成される | 蔦重で「登録カテゴリ(art_museum)は競合(カフェ主流)と合っていません」という自己撞着した指摘が発生 | 業種手動指定を完全廃止し、競合検索・採点とも`candidateCompetitorCategories()`（primaryType優先）のみを情報源に統一（2026-07-17）。複数の判定ロジックが同じ対象を扱う場合、情報源を1本化する設計原則 |
 
 新しい落とし穴を発見したら: この表と gbp-scoring-rules.md の該当節の両方に追記する。
 「Googleの分類にある＝APIの検索フィルタで使える」ではない、が最大の教訓。
