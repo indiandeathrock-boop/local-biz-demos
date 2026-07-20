@@ -1,38 +1,36 @@
 #!/usr/bin/env python3
-"""Phase3: サービスアカウントでGoogle Drive Docsへの書き込み。
+"""サービスアカウントでGoogle Docsへの追記書き込み。
 
-年次ファイル「Xブックマーク_YYYY」に追記する。Google Docs API不使用
-（追加のAPI有効化をRKに求めずに済むよう、Drive APIのみで完結させる設計）。
-方式: 既存Docの内容をtext/plainでエクスポート → 末尾に新規分を追加した
-テキストを組み立て → files.update()でtext/plain contentをアップロードし、
-Drive側の自動変換でGoogle Doc本文を丸ごと置き換える（読み取り→書き戻し方式）。
+2026-07-19: Drive API export+reupload方式から Docs API batchUpdate(insertText)
+方式に移行した（x-grok/drive_write.pyと同じ変更、詳細はそちらのコメント参照）。
+旧方式は「毎回Doc全体をHTMLエクスポート→追記→丸ごと再アップロード」のため
+Docが大きくなるほど確実に破綻する設計だった（Xグロック会話_2026が172件で
+Googleのエクスポート容量上限に達し書き込み不能になった事象を受けての変更）。
+insertTextは文書末尾への差分追記のみで、既存内容の読み込みが不要なため、
+この種のサイズ上限問題が原理的に発生しない。
 """
-import html as html_lib
-import io
 import os
-import re
 from datetime import datetime
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
 
 SERVICE_ACCOUNT_PATH = os.path.expanduser("~/.secrets/x-bookmarks-service-account.json")
-SCOPES = ["https://www.googleapis.com/auth/drive"]
+SCOPES = [
+    "https://www.googleapis.com/auth/drive",
+    "https://www.googleapis.com/auth/documents",
+]
 DRIVE_FOLDER_NAME = "X"
-DOC_MIME = "application/vnd.google-apps.document"
 
 
-def get_drive_service():
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_PATH, scopes=SCOPES
-    )
-    return build("drive", "v3", credentials=creds)
+def get_services():
+    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_PATH, scopes=SCOPES)
+    return build("drive", "v3", credentials=creds), build("docs", "v1", credentials=creds)
 
 
-def find_folder(service, name=DRIVE_FOLDER_NAME):
+def find_folder(drive, name=DRIVE_FOLDER_NAME):
     q = f"name = '{name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
-    res = service.files().list(q=q, fields="files(id, name)").execute()
+    res = drive.files().list(q=q, fields="files(id, name)").execute()
     files = res.get("files", [])
     if not files:
         raise RuntimeError(
@@ -55,23 +53,14 @@ class YearDocMissing(Exception):
         super().__init__(f"「{title}」が見つかりません。RKに手動作成を依頼してください。")
 
 
-def find_year_doc(service, folder_id, year):
+def find_year_doc(drive, folder_id, year):
     title = f"Xブックマーク_{year}"
     q = f"name = '{title}' and '{folder_id}' in parents and trashed = false"
-    res = service.files().list(q=q, fields="files(id, name)").execute()
+    res = drive.files().list(q=q, fields="files(id, name)").execute()
     files = res.get("files", [])
     if not files:
         raise YearDocMissing(title)
     return files[0]["id"]
-
-
-def export_doc_html(service, file_id):
-    """既存Docの内容をHTMLで取得する。空のDocでも最低限のhtml/body構造は返る。"""
-    data = service.files().export(fileId=file_id, mimeType="text/html").execute()
-    html_text = data.decode("utf-8") if isinstance(data, bytes) else data
-    if "</body>" not in html_text:
-        html_text = "<html><body></body></html>"
-    return html_text
 
 
 def _format_date(created_at):
@@ -85,30 +74,61 @@ def _format_date(created_at):
         return created_at
 
 
-def _entry_to_html(e):
-    date_str = html_lib.escape(_format_date(e["created_at"]))
-    screen_name = html_lib.escape(e["screen_name"])
-    text = html_lib.escape(e["text"]).replace("\n", "<br>")
-    url = html_lib.escape(e["url"])
-    return (
-        f'<p style="margin:16pt 0 2pt 0"><span style="font-size:13pt;font-weight:700">'
-        f"{date_str} @{screen_name}</span></p>"
-        f'<p style="margin:0 0 4pt 0"><span style="font-size:11pt">{text}</span></p>'
-        f'<p style="margin:0 0 0 0"><span style="font-size:9pt;color:#666666">{url}</span></p>'
-    )
+def _utf16_len(text):
+    """Docs APIのindexはUTF-16コード単位。Pythonのlen()はコードポイント数のため、
+    絵文字等のサロゲートペア文字が含まれると挿入位置がずれてDocが壊れる。"""
+    return len(text.encode("utf-16-le")) // 2
 
 
-def append_entries(service, file_id, existing_html, entries):
+def _get_doc_end_index(docs, file_id):
+    doc = docs.documents().get(documentId=file_id, fields="body(content(endIndex))").execute()
+    content = doc.get("body", {}).get("content", [])
+    end_index = content[-1]["endIndex"] if content else 1
+    return max(end_index - 1, 1)
+
+
+def _entry_requests(entry, start_index):
+    requests = []
+    idx = start_index
+
+    def insert(text, bold=False, size=11, color=None):
+        nonlocal idx
+        n = _utf16_len(text)
+        requests.append({"insertText": {"location": {"index": idx}, "text": text}})
+        style = {"bold": bold, "fontSize": {"magnitude": size, "unit": "PT"}}
+        fields = "bold,fontSize"
+        if color:
+            style["foregroundColor"] = {"color": {"rgbColor": color}}
+            fields += ",foregroundColor"
+        requests.append({
+            "updateTextStyle": {
+                "range": {"startIndex": idx, "endIndex": idx + n},
+                "textStyle": style,
+                "fields": fields,
+            },
+        })
+        idx += n
+
+    date_str = _format_date(entry["created_at"])
+    insert(f"\n{date_str} @{entry['screen_name']}\n", bold=True, size=13)
+    insert(f"{entry['text']}\n", bold=False, size=11)
+    insert(f"{entry['url']}\n", bold=False, size=9, color={"red": 0.4, "green": 0.4, "blue": 0.4})
+
+    return requests, idx
+
+
+def append_entries(docs, file_id, entries):
     """entries: [{"created_at": ..., "screen_name": ..., "text": ..., "url": ...}, ...]
-    日付を太字・大きめフォントで見出し的に表示し、本文と視覚的に区別する。
-    既存HTMLの</body>直前に新規分を挿入し、text/htmlとしてアップロードして
-    Doc内容を置き換える（Drive側がHTML→Google Doc形式へ自動変換する）。
+    文書末尾に差分追記する。日付を太字・大きめフォントで見出し的に表示し、
+    本文と視覚的に区別する。
     """
-    new_html = "".join(_entry_to_html(e) for e in entries)
-    updated = existing_html.replace("</body>", new_html + "</body>")
-
-    media = MediaIoBaseUpload(io.BytesIO(updated.encode("utf-8")), mimetype="text/html", resumable=False)
-    service.files().update(fileId=file_id, media_body=media).execute()
+    idx = _get_doc_end_index(docs, file_id)
+    all_requests = []
+    for entry in entries:
+        reqs, idx = _entry_requests(entry, idx)
+        all_requests.extend(reqs)
+    if all_requests:
+        docs.documents().batchUpdate(documentId=file_id, body={"requests": all_requests}).execute()
     return len(entries)
 
 
@@ -117,8 +137,8 @@ def write_bookmarks(entries_by_year):
     年をまたぐ場合に備え年ごとに振り分けて書き込む。
     戻り値: (年ごとの成功件数の辞書, 成功したentryのidリスト, 年次ファイル不足で書けなかった年のリスト)
     """
-    service = get_drive_service()
-    folder_id = find_folder(service)
+    drive, docs = get_services()
+    folder_id = find_folder(drive)
     result = {}
     synced_ids = []
     missing_years = []
@@ -126,13 +146,12 @@ def write_bookmarks(entries_by_year):
         if not entries:
             continue
         try:
-            file_id = find_year_doc(service, folder_id, year)
+            file_id = find_year_doc(drive, folder_id, year)
         except YearDocMissing as e:
             print(f"[NEED ACTION] {e}")
             missing_years.append(year)
             continue
-        existing = export_doc_html(service, file_id)
-        n = append_entries(service, file_id, existing, entries)
+        n = append_entries(docs, file_id, entries)
         result[year] = n
         synced_ids.extend(e["id"] for e in entries)
         print(f"[OK] {year}年: {n}件追記（file_id={file_id}）")
