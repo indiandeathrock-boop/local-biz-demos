@@ -8,6 +8,7 @@ metadata:
 ---
 
 `~/.claude/skills/`（fable-method等のグローバルスキル）と `~/.claude/CLAUDE.md` はgit管理外のため、local-biz-demosリポジトリにバックアップする運用（2026-07-07開始）。
+2026-07-20に対象を拡張：全プロジェクトの永続メモリ（`~/.claude/projects/*/memory/`）→ `backups/claude-global/memory/`、分析レポート（`~/reports/`）→ `backups/reports/`。メモリやreportsを更新した節目でも実行するとよい。
 
 - 正は常に `~/.claude` 側。`backups/claude-global/` は復旧用コピーで直接編集しない
 - **グローバルスキルや~/.claude/CLAUDE.mdを編集したら `bash scripts/backup-claude-global.sh` を実行してcommit/pushする**
