@@ -31,7 +31,7 @@ for m in ~/.claude/projects/*/memory; do
 done
 
 # git管理外の分析レポート
-rsync -a --delete ~/reports/ "backups/reports/"
+rsync -a --delete --exclude=".DS_Store" ~/reports/ "backups/reports/"
 
 # 機密が紛れ込んでいないか確認（実キーのパターンのみ検出。変数名への言及は許容）
 if grep -rE "sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20,}|sb_secret_[A-Za-z0-9_]{10,}|ghp_[A-Za-z0-9]{20,}" "$DEST" backups/reports ; then
