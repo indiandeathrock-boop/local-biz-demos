@@ -1,5 +1,25 @@
 # 導入記録（intro-log）
 
+## 導入記録: Xグロック(Grok)会話→Google Drive自動収集システム
+- 日付: 2026-07-16
+- レベル分類: L4
+- 6分類: loop（launchd定期実行）＋自作Python一式
+- 解決したい問題: [[x-bookmarks]]の派生。X内Grok機能とのやり取りも同様に有料公式APIを使わずcookie+内部API直叩きでGoogle Driveに保存する
+- 権限の範囲: (1) Xアカウントのブックマークと同じcookie(auth_token/ct0)を共有利用。(2) Google Driveの「X」フォルダへの読み書き（ブックマークと同じサービスアカウント）。(3) Telegram Bot APIへの直接送信
+- 失敗時に壊れるもの: ブックマーク版と同じ制約（cookie失効・サービスアカウントのDrive容量制約）。cookieを共有しているため、失効時の再取得は両システムに同時に反映される
+- 後日評価: (未評価。初回全件収集256件・Drive書き込み全件完了)
+- 技術メモ: GrokHistory(会話一覧)・GrokConversationItemsByRestId(個別会話のメッセージ)のqueryIdはX側の仕様変更で不定期に変わりうる。ファイル名はRKの用語に合わせ「グロック」表記（「グローク」ではない）
+
+## 導入記録: Xブックマーク→Google Drive自動収集システム
+- 日付: 2026-07-16
+- レベル分類: L4
+- 6分類: loop（launchd定期実行）＋自作Python一式
+- 解決したい問題: Xでブックマークしたポストの本文を、有料公式APIを使わずGoogle Driveに自動保存する。X公式APIは有料のため、cookie(auth_token/ct0)+内部GraphQL APIの直接呼び出し（Playwright APIRequestContext経由）で代替。Google Drive MCP（claude.aiコネクタ）はセッション内限定で無人cronから呼べないため、別途Google Cloudサービスアカウント経由のDrive API直叩きを新規構築
+- 権限の範囲: (1) Xアカウントのブックマーク閲覧相当（auth_tokenは実質パスワード相当の強権限cookie）。(2) Google Driveの「X」フォルダへの読み書き（サービスアカウント、Editor権限、フォルダ外は対象外）。(3) Telegram Bot APIへの直接送信（CC非経由）
+- 失敗時に壊れるもの: cookie失効で収集停止（Telegram通知で検知・再取得手順を案内）。サービスアカウントは自身のDrive容量を持たないため新規ファイル作成不可（年次切替時のみRKの手動作成が必要、設計上の既知の制約）。過去データはSQLite(bookmarks.db)にも保持されるためDrive側の事故でも復元可能
+- 後日評価: (未評価。初回全件収集1247件・Drive書き込み1246件完了。2020年分1件のみRKの意向で未書込み)
+- 技術メモ: Bookmarks GraphQLのqueryId（LoLaMO4GuHLEPJOhH9kjAw）はX側の仕様変更で不定期に変わりうる。変わった場合はprobe.pyで再取得しlib.pyの値を更新する
+
 ## 導入記録: session-start-log（SessionStart hook）＋fileCheckpointingEnabled
 - 日付: 2026-07-15
 - レベル分類: L2
