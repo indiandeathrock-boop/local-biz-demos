@@ -315,6 +315,23 @@
     padding:26px 0 90px;background:var(--cream);
   }
 
+  /* 予告バー（2027年ルール） */
+  .alertbar{
+    background:var(--red);color:#fff;font-size:12px;
+    padding:9px 14px;line-height:1.6;position:relative;z-index:50;
+  }
+  .wrap-bar{
+    max-width:720px;margin:0 auto;display:flex;align-items:center;
+    justify-content:center;gap:10px;flex-wrap:wrap;text-align:center;
+  }
+  .wrap-bar span{font-weight:bold;}
+  .wrap-bar a{color:#fff;text-decoration:underline;white-space:nowrap;font-size:11.5px;}
+
+  /* 2027年ルールコーナー（警告色） */
+  .rule-label{color:var(--red);}
+  .rule-num{border-color:var(--red);}
+  .rule-num .n{color:var(--red);}
+
   /* ---------- HERO ---------- */
   .hero{background:var(--cream);padding:28px 0 40px;position:relative;overflow:hidden;}
   .hero::before{
@@ -355,6 +372,7 @@
   /* 背景の切り替え */
   .bg-white{background:var(--white);border-radius:32px 32px 0 0;}
   .bg-cream{background:var(--cream);border-radius:32px 32px 0 0;}
+  .bg-alert{background:var(--orange-pale);border-radius:32px 32px 0 0;}
 
   @media (max-width:400px){
     .hero h1{font-size:26px;}
@@ -364,6 +382,13 @@
 </style>
 </head>
 <body>
+
+<div class="alertbar">
+  <div class="wrap-bar">
+    <span>2027年1月1日、賃貸不動産の相続税評価ルールが変わります</span>
+    <a href="#rule2027">詳しく見る ＞</a>
+  </div>
+</div>
 
 <!-- ==================== BLOCK 01｜ヒーロー ==================== -->
 <header class="hero" id="top">
@@ -561,6 +586,42 @@
       <p class="a">評価額を下げる工夫では、<br>もう間に合わない。</p>
       <p class="b">必要なのは、資産の「形」そのものを変えることです。</p>
     </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 08.5｜2027年ルール（新設コーナー） ==================== -->
+<section class="bg-alert rule-sec" id="rule2027" style="scroll-margin-top:16px;">
+  <div class="wrap">
+    <p class="sec-label rule-label">NEW・2027年1月施行</p>
+    <h2>もう一つ、<br>期限があります。</h2>
+
+    <p class="lead-c">これまでの「壁」に加えて、<strong>賃貸用の不動産そのものの評価</strong>にも、まもなく新しいルールが入ります。</p>
+
+    <div class="bignum rule-num">
+      <span class="n">5<small>年</small></span>
+      <span class="t">相続開始前に取得してから、これ未満だと——</span>
+    </div>
+
+    <p>2027年1月1日以後の相続・遺贈・贈与から、<strong>相続開始前5年以内に取得・新築した賃貸用不動産</strong>（一棟マンション・アパート・事業用ビルなど）は、原則、<strong>時価で評価</strong>されるようになります（令和8年度税制改正大綱）。</p>
+
+    <p>これまでは、路線価などをもとにした評価額が時価より低くなることを利用し、相続の直前に賃貸物件を購入して評価を圧縮する、という対策が広く行われてきました。5年以内の取得については、このメリットがなくなります。</p>
+
+    <div class="notebox" style="background:#fff;border-color:var(--line);">
+      <h4>救済措置はあります</h4>
+      <p>課税上の弊害がなければ、取得価額に地価変動等を織り込んだ価額の<strong>80%</strong>を評価額とできる扱いが認められる見込みです。ゼロになるわけではありませんが、圧縮の幅は大きく縮みます。</p>
+    </div>
+
+    <div class="notebox" style="background:#fff;border-color:var(--line);">
+      <h4 style="color:var(--gray2);">不動産小口化商品はさらに厳格</h4>
+      <p>不動産特定共同事業法に基づく商品や信託受益権などは、5年という猶予すらなく、<strong>取得時期にかかわらず時価評価</strong>が適用される見込みです。</p>
+    </div>
+
+    <div class="band">
+      <p class="a">死亡のタイミングは、<br>誰にも選べません。</p>
+      <p class="b">だからこそ、「5年」という猶予を確保できるかどうかは、いま動き始めるかどうかだけで決まります。法人で保有する場合の評価への影響も含め、当日の説明会で詳しくお伝えします。</p>
+    </div>
+
+    <p style="font-size:11px;color:var(--gray2);line-height:1.8;">※令和8年度税制改正大綱（令和7年12月19日公表）に基づく内容です。今後の法案審議・通達により、詳細が変更となる可能性があります。</p>
   </div>
 </section>
 
@@ -867,6 +928,19 @@
   }
   window.addEventListener('scroll', check, {passive:true});
   check();
+
+  // ページ内アンカーはブラウザ標準のジャンプに任せず、JSで直接スクロールさせる。
+  // （プレビュー環境などで、同一ページ内リンクが外部遷移として扱われ、
+  // 　確認ダイアログが出るのを避けるため）
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var target = document.getElementById(id);
+    if(!target) return; // #FORM-A など未確定の外部リンクは対象外
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
 })();
 </script>
 
