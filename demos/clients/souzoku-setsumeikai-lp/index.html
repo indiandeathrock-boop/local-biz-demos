@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>その家、売る前に。聞いてほしい話があります。｜相続対策・個別相談会</title>
+<meta name="description" content="相続税は「現金で、10か月以内に、一括」が原則。それでも、家を売らずに納める方法があります。2時間の説明会で、あなたの家の場合を試算します。">
+<style>
+  :root{
+    --cream:#faf6ee;
+    --cream2:#f3ede1;
+    --white:#ffffff;
+    --green:#2f5d4b;
+    --green2:#417a63;
+    --green-pale:#e8f0ec;
+    --orange:#e8873a;
+    --orange-pale:#fdf1e5;
+    --red:#b4442f;
+    --ink:#2c2a26;
+    --gray:#6e6a63;
+    --gray2:#9a938a;
+    --line:#e5ded1;
+    --sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Meiryo",sans-serif;
+    --serif:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);color:var(--ink);background:var(--cream);
+    line-height:1.95;font-size:15px;-webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px;}
+  section{padding:48px 0;}
+
+  /* ============ 共通パーツ ============ */
+  .sec-label{
+    text-align:center;font-size:10.5px;letter-spacing:.22em;
+    color:var(--orange);margin-bottom:8px;font-weight:bold;
+  }
+  h2{
+    font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.6;
+    margin-bottom:26px;color:var(--green);text-align:center;letter-spacing:.01em;
+  }
+  h3{
+    font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.65;
+    color:var(--green);margin:30px 0 12px;
+  }
+  p{margin-bottom:15px;}
+  p:last-child{margin-bottom:0;}
+  .mk{background:linear-gradient(transparent 64%, rgba(232,135,58,.4) 64%);font-weight:bold;}
+  .lead-c{text-align:center;font-size:13.5px;color:var(--gray);margin-bottom:26px;line-height:1.9;}
+
+  /* 画像プレースホルダー */
+  .imgslot{
+    background:var(--white);border:2px dashed var(--line);border-radius:16px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:11px;color:#bdb5a7;line-height:1.7;padding:14px;
+  }
+  .imgslot.h150{height:150px;}
+  .imgslot.h180{height:180px;}
+  .imgslot.h200{height:200px;}
+  .imgslot.sq{width:96px;height:96px;border-radius:50%;flex-shrink:0;font-size:9.5px;}
+
+  /* 巨大数字 */
+  .bignum{
+    text-align:center;padding:22px 16px;background:var(--white);
+    border-radius:18px;margin:20px 0;border:1px solid var(--line);
+  }
+  .bignum .n{
+    font-family:var(--serif);font-size:40px;line-height:1.25;
+    color:var(--orange);display:block;letter-spacing:.01em;
+  }
+  .bignum .n small{font-size:22px;}
+  .bignum .t{font-size:13px;color:var(--gray);line-height:1.8;display:block;margin-top:6px;}
+
+  /* 数字カード2枚 */
+  .numrow{display:flex;gap:10px;margin:20px 0;}
+  .numcard{
+    flex:1;background:var(--white);border:1px solid var(--line);border-radius:16px;
+    padding:18px 10px;text-align:center;
+  }
+  .numcard .n{
+    font-family:var(--serif);font-size:22px;line-height:1.3;color:var(--green);display:block;
+  }
+  .numcard .n b{color:var(--orange);font-weight:600;}
+  .numcard .t{font-size:11.5px;color:var(--gray);line-height:1.7;display:block;margin-top:7px;}
+
+  /* 帯 */
+  .band{
+    background:var(--green);color:#fff;border-radius:16px;
+    padding:20px 18px;margin:22px 0;text-align:center;
+  }
+  .band .a{font-family:var(--serif);font-size:18px;line-height:1.7;margin-bottom:8px;}
+  .band .b{font-size:13.5px;line-height:1.9;color:rgba(255,255,255,.86);}
+
+  /* 注意ボックス */
+  .notebox{
+    background:var(--orange-pale);border:1px solid #f0d9be;border-radius:16px;
+    padding:20px 18px;margin:22px 0;
+  }
+  .notebox h4{
+    font-family:var(--serif);font-size:16.5px;color:var(--red);
+    margin-bottom:10px;line-height:1.6;
+  }
+  .notebox p{font-size:13.5px;line-height:1.9;color:var(--ink);}
+
+  /* 引用 */
+  .quote{
+    background:var(--white);border-left:4px solid var(--orange);
+    border-radius:0 14px 14px 0;padding:18px 18px;margin:20px 0;
+  }
+  .quote p{
+    font-family:var(--serif);font-size:16px;line-height:1.85;color:var(--green);margin-bottom:8px;
+  }
+  .quote p:last-child{margin-bottom:0;}
+
+  /* ケースカード */
+  .case{margin-bottom:26px;}
+  .case .no{
+    display:inline-block;background:var(--green);color:#fff;
+    font-size:10.5px;font-weight:bold;letter-spacing:.08em;
+    padding:3px 12px;border-radius:99px;margin-bottom:10px;
+  }
+  .case h3{margin:0 0 12px;font-size:18px;}
+  .case .imgslot{margin-bottom:13px;}
+  .case p{font-size:14px;line-height:1.95;color:var(--ink);}
+
+  /* 資産バー */
+  .assetbar{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    padding:20px 18px;margin:20px 0;
+  }
+  .assetbar .cap{font-size:12px;color:var(--gray2);margin-bottom:12px;}
+  .bar{display:flex;height:40px;border-radius:8px;overflow:hidden;margin-bottom:14px;}
+  .bar span{
+    display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;color:#fff;line-height:1.3;text-align:center;
+  }
+  .bar .cash{background:var(--orange);flex:0 0 10%;}
+  .bar .estate{background:var(--green2);flex:0 0 75%;}
+  .bar .rights{background:#8aa79a;flex:0 0 15%;}
+  .assetbar .rows{font-size:13.5px;line-height:2;}
+  .assetbar .row{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:5px 0;}
+  .assetbar .row:last-child{border-bottom:none;}
+  .assetbar .row b{color:var(--green);}
+  .assetbar .gap{
+    margin-top:14px;padding-top:14px;border-top:2px solid var(--line);
+    text-align:center;font-family:var(--serif);font-size:26px;color:var(--red);
+  }
+
+  /* リスト */
+  ul.dots{list-style:none;margin:18px 0;}
+  ul.dots li{
+    position:relative;padding:8px 0 8px 20px;font-size:14px;line-height:1.9;
+    border-bottom:1px solid var(--line);
+  }
+  ul.dots li:last-child{border-bottom:none;}
+  ul.dots li::before{
+    content:"";position:absolute;left:2px;top:17px;
+    width:7px;height:7px;border-radius:50%;background:var(--orange);
+  }
+
+  /* 壁カード */
+  .wall{
+    background:var(--white);border-radius:18px;padding:20px 18px;margin-bottom:14px;
+    position:relative;border:1px solid var(--line);
+  }
+  .wall .no{
+    position:absolute;top:-10px;left:18px;background:var(--green);color:#fff;
+    font-size:10.5px;font-weight:bold;padding:3px 12px;border-radius:99px;letter-spacing:.08em;
+  }
+  .wall .ttl{font-size:13.5px;color:var(--gray);margin:6px 0 4px;}
+  .wall .hit{font-family:var(--serif);font-size:21px;color:var(--orange);line-height:1.5;margin-bottom:9px;}
+  .wall p{font-size:13.5px;line-height:1.9;color:var(--gray);}
+
+  /* 比較テーブル */
+  .cmp{
+    width:100%;border-collapse:separate;border-spacing:0;
+    background:var(--white);border-radius:16px;overflow:hidden;
+    border:1px solid var(--line);margin:20px 0;font-size:13px;
+  }
+  .cmp th,.cmp td{padding:12px 10px;text-align:center;line-height:1.7;border-bottom:1px solid var(--line);}
+  .cmp tr:last-child th,.cmp tr:last-child td{border-bottom:none;}
+  .cmp thead th{background:var(--cream2);font-size:12.5px;color:var(--gray);font-weight:bold;}
+  .cmp thead th.ng{color:var(--gray2);}
+  .cmp thead th.ok{background:var(--green-pale);color:var(--green);}
+  .cmp tbody th{
+    background:var(--cream);font-size:12px;color:var(--gray);font-weight:normal;
+    text-align:left;width:32%;
+  }
+  .cmp td.ng{color:var(--gray2);}
+  .cmp td.ok{background:var(--green-pale);color:var(--green);font-weight:bold;}
+
+  /* パート */
+  .part{margin-bottom:34px;}
+  .part-no{
+    text-align:center;font-family:var(--serif);font-size:12px;letter-spacing:.24em;
+    color:var(--orange);margin-bottom:6px;
+  }
+  .part h2{margin-bottom:20px;}
+
+  /* 登壇者 */
+  .speaker{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    padding:20px 18px;margin-bottom:18px;
+  }
+  .speaker .top{display:flex;gap:14px;align-items:center;margin-bottom:14px;}
+  .speaker .name{font-family:var(--serif);font-size:19px;color:var(--green);line-height:1.4;}
+  .speaker .role{font-size:11.5px;color:var(--gray);line-height:1.6;margin-top:4px;}
+  .speaker .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+  .speaker .tag{
+    font-size:10.5px;background:var(--green-pale);color:var(--green);
+    padding:3px 9px;border-radius:99px;line-height:1.5;
+  }
+  .speaker p{font-size:13.5px;line-height:1.9;color:var(--gray);}
+
+  /* 当日の内容 */
+  .agenda{counter-reset:ag;margin-top:18px;}
+  .agenda li{
+    list-style:none;counter-increment:ag;position:relative;
+    background:var(--cream2);border-radius:14px;padding:16px 16px 14px 16px;margin-bottom:10px;
+  }
+  .agenda li .n{
+    font-family:var(--serif);font-size:11px;letter-spacing:.14em;color:var(--orange);
+    display:block;margin-bottom:4px;
+  }
+  .agenda li .n::before{content:"0" counter(ag);}
+  .agenda li h4{font-size:15.5px;line-height:1.6;margin-bottom:6px;color:var(--ink);}
+  .agenda li p{font-size:13px;line-height:1.85;color:var(--gray);}
+
+  /* Narrow */
+  .narrow-ok li::before{background:var(--green2);}
+  .narrow-ng{
+    background:var(--cream2);border-radius:16px;padding:18px 18px;margin-top:20px;
+  }
+  .narrow-ng h4{font-size:15px;color:var(--gray);margin-bottom:10px;}
+  .narrow-ng ul{list-style:none;}
+  .narrow-ng li{
+    position:relative;padding:6px 0 6px 20px;font-size:13.5px;line-height:1.85;color:var(--gray);
+  }
+  .narrow-ng li::before{content:"×";position:absolute;left:3px;top:6px;color:var(--gray2);font-weight:bold;}
+
+  /* 申込 */
+  .applybox{
+    background:var(--white);border:1px solid var(--line);border-radius:20px;
+    padding:22px 18px;margin-bottom:16px;
+  }
+  .applybox.main{border:2px solid var(--orange);}
+  .applybox h3{margin-top:0;text-align:center;font-size:20px;}
+  .applybox .infotable{width:100%;font-size:13.5px;border-collapse:collapse;margin-bottom:16px;}
+  .applybox .infotable th{
+    text-align:left;color:var(--gray2);font-weight:normal;font-size:12.5px;
+    width:4.5em;padding:7px 0;vertical-align:top;
+  }
+  .applybox .infotable td{padding:7px 0;line-height:1.75;}
+  .applybox .infotable td b{color:var(--green);}
+  .reason{
+    background:var(--cream);border-radius:12px;padding:14px 14px;margin-bottom:14px;
+    font-size:12.5px;line-height:1.9;color:var(--gray);
+  }
+  .reason b{color:var(--green);display:block;margin-bottom:4px;font-size:13px;}
+  .mailline{
+    text-align:center;font-size:15px;font-weight:bold;color:var(--green);
+    background:var(--green-pale);border-radius:12px;padding:14px 10px;margin-bottom:8px;line-height:1.7;
+  }
+  .mailline small{display:block;font-size:11.5px;font-weight:normal;color:var(--gray);margin-top:4px;}
+
+  .btn-lg{
+    display:block;text-align:center;text-decoration:none;
+    font-size:16px;font-weight:bold;padding:18px 10px;border-radius:99px;
+  }
+  .btn-lg.o{background:var(--orange);color:#fff;box-shadow:0 3px 0 #c26e26;}
+  .btn-lg.g{background:var(--white);color:var(--green);border:1.5px solid var(--green);}
+  .btn-lg small{display:block;font-size:11.5px;font-weight:normal;margin-top:4px;opacity:.9;}
+
+  /* さいごに */
+  .closing{background:var(--white);}
+  .closing .inner{font-size:15px;line-height:2.05;}
+  .closing .voices{
+    background:var(--cream);border-radius:16px;padding:18px 18px;margin:22px 0;
+  }
+  .closing .voices p{
+    font-family:var(--serif);font-size:14.5px;line-height:1.9;color:var(--gray);
+    margin-bottom:8px;padding-left:16px;position:relative;
+  }
+  .closing .voices p::before{content:"「";position:absolute;left:0;top:0;color:var(--orange);}
+  .closing .voices p:last-child{margin-bottom:0;}
+  .closing .final{
+    text-align:center;font-family:var(--serif);font-size:19px;line-height:1.75;
+    color:var(--green);margin:26px 0;
+  }
+  .textlink{
+    display:block;text-align:center;font-size:14.5px;font-weight:bold;
+    color:var(--orange);text-decoration:none;padding:14px;
+  }
+
+  /* フローティングCTA */
+  .float{
+    position:fixed;bottom:0;left:0;right:0;
+    background:rgba(250,246,238,.97);border-top:1px solid var(--line);
+    padding:9px 13px;display:flex;gap:8px;z-index:99;
+    transform:translateY(110%);transition:transform .3s ease;
+  }
+  .float.on{transform:translateY(0);}
+  .float a{
+    flex:1;text-align:center;font-size:13.5px;font-weight:bold;
+    text-decoration:none;padding:13px 4px;border-radius:99px;line-height:1.4;
+  }
+  .float .f1{background:var(--orange);color:#fff;}
+  .float .f2{background:var(--white);color:var(--green);border:1.5px solid var(--green);}
+
+  /* フッター */
+  .disclaimer{
+    font-size:11px;line-height:1.9;color:var(--gray2);
+    padding:26px 0 90px;background:var(--cream);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{background:var(--cream);padding:28px 0 40px;position:relative;overflow:hidden;}
+  .hero::before{
+    content:"";position:absolute;top:-100px;right:-100px;
+    width:280px;height:280px;border-radius:50%;background:rgba(65,122,99,.09);
+  }
+  .hero .wrap{position:relative;}
+  .hero .label{
+    display:inline-block;background:var(--green);color:#fff;
+    font-size:11.5px;font-weight:bold;letter-spacing:.06em;
+    padding:6px 14px;border-radius:99px;margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:var(--serif);font-size:29px;font-weight:600;line-height:1.65;
+    letter-spacing:.01em;margin-bottom:18px;color:var(--green);
+  }
+  .hero .sub{font-size:14.5px;line-height:2;margin-bottom:22px;}
+  .hero .sub strong{color:var(--green);}
+  .hero .imgslot{margin-bottom:22px;}
+  .hero .badges{display:flex;gap:9px;margin-bottom:24px;}
+  .hero .badge{
+    flex:1;background:var(--white);border:1px solid var(--line);border-radius:14px;
+    padding:14px 8px;text-align:center;font-size:11.5px;line-height:1.55;color:var(--gray);
+  }
+  .hero .badge .n{
+    display:block;font-family:var(--serif);font-size:23px;color:var(--orange);
+    line-height:1.2;margin-bottom:3px;
+  }
+  .hero .cta{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+  .hero .meta{
+    background:var(--white);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;font-size:13px;line-height:1.85;
+  }
+  .hero .meta dl{display:grid;grid-template-columns:4em 1fr;gap:3px 12px;}
+  .hero .meta dt{color:var(--gray2);font-size:12px;}
+  .hero .meta dd{font-weight:bold;}
+
+  /* 背景の切り替え */
+  .bg-white{background:var(--white);border-radius:32px 32px 0 0;}
+  .bg-cream{background:var(--cream);border-radius:32px 32px 0 0;}
+
+  @media (max-width:400px){
+    .hero h1{font-size:26px;}
+    h2{font-size:22px;}
+    .bignum .n{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== BLOCK 01｜ヒーロー ==================== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="label">相続対策・個別相談会／参加無料</span>
+
+    <h1>その家、売る前に。<br><span class="mk">聞いてほしい話</span>があります。</h1>
+
+    <p class="sub">
+      相続税は「現金で、10か月以内に、一括」が原則。<br>
+      それでも、<strong>家を売らずに納める方法</strong>があります。<br>
+      2時間の説明会で、あなたの家の場合を試算します。
+    </p>
+
+    <div class="imgslot h200">［IMG-01］メインビジュアル<br>横1200×縦800／必須<br>親子2世代が実家で書類を見ている情景</div>
+
+    <div class="badges">
+      <div class="badge"><span class="n">35年</span>不動産業界歴<br>宅建マイスター</div>
+      <div class="badge"><span class="n">10期</span>以上の海外法人<br>経営実績</div>
+    </div>
+
+    <div class="cta">
+      <a class="btn-lg o" href="#apply">説明会に申し込む</a>
+      <a class="btn-lg g" href="#contact">個別に相談する</a>
+    </div>
+
+    <div class="meta">
+      <dl>
+        <dt>日時</dt><dd>2026年9月13日（日）14:00〜16:00</dd>
+        <dt>会場</dt><dd>浮世絵カフェ蔦重（東京都台東区千束）</dd>
+        <dt>参加費</dt><dd>無料／定員 5組</dd>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== BLOCK 02｜緊急性 ==================== -->
+<section class="bg-white">
+  <div class="wrap">
+    <p class="sec-label">TIME LIMIT</p>
+    <h2>対策できる期間は、<br>親が元気なうちだけです。</h2>
+
+    <div class="bignum">
+      <span class="n">認知症の診断が下りた日</span>
+      <span class="t">——その瞬間、資産は凍結されます。</span>
+    </div>
+
+    <p>生前贈与も、法人の設立も、対策と呼べるもののほぼすべてが「本人に判断能力があること」を前提にしています。対策できるかどうかを分けるのは、資産の額でも、家族の仲の良さでもありません。</p>
+
+    <div class="band">
+      <p class="a">その「今」を逃すと、<br>何が起きるのか。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 03-05｜3つの証拠 ==================== -->
+<section class="bg-cream">
+  <div class="wrap">
+    <p class="sec-label">CASE STUDY</p>
+    <h2>相続の話題が、<br>週刊誌から消えません。</h2>
+
+    <div class="case">
+      <span class="no">CASE 01</span>
+      <h3>20億円を受け継ぐはずだった息子は、相続を放棄した</h3>
+      <div class="imgslot h150">［IMG-02］イラスト<br>横800×縦600／必須</div>
+      <p>2024年末に亡くなった<strong>中山美穂</strong>さん。報じられているところによれば、遺産は不動産や楽曲の印税を含めて総額20億円規模。そこにかかる相続税は<strong>約11億円</strong>とされ、パリで暮らす一人息子さんは最終的に相続を放棄したと伝えられました。</p>
+    </div>
+
+    <div class="case">
+      <span class="no">CASE 02</span>
+      <h3>揉めていた1年で、1日50万円ずつ消えていった</h3>
+      <div class="imgslot h150">［IMG-03］イラスト<br>横800×縦600／必須</div>
+      <p>2025年に亡くなった<strong>みのもんた</strong>さん。鎌倉山の豪邸を含む総額40億円ともいわれる遺産をめぐっては、3人のお子さんの話し合いが一周忌を過ぎても折り合わず、申告期限を過ぎたことで延滞税が発生。</p>
+
+      <div class="bignum">
+        <span class="n">年9.1<small>%</small></span>
+        <span class="t">1日あたり、およそ50万円</span>
+      </div>
+
+      <p>登記手続きの一部がようやく動いたのは、この夏になってからでした。</p>
+    </div>
+
+    <div class="case">
+      <span class="no">CASE 03</span>
+      <h3>ついに国会でも、この仕組みに疑問の声が上がった</h3>
+      <div class="imgslot h150">［IMG-04］イラスト<br>横800×縦600／必須<br>※特定議員の似顔絵にならないよう<br>シルエット寄りの表現を推奨</div>
+      <p>参議院議員・<strong>塩入清香</strong>氏（参政党）は、<strong>片山さつき</strong>財務相を相手に、相続税の在り方を真正面から追及しました。</p>
+
+      <div class="quote">
+        <p>親が亡くなっただけで、なぜ請求書が届くのか</p>
+        <p>所得税も消費税も払い終えたお金に、また課税するのは二重課税ではないか</p>
+      </div>
+
+      <p>一部の資産家だけの話ではなく、<span class="mk">いま多くの家庭が抱えている問題</span>として、国会の場でも議論されているということです。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 06｜統計 ==================== -->
+<section class="bg-white">
+  <div class="wrap">
+    <p class="sec-label">REALITY</p>
+    <h2>「うちには関係ない」は、<br>もう通じません。</h2>
+
+    <p class="lead-c">
+      <strong>2015年 基礎控除の引き下げ</strong><br>
+      5,000万円＋1,000万円×法定相続人<br>↓<br>3,000万円＋600万円×法定相続人
+    </p>
+
+    <div class="numrow">
+      <div class="numcard">
+        <span class="n">5万件 → <b>16万件超</b></span>
+        <span class="t">相続税の申告件数</span>
+      </div>
+      <div class="numcard">
+        <span class="n">4%台 → <b>10%台</b></span>
+        <span class="t">亡くなった方に対する課税割合</span>
+      </div>
+    </div>
+
+    <div class="band">
+      <p class="a">東京23区に一戸建てやマンションを一つ。<br>それだけで基礎控除を超えます。</p>
+      <p class="b">相続税は、資産家の税金から、持ち家世帯の税金に変わりました。</p>
+    </div>
+
+    <div class="notebox">
+      <h4>そして、納めるのは「子」です。</h4>
+      <p>相続税を納めるのは、亡くなった方ではありません。<strong>残された子どもたちが、自分の預金口座から、10か月以内に納めます。</strong></p>
+      <p>親の家に思い入れがある人も、ない人もいる。住みたい人も、現金がほしい人もいる。そこへ「10か月」という期限と「現金一括」という条件が乗る。——揉めない方が不思議です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 07｜資産の形 ==================== -->
+<section class="bg-cream">
+  <div class="wrap">
+    <p class="sec-label">THE SHAPE</p>
+    <h2>問題は、資産の「額」ではなく<br>資産の「形」です。</h2>
+
+    <div class="assetbar">
+      <p class="cap">報じられている20億円のケース</p>
+      <div class="bar">
+        <span class="cash">現金<br>2億</span>
+        <span class="estate">不動産 15億円</span>
+        <span class="rights">印税<br>3億</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span>相続税額（最高税率55%）</span><b>約11億円</b></div>
+        <div class="row"><span>すぐ納税にまわせる現金</span><b>2億円だけ</b></div>
+      </div>
+      <div class="gap">9億円、足りません。</div>
+    </div>
+
+    <ul class="dots">
+      <li>不動産は、<strong>売らなければ1円も納税に使えない</strong></li>
+      <li>印税のように「これから入ってくるかもしれない収入」にも、<strong>今、現金で課税される</strong></li>
+      <li>だから売るしかなくなる。<strong>売り急ぐから、足元を見られる</strong></li>
+    </ul>
+
+    <div class="band">
+      <p class="a">桁は違っても、<br>「不動産は多いが、現金は少ない」</p>
+      <p class="b">この形は、日本のごく普通の家庭とまったく同じです。ご家族の仲が悪いわけでも、準備を怠ったわけでもありません。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 08｜3つの壁 ==================== -->
+<section class="bg-white">
+  <div class="wrap">
+    <p class="sec-label">THREE WALLS</p>
+    <h2>その「逃げ道」、<br>もう塞がれています。</h2>
+
+    <div class="wall">
+      <span class="no">壁 01</span>
+      <p class="ttl">タワマン節税</p>
+      <p class="hit">もう使えません</p>
+      <p>通達6項の発動に加え、令和6年から補正率を導入。評価額は時価の6割程度まで引き上げられました。</p>
+    </div>
+
+    <div class="wall">
+      <span class="no">壁 02</span>
+      <p class="ttl">延納（分割払い）</p>
+      <p class="hit">年600万円のコスト</p>
+      <p>不動産が資産の75%を占めるケースでは、利子税だけで年間約600万円。時間を稼ぐこと自体に、お金がかかります。</p>
+    </div>
+
+    <div class="wall">
+      <span class="no">壁 03</span>
+      <p class="ttl">「とりあえず税理士へ」</p>
+      <p class="hit">申告の専門家 ≠<br>組み替えの専門家</p>
+      <p>税理士は正しく申告するプロ。ただし「いちばん有利な形に資産を組み替える」のは、別の領域です。</p>
+    </div>
+
+    <div class="band">
+      <p class="a">評価額を下げる工夫では、<br>もう間に合わない。</p>
+      <p class="b">必要なのは、資産の「形」そのものを変えることです。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 09｜解決策 ==================== -->
+<section class="bg-cream">
+  <div class="wrap">
+    <p class="sec-label">SOLUTION</p>
+    <h2>個人で持つのをやめて、<br>「器」で持つ。</h2>
+
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="ng">個人で持つ</th>
+          <th class="ok">法人で持つ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>相続時に動かすもの</th>
+          <td class="ng">不動産そのもの</td>
+          <td class="ok">会社の株式</td>
+        </tr>
+        <tr>
+          <th>分割</th>
+          <td class="ng">分けられない</td>
+          <td class="ok">分けられる</td>
+        </tr>
+        <tr>
+          <th>納税原資</th>
+          <td class="ng">自分の預金から</td>
+          <td class="ok">家賃収入から</td>
+        </tr>
+        <tr>
+          <th>課税対象</th>
+          <td class="ng">相続のたび、まるごと</td>
+          <td class="ok">株式評価をベースに</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="notebox">
+      <h4>ただし、単純な話ではありません。</h4>
+      <p>「会社を作れば相続税が安くなる」わけではなく、<strong>不動産を実際に管理・運用する実体があってはじめて成立する設計</strong>です。だからこそ当日は、3部構成で段階を追ってお話しします。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 10-12｜プログラム ==================== -->
+<section class="bg-white">
+  <div class="wrap">
+    <p class="sec-label">PROGRAM</p>
+    <h2>当日の3部構成</h2>
+
+    <!-- PART 01 -->
+    <div class="part">
+      <p class="part-no">PART 01</p>
+      <h2>日本編：不動産を<br>「分けられる形」に変える</h2>
+
+      <div class="speaker">
+        <div class="top">
+          <div class="imgslot sq">［IMG-06］<br>顔写真</div>
+          <div>
+            <div class="name">加藤 大助</div>
+            <div class="role">株式会社バリュー・アップHD 営業部長</div>
+            <div class="tags">
+              <span class="tag">不動産業界歴35年</span>
+              <span class="tag">宅建マイスター</span>
+            </div>
+          </div>
+        </div>
+        <p>仲介から開発まで幅広い業務に従事。その知識と経験を元に、相続に関する問題にも適切なアドバイスをご提供します。</p>
+      </div>
+
+      <ol class="agenda">
+        <li>
+          <span class="n"></span>
+          <h4>いま、あなたの家にいくらかかるのか</h4>
+          <p>路線価・固定資産税評価額・小規模宅地等の特例から、その場で概算を出す考え方</p>
+        </li>
+        <li>
+          <span class="n"></span>
+          <h4>「売らずに納める」ための3つの条件</h4>
+          <p>どんな家なら法人化が有効で、どんな家では意味がないのか</p>
+        </li>
+        <li>
+          <span class="n"></span>
+          <h4>家族構成別・4つの導入パターン</h4>
+          <p>親子ともに法人なし／双方が法人／親が法人・子が会社員／親が年金暮らし・子が経営者</p>
+        </li>
+      </ol>
+    </div>
+
+    <!-- PART 02 -->
+    <div class="part">
+      <p class="part-no">PART 02</p>
+      <h2>海外法人活用編：日本の外に、<br>もう一つの拠点を持つ</h2>
+
+      <p class="lead-c">相続税のない国の投資家が、納税資金づくりで手放された日本の資産を買っていく——国会でも指摘された構造です。日本人が<strong>100%オーナー</strong>として現地法人を持てる数少ない国の一つ、フィリピン。その意味と、現実的なコスト・手間まで隠さずお話しします。</p>
+
+      <div class="speaker">
+        <div class="top">
+          <div class="imgslot sq">［IMG-07］<br>顔写真</div>
+          <div>
+            <div class="name">鈴木 信宏</div>
+            <div class="role">GLB inc. 代表取締役社長</div>
+            <div class="tags">
+              <span class="tag">国内経営30期</span>
+              <span class="tag">海外経営10期</span>
+              <span class="tag">実践派経営者</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker">
+        <div class="top">
+          <div class="imgslot sq">［IMG-08］<br>顔写真</div>
+          <div>
+            <div class="name">Alfred Pabas</div>
+            <div class="role">Pabas Accounting &amp; Law Office</div>
+            <div class="tags">
+              <span class="tag">弁護士</span>
+              <span class="tag">公認会計士</span>
+              <span class="tag">現地パートナー</span>
+            </div>
+          </div>
+        </div>
+        <p>設立後の毎月の申告・決算まで並走する体制を整えています。</p>
+      </div>
+
+      <div class="notebox">
+        <h4>先に申し上げておきます。</h4>
+        <p>海外口座や永住権を使って資産を「隠す」ことは、<strong>節税ではなく脱税</strong>です。日本国内にある財産を相続する場合、国籍や居住地を問わず日本の相続税がかかります。</p>
+        <p>当日お話しするのは、<strong>正しく申告しながら、資産の持ち方そのものを変える</strong>設計に限られます。</p>
+      </div>
+
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th class="ng">よくある誤解</th>
+            <th class="ok">実際</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ng">ペーパーカンパニーでOK</td><td class="ok">原則、認められません</td></tr>
+          <tr><td class="ng">作ったら放置できる</td><td class="ok">毎月の税務申告が必須</td></tr>
+          <tr><td class="ng">決算は自分でできる</td><td class="ok">CPAによる監査証明が必要</td></tr>
+          <tr><td class="ng">手軽に始められる</td><td class="ok">相応の維持コストが必要</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PART 03 -->
+    <div class="part">
+      <p class="part-no">PART 03</p>
+      <h2>まとめ・質疑応答</h2>
+
+      <p class="lead-c">第1部・第2部を踏まえ、「結局うちはどちらから検討すべきか」を、ご一緒に整理します。どのようなご質問にも誠実に、正直にお答えします。</p>
+
+      <div class="band">
+        <p class="a">ご要望いただければ、<br>そのまま個別のご面談にも対応いたします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 13｜Narrow ==================== -->
+<section class="bg-cream">
+  <div class="wrap">
+    <p class="sec-label">FOR YOU</p>
+    <h2>こんな方に、<br>来ていただきたい</h2>
+
+    <ul class="dots narrow-ok">
+      <li>親の家をどうするか、兄弟でまだ一度も話せていない</li>
+      <li>実家に思い入れはあるが、相続税の話になると現実的に売却しか浮かばない</li>
+      <li>親が元気なうちに、できることだけ先に知っておきたい</li>
+      <li>すでに賃貸物件や複数の不動産を持っていて、次の代への渡し方を決めかねている</li>
+      <li>顧問税理士はいるが、「申告」以外の相談ができていない</li>
+    </ul>
+
+    <div class="narrow-ng">
+      <h4>反対に、お役に立てない方</h4>
+      <ul>
+        <li><strong>不動産をお持ちでない方</strong>（この設計は不動産の管理・運用が前提です）</li>
+        <li><strong>すでに相続が発生し、申告期限が迫っている方</strong>（弁護士・税理士への直行をお勧めします）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 14｜申込 ==================== -->
+<section class="bg-white" id="apply">
+  <div class="wrap">
+    <p class="sec-label">APPLY</p>
+    <h2>打てる手は、<br>時間とともに減っていきます。</h2>
+
+    <p class="lead-c">生前贈与の持ち戻し期間も、認知症による資産凍結も、法人設立にかかる期間も、すべて「まだ元気なうち」を前提にした話です。</p>
+
+    <div class="imgslot h180" style="margin-bottom:22px;">［IMG-09］会場写真<br>横1200×縦800／推奨<br>浮世絵カフェ蔦重の店内</div>
+
+    <div class="applybox main">
+      <h3>説明会に参加する</h3>
+      <table class="infotable">
+        <tr><th>日時</th><td>2026年9月13日（日）<br>14:00〜16:00（受付13:40〜）</td></tr>
+        <tr><th>会場</th><td>浮世絵カフェ蔦重<br>東京都台東区千束</td></tr>
+        <tr><th>参加費</th><td><b>無料</b></td></tr>
+        <tr><th>定員</th><td><b>5組</b></td></tr>
+        <tr><th>締切</th><td>2026年9月6日（日）<br>／定員に達し次第終了</td></tr>
+      </table>
+
+      <div class="reason">
+        <b>少人数にしている理由</b>
+        当日その場でご自宅の状況を伺い、概算をお出しするためです。人数が増えると、一組あたりに割ける時間がなくなり、持ち帰っていただけるものが「一般論」だけになってしまいます。
+      </div>
+
+      <div class="reason">
+        当日は会場のカフェで提供しているおいしいお飲み物をご用意します。<br>
+        <b style="margin-top:6px;">涼みにいらっしゃるくらいのお気持ちで、お越しください。</b>
+      </div>
+
+      <a class="btn-lg o" href="#FORM-A">
+        説明会に申し込む
+        <small>入力1分・秘密厳守</small>
+      </a>
+    </div>
+
+    <div class="applybox" id="contact">
+      <h3>まず、話だけ聞きたい方へ</h3>
+      <p style="font-size:13.5px;line-height:1.9;color:var(--gray);margin-bottom:14px;">
+        説明会という形にこだわらず、個別のご相談も承っています。「うちの場合はどうなるか」だけでも、お気軽にどうぞ。
+      </p>
+
+      <div class="mailline">
+        【要記入：問い合わせ用アドレス】
+        <small>24時間受付・翌営業日にご返信</small>
+      </div>
+
+      <a class="btn-lg g" href="#FORM-B">
+        個別に相談する
+        <small>日程が合わない方もこちらへ</small>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOCK 15｜さいごに ==================== -->
+<section class="closing bg-cream">
+  <div class="wrap">
+    <p class="sec-label">CLOSING</p>
+    <h2>さいごに</h2>
+
+    <div class="inner">
+      <p>相続税の本当の怖さは、税率の高さではありません。<br><strong>「10か月以内に、現金で、一括で」</strong>——この条件です。</p>
+
+      <p>財産があるのに、現金がない。だから売り急ぐ。だから買い叩かれる。</p>
+
+      <p>20億円の遺産を前に、息子さんが相続放棄を選んだ。40億円の豪邸をめぐる話し合いは一周忌を過ぎても折り合わず、延滞税だけで1日およそ50万円が失われ続けた。</p>
+
+      <p>これらが他人事に見えないのは、桁こそ違え、<span class="mk">多くのご家庭がまったく同じ資産の形を抱えているから</span>です。</p>
+
+      <div class="voices">
+        <p>わかってはいるけど、まだ先の話だから」</p>
+        <p>親に切り出しづらくて」</p>
+        <p>そのうち、落ち着いたら」</p>
+      </div>
+
+      <p>私たちがこれまでお会いしてきた方の多くも、最初は同じことをおっしゃいました。そして、間に合った方と、間に合わなかった方がいます。</p>
+
+      <p>その差は、知識でも、資産の額でもありませんでした。<strong>「まだ元気なうちに、一度だけ話を聞いてみた」</strong>——それだけです。</p>
+
+      <p class="final">相続の問題は、<br>早くから着手して<br>損をすることは一切ありません。</p>
+
+      <div class="imgslot h150" style="margin-bottom:8px;">［IMG-11］情景カット<br>横1200×縦600／任意</div>
+
+      <a class="textlink" href="#apply">＞ 説明会のお申し込み・お問い合わせはこちら</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== フッター ==================== -->
+<div class="disclaimer">
+  <div class="wrap">
+    ※本ページは情報提供を目的としたものであり、特定の節税手法・投資手法を推奨または保証するものではありません。相続税・法人税の取扱いは、個別の事情および制度改正により変わります。最終的な判断は、税理士・会計士など専門家にご相談のうえ、ご自身の責任で行ってください。<br>
+    ※記事中の著名人および国会質疑に関する記述は、報道されている内容に基づくものです。<br>
+    ※制度・数値は執筆時点のものです。
+  </div>
+</div>
+
+<!-- ==================== フローティングCTA ==================== -->
+<div class="float" id="float">
+  <a class="f1" href="#FORM-A">説明会に申し込む</a>
+  <a class="f2" href="#FORM-B">個別に相談する</a>
+</div>
+
+<script>
+(function(){
+  var hero = document.getElementById('top');
+  var float = document.getElementById('float');
+  function check(){
+    var b = hero.getBoundingClientRect().bottom;
+    if(b < 0){ float.classList.add('on'); }
+    else{ float.classList.remove('on'); }
+  }
+  window.addEventListener('scroll', check, {passive:true});
+  check();
+})();
+</script>
+
+</body>
+</html>
