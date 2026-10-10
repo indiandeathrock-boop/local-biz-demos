@@ -138,3 +138,12 @@
 - 失敗時に壊れるもの: 特になし（文書のみ。規律が守られない場合もdeny/allowルールの安全層は独立して機能）
 - 派生: 2026-07-20 Claude.ai版カスタム指示を生成（`~/reports/fable-migration/claude-ai-method.md`。method.md本体は無変更・読み取りのみ）
 - 後日評価: (未評価)
+
+## 導入記録: designlang（design-extract）
+- 日付: 2026-10-10
+- レベル分類: L2
+- 6分類: skill
+- 解決したい問題: backlog項目「design-extract導入」への対応。実在サイトのデザイントークン（色・書体・余白・角丸など）をURLから自動抽出し、design-refs/配下にDESIGN.md形式で保存する手作業（hotpepper事例はnpx経由の一回限りの実行だった）を、継続的に使える状態にする。
+- 権限の範囲: 指定URLへの読み取りアクセス（ヘッドレスブラウザでのスクレイピング）のみ。ローカルへの書き込みは出力先ディレクトリ（design-refs/配下）に限定
+- 失敗時に壊れるもの: 特になし（既存のdesign-refs資産・frontend-designスキル運用には影響しない。使い方をdocs/frontend-design-rule.mdに一行追記）
+- 後日評価: (未評価)
